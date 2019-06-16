@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>main-list</ion-title>
+
+    <ion-buttons slot="end">
+        <ion-button (click)="searchItem()">    
+          <ion-icon slot="icon-only" name="search"></ion-icon>    
+        </ion-button>
+      </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <div *ngFor="let item of items;" >
+      <ion-item button (click)="gotoDetail(item)">
+          <ion-img [src]="item.imageURL" style="border-radius: 50%; width: 2em; height: 2em;"></ion-img>
+          <ion-label>{{item.title}} {{getRange(item)}}</ion-label>
+      </ion-item>
+  </div>
+  </ion-list>
+</ion-content>
