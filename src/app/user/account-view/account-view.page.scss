@@ -1,0 +1,43 @@
+.imageView {
+	display: flex;
+	justify-content: center;
+	padding: 2rem;
+	img {
+		height: 150px;
+		width: 150px;
+		border-radius: 75px;
+	}
+}
+
+.userDetails {
+	display: grid;
+	grid-template-columns: 40% 60%;
+	width: 100%;
+	ul {
+		text-align: left;
+		list-style: none;
+	}
+}
+
+.items {
+	margin: 1rem;
+}
+
+.scrolling-wrapper {
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space: nowrap;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	.card {
+		display: inline-block;
+		height: 5rem;
+		width: 5rem;
+		margin: 0 0.5rem;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		cursor: pointer;
+	}
+}
