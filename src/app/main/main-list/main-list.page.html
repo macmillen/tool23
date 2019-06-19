@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Tool23</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="searchItem()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <div *ngFor="let item of items;">
+      <ion-item button (click)="gotoDetail(item)">
+        <ion-img [src]="item.imageURL" style="border-radius: 50%; width: 2em; height: 2em;"></ion-img>
+        <ion-label class="ion-padding-start ion-margin-start">{{item.title}}</ion-label>
+        <ion-label class="ion-float-right ion-text-end">{{getRange(item)}}</ion-label>
+      </ion-item>
+    </div>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="end">
+      <ion-fab-button>
+        <ion-icon name="logo-vimeo"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-buttons class="ion-justify-content-evenly">
+          <ion-button clear full (click)="gotoMain()" class="ion-float-right">
+            <ion-icon slot="icon-only" name="home"> </ion-icon>
+          </ion-button>
+          <ion-button clear full (click)="gotoUserPage()" center>
+            <ion-icon slot="icon-only" name="person"> </ion-icon>
+          </ion-button>
+          <ion-button clear full (click)="gotoList(record)" class="ion-float-left">
+            <ion-icon slot="icon-only" name="list-box"> </ion-icon>
+          </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
