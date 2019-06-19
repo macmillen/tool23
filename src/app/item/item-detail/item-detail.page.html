@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Angebot</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-item lines="full">
+    <ion-label slot="start">
+      <h1>
+        {{item.title}}
+      </h1>
+    </ion-label>
+    <ion-thumbnail button slot="end">
+        <img src="https://i.ytimg.com/vi/VnY3rb-c4ho/maxresdefault.jpg">
+      </ion-thumbnail>
+    <p slot="end">Enton</p>
+  </ion-item>
+
+  <ion-img [src]="item.imageURL" width="50" height="50"></ion-img>
+
+  <ion-item>
+    <h3>Details: {{item.description}}</h3>
+  </ion-item>
+
+  <ion-item>
+    <h3>Standort: {{item.address.city}} {{item.address.zip}}</h3>
+  </ion-item>
+
+  <ion-item>
+    <h3>Eingestellt: {{item.creationDate | date}}</h3>
+  </ion-item>
+
+
+</ion-content>
