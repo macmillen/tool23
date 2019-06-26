@@ -1,0 +1,59 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>{{ haveAccount ? 'Anmelden' : 'Registrieren' }}</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div class="ion-padding" *ngIf="!haveAccount">
+		<ion-item>
+			<ion-label position="stacked">Email:</ion-label>
+			<ion-input type="email" name="email" [(ngModel)]="email"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Benutzername:</ion-label>
+			<ion-input [(ngModel)]="username"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Passwort:</ion-label>
+			<ion-input type="password" [(ngModel)]="password"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Passwort bestätigen:</ion-label>
+			<ion-input type="password" [(ngModel)]="confirmPassword"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">PLZ:</ion-label>
+			<ion-input [(ngModel)]="zip"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Wohnort:</ion-label>
+			<ion-input [(ngModel)]="city"></ion-input>
+		</ion-item>
+		<br />
+		<ion-button expand="block" (click)="registerUser()"
+			>Registrieren</ion-button
+		>
+	</div>
+
+	<div class="ion-padding" *ngIf="haveAccount">
+		<ion-item>
+			<ion-label position="stacked">Email:</ion-label>
+			<ion-input type="email" [(ngModel)]="email"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Passwort:</ion-label>
+			<ion-input type="password" [(ngModel)]="password"></ion-input>
+		</ion-item>
+		<br />
+		<ion-button expand="block" (click)="registerUser()">Anmelden</ion-button>
+	</div>
+</ion-content>
+
+<ion-footer no-shadow style="background:white">
+	<ion-button (click)="toggleHaveAccount()" expand="full" color="light">{{
+		haveAccount
+			? 'Noch keinen Account? Registrieren'
+			: 'Schon einen Account? Anmelden'
+	}}</ion-button>
+</ion-footer>

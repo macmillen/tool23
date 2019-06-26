@@ -9,7 +9,14 @@ const routes: Routes = [
 		loadChildren:
 			'./user/account-view/account-view.module#AccountViewPageModule'
 	},
-  { path: 'item-detail', loadChildren: './item/item-detail/item-detail.module#ItemDetailPageModule' }
+	{
+		path: 'item-detail',
+		loadChildren: './item/item-detail/item-detail.module#ItemDetailPageModule'
+	},
+	{
+		path: 'signup',
+		loadChildren: './user/signup/signup.module#SignupPageModule'
+	}
 ];
 
 @NgModule({
