@@ -33,19 +33,4 @@
     </ion-fab-list>
   </ion-fab>
 </ion-content>
-
-<ion-footer>
-  <ion-toolbar>
-      <ion-buttons class="ion-justify-content-evenly">
-          <ion-button clear full (click)="gotoMain()" class="ion-float-right">
-            <ion-icon slot="icon-only" name="home"> </ion-icon>
-          </ion-button>
-          <ion-button clear full (click)="gotoUserPage()" center>
-            <ion-icon slot="icon-only" name="person"> </ion-icon>
-          </ion-button>
-          <ion-button clear full (click)="gotoList(record)" class="ion-float-left">
-            <ion-icon slot="icon-only" name="list-box"> </ion-icon>
-          </ion-button>
-      </ion-buttons>
-  </ion-toolbar>
-</ion-footer>
+<app-footer></app-footer>
