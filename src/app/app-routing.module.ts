@@ -16,6 +16,10 @@ const routes: Routes = [
 	{
 		path: 'signup',
 		loadChildren: './user/signup/signup.module#SignupPageModule'
+	},
+	{
+		path: 'main-list',
+		loadChildren: './main/main-list/main-list.module#MainListPageModule'
 	}
 ];
 
