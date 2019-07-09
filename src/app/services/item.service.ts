@@ -9,7 +9,7 @@ export class ItemService {
 
     async createItem(itemIn: Item) {
         const res = await axios.post(SERVER_URL + '/api/item', {
-            item: itemIn
+            item: JSON.stringify(itemIn)
         });
         // TODO Validate Data
         return res;
@@ -30,7 +30,7 @@ export class ItemService {
     }
 
     async deleteItem(ID: string) {
-        //Should return one item
+        // Should return one item
         const res = await axios.delete(SERVER_URL + '/api/item/' + ID);
         // TODO Validate Data
         return res;

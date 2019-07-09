@@ -9,7 +9,7 @@ export class UserService {
 
     async register (userIn: User) {
         const res = await axios.post(SERVER_URL + '/api/newUser', {
-            user: userIn
+            user: JSON.stringify(userIn)
         });
         // TODO Validate Data
         return res;

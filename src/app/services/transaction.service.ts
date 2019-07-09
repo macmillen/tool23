@@ -16,7 +16,7 @@ export class TransactionService {
 
     async createTransaction(transIn: Transaction) {
         const res = await axios.post(SERVER_URL + '/api/transaction', {
-            transaction: transIn
+            transaction: JSON.stringify(transIn)
         });
         // TODO Validate Data
         return res;
