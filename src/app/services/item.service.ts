@@ -11,24 +11,28 @@ export class ItemService {
         const res = await axios.post(SERVER_URL + '/api/item', {
             item: itemIn
         });
+        // TODO Validate Data
         return res;
     }
 
-    async getItem(ID: string) {
-        //Should return one item
+    async getItem(ID: string): Promise<Item>{
+        // Should return one item
         const res = await axios.get(SERVER_URL + '/api/item/' + ID);
-        return res;
+        // TODO Validate Data to be Item
+        return res.data;
     }
 
-    async getAllItems() {
-        //Should return Array full of Items
+    async getAllItems(): Promise<Item[]> {
+        // Should return Array full of Items
         const res = await axios.get(SERVER_URL + '/api/items/');
-        return res;
+        // TODO Validate Data to be Item Array
+        return res.data;
     }
 
     async deleteItem(ID: string) {
         //Should return one item
         const res = await axios.delete(SERVER_URL + '/api/item/' + ID);
+        // TODO Validate Data
         return res;
     }
 

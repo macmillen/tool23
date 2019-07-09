@@ -11,6 +11,7 @@ export class UserService {
         const res = await axios.post(SERVER_URL + '/api/newUser', {
             user: userIn
         });
+        // TODO Validate Data
         return res;
     }
 
@@ -19,11 +20,13 @@ export class UserService {
             email: emailIn,
             password: passwordIn
         });
+        // TODO Validate Data
         return res;
     }
 
-    async getUser (id: string) {
+    async getUser (id: string): Promise<User>{
         const res = await axios.get(SERVER_URL + '/api/getUser/' + id );
-        return res;
+        // TODO Validate Data to be User
+        return res.data;
     }
 }
