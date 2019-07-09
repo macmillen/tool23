@@ -23,6 +23,7 @@ app.delete('/api/item/:itemID', checkAuth, itemController.deleteItem);
 // * USERS
 app.post('/api/newUser', userController.createUser);
 app.post('/api/signin', userController.login);
+app.get('/api/getUser/:userID', checkAuth, userController.getUser);
 // * TRANSACTIONS
 
 app.get('*', () => console.log('OOOOOO'));

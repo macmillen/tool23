@@ -3,7 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'item-detail', pathMatch: 'full' },
-	{ path: 'home', loadChildren: './home/home.module#HomePageModule' },
+	
 	{
 		path: 'account-view',
 		loadChildren:
