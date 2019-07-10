@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
 import { SERVER_URL } from '../../environments/environment';
 import { Transaction } from '../models/transaction.model';
+import { HttpClient } from '@angular/common/http';
+
 
 @Injectable({ providedIn: 'root' })
 
 export class TransactionService {
 
-    constructor(private http){}
+    constructor(private http: HttpClient) {}
 
-    getTransaction(ID: string): Promise<Transaction> {
+    getTransaction(ID: string){
         // Should return one transactiob
-        const res = this.http.get(SERVER_URL + '/api/transaction/' + ID);
-        // TODO Validate Data to be Transaction
-        return res.data;
+        return this.http.get<Transaction>(SERVER_URL + '/api/transaction/' + ID);
     }
 
     createTransaction(transIn: Transaction) {
-        const res = this.http.post(SERVER_URL + '/api/transaction', {
+        return this.http.post(SERVER_URL + '/api/transaction', {
             transaction: transIn
         });
-        // TODO Validate Data
-        return res;
     }
 }
