@@ -46,7 +46,8 @@ export class MainListPage implements OnInit {
       'Das ist mein Hammer',
       new Date(),
       'https://cdn.pixabay.com/photo/2016/04/01/10/49/great-hammer-1300043_960_720.png',
-      new Address());
+      null, null, null, null,
+      ["hammer","zimmermanshammer","schlagen"]);
       this.items.push(item1);
   }
 

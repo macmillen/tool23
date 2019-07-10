@@ -44,7 +44,6 @@ export class SignupPage implements OnInit {
 			if (this.password != this.confirmPassword) {
 				throw Error('Passwords do not match!');
 			}
-			this.address = new Address(null, null, this.zip, this.city);
 
 			console.log('test');
 			this.user = new User(
@@ -53,7 +52,10 @@ export class SignupPage implements OnInit {
 				this.email,
 				this.username,
 				this.password,
-				this.address
+				this.zip,
+				null,
+				null,
+				this.city
 			);
 
 			this.res = await axios.post(

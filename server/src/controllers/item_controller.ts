@@ -1,15 +1,30 @@
 import { Request, Response } from 'express';
 import { itemCollection } from '../config/mongodb';
+import { Item } from '../models/item_model';
 
 export const createItem = async (req: Request, res: Response) => {
     console.log("test");
+
+
     res.send('success');
-    await itemCollection.insertOne({address:{city:'',houseNumber:'',street:'',zip:''},
-    creationDate:new Date(),description:'',imageUrl:'',tags:[],title:'',userID:'penner'});
+    const userID: string = req.body.global_googleUID;
+    await itemCollection.insertOne({
+        address:{
+            city:'',
+            houseNumber:'',
+            street:'',
+            zip:''
+        },
+        creationDate:new Date(),
+        description:'',
+        imageUrl:'',
+        tags:[],
+        title:'',
+        userID: userID});
     
     throw Error('TODO');
 
-    // const userID: string = req.body.global_googleUID;
+    
 
     // try {
     //     await itemCollection.insertOne({ /* TODO */ });
