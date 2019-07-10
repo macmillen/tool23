@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
 import { SERVER_URL } from '../../environments/environment';
 import { User } from '../models/user.model';
 
@@ -7,16 +6,18 @@ import { User } from '../models/user.model';
 
 export class UserService {
 
-    async register (userIn: User) {
-        const res = await axios.post(SERVER_URL + '/api/newUser', {
-            user: JSON.stringify(userIn)
+    constructor(private http){}
+
+    register(userIn: User) {
+        const res = this.http.post(SERVER_URL + '/api/newUser', {
+            user: userIn
         });
         // TODO Validate Data
         return res;
     }
 
-    async login (emailIn: string, passwordIn: string) {
-        const res = await axios.post(SERVER_URL + '/api/signin', {
+    login(emailIn: string, passwordIn: string) {
+        const res = this.http.post(SERVER_URL + '/api/signin', {
             email: emailIn,
             password: passwordIn
         });
@@ -24,9 +25,9 @@ export class UserService {
         return res;
     }
 
-    async getUser (id: string): Promise<User>{
-        const res = await axios.get(SERVER_URL + '/api/getUser/' + id );
+    getUser(id: string) {
+        const res = this.http.get(SERVER_URL + '/api/getUser/' + id );
         // TODO Validate Data to be User
-        return res.data;
+        return res;
     }
 }

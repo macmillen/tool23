@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
 import { SERVER_URL } from '../../environments/environment';
 import { Item } from '../models/item.model';
 
@@ -7,31 +6,33 @@ import { Item } from '../models/item.model';
 
 export class ItemService {
 
-    async createItem(itemIn: Item) {
-        const res = await axios.post(SERVER_URL + '/api/item', {
-            item: JSON.stringify(itemIn)
+    constructor(private http){}
+
+    createItem(itemIn: Item) {
+        const res = this.http.post(SERVER_URL + '/api/item', {
+            item: itemIn
         });
         // TODO Validate Data
         return res;
     }
 
-    async getItem(ID: string): Promise<Item>{
+    getItem(ID: string) {
         // Should return one item
-        const res = await axios.get(SERVER_URL + '/api/item/' + ID);
+        const res = this.http.get(SERVER_URL + '/api/item/' + ID);
         // TODO Validate Data to be Item
-        return res.data;
+        return res;
     }
 
-    async getAllItems(): Promise<Item[]> {
+    getAllItems() {
         // Should return Array full of Items
-        const res = await axios.get(SERVER_URL + '/api/items/');
+        const res = this.http.get(SERVER_URL + '/api/items/');
         // TODO Validate Data to be Item Array
-        return res.data;
+        return res;
     }
 
-    async deleteItem(ID: string) {
+    deleteItem(ID: string) {
         // Should return one item
-        const res = await axios.delete(SERVER_URL + '/api/item/' + ID);
+        const res = this.http.delete(SERVER_URL + '/api/item/' + ID);
         // TODO Validate Data
         return res;
     }
