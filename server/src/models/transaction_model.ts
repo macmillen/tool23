@@ -1,15 +1,13 @@
+import { Review } from "./review_model";
+
 export interface Transaction {
     _id?: string;
-    verleiherID: string;
-    ausleiherID: string;
+    itemID: string;
+    giverID: string;
+    takerID: string;
     startDate: Date;
     endDate: Date;
-    status: string;    // ["pending", "accepted", "declined"]
-    review: {
-        verleiherRating: number;
-        ausleiherRating: number;
-        verleiherComment: string;
-        ausleiherComment: string;
-    }
-
+    status: 'pending' | 'accepted' | 'declined';
+    review: Review;
+    message: string;
 }
