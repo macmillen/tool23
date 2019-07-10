@@ -7,7 +7,6 @@ export interface Item {
     status: 'disabled' | 'active';
     description: string;
     creationDate: Date;
-    imageUrl: string;
     address: Address;
     tags: string[];
 }

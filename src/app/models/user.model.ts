@@ -8,5 +8,4 @@ export interface User {
     username: string;
     address: Address;
     password: string;
-    imageURL?: string;
 }
