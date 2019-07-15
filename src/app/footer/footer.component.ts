@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-footer',
@@ -7,8 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(private navController: NavController) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
+  goTo(path: string) {
+    this.navController.navigateRoot(path);
+  }
 }

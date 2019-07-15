@@ -6,7 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { AccountViewPage } from './account-view.page';
-import { FooterComponentModule} from '../../footer/footer.component.module';
+import { FooterComponentModule } from '../../footer/footer.component.module';
+import { MoreComponent } from './more/more.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     FooterComponentModule
   ],
-  declarations: [AccountViewPage]
+  declarations: [AccountViewPage, MoreComponent],
+  entryComponents: [MoreComponent]
 })
-export class AccountViewPageModule {}
+export class AccountViewPageModule { }

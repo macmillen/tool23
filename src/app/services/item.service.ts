@@ -7,27 +7,22 @@ import { HttpClient } from '@angular/common/http';
 
 export class ItemService {
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    createItem(itemIn: Item) {
-        return this.http.post(SERVER_URL + '/api/item', {
-            item: itemIn
-        });
+    createItem(item: Item) {
+        return this.http.post(SERVER_URL + '/api/item', { item });
     }
 
-    getItem(ID: string) {
-        return this.http.get<Item>(SERVER_URL + '/api/item/' + ID);
+    getItem(itemID: string) {
+        return this.http.get<Item>(SERVER_URL + '/api/item/' + itemID);
     }
 
     getAllItems() {
-        // Should return Array full of Items
         return this.http.get<Item[]>(SERVER_URL + '/api/items/');
-
     }
 
-    deleteItem(ID: string) {
-        // Should return one item
-        return this.http.delete(SERVER_URL + '/api/item/' + ID);
+    deleteItem(itemID: string) {
+        return this.http.delete(SERVER_URL + '/api/item/' + itemID);
     }
 
 }

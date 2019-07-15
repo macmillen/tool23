@@ -12,15 +12,20 @@
 				<ion-icon slot="icon-only" name="create"> </ion-icon>
 			</ion-button>
 		</ion-buttons>
+		<ion-buttons slot="end">
+			<ion-button (click)="presentPopover($event)">
+				<ion-icon slot="icon-only" name="more"> </ion-icon>
+			</ion-button>
+		</ion-buttons>
 	</ion-toolbar>
 </ion-header>
 
 <ion-content>
 	<div class="imageView">
-		<img src="{{ user.img }}" />
+		<img [src]="userImageURL" />
 	</div>
 
-	<div class="userDetails">
+	<div class="userDetails" *ngIf="user">
 		<ul>
 			<li>Nutzername:</li>
 			<li>E-Mail:</li>
@@ -28,33 +33,30 @@
 			<li>Bewertung:</li>
 		</ul>
 		<ul>
-			<li>{{ user.name }}</li>
+			<li>{{ user.username }}</li>
 			<li>{{ user.email }}</li>
-			<li>{{ user.city }}</li>
-			<li>{{ user.review }}</li>
+			<li>{{ user.address.city }}</li>
+			<li>{{ user.reviewScore }}</li>
 		</ul>
 	</div>
 
 	<div class="items">
-		<h3>Geräte:</h3>
-		<div class="scrolling-wrapper">
-			<div
-				*ngFor="let item of items"
-				class="card"
-				onclick="showItem(id)"
-				[style.backgroundImage]="'url(' + item.image + ')'"
-			></div>
-		</div>
+		<ion-list>
+			<ion-list-header>
+				<ion-label>Meine Anzeigen:</ion-label>
+			</ion-list-header>
 
-		<h3>Zur Zeit verliehen:</h3>
-		<div class="scrolling-wrapper">
-			<div
-				*ngFor="let item of items"
-				class="card"
-				onclick="showItem(id)"
-				[style.backgroundImage]="'url(' + item.image + ')'"
-			></div>
-		</div>
+			<ion-item-sliding *ngFor="let i of items">
+				<ion-item>
+					<ion-label>{{i.title}}</ion-label>
+				</ion-item>
+				<ion-item-options side="end">
+					<ion-item-option *ngIf="i.status === 'active'">Deaktivieren</ion-item-option>
+					<ion-item-option *ngIf="i.status === 'disabled'">Aktivieren</ion-item-option>
+					<ion-item-option color="danger">Löschen</ion-item-option>
+				</ion-item-options>
+			</ion-item-sliding>
+		</ion-list>
 	</div>
 </ion-content>
 <app-footer></app-footer>

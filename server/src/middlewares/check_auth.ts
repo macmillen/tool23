@@ -4,21 +4,17 @@ import { fireAuth } from '../config/firebase';
 export let checkAuth = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        // UNCOMMENT THIS FROM HERE ***************************************************************
+        if (!req.headers.authorization) { return res.status(401).send('You did not send a valid cookie'); }
+        const token = req.headers.authorization.split(' ')[1]; // [0] is just the word "Bearer" (convention)
+        const decodedToken = await fireAuth.verifyIdToken(token);
+        const emailVerified = decodedToken.email_verified;
 
-        // if (!req.headers.authorization) { return res.status(401).send('You did not send a valid cookie'); }
-        // const token = req.headers.authorization.split(' ')[1]; // [0] is just the word "Bearer" (convention)
-        // const decodedToken = await fireAuth.verifyIdToken(token);
-        // const emailVerified = decodedToken.email_verified;
+        if (!emailVerified) {
+            // return res.status(401).send('Your must verify your email');
+        }
 
-        // if (!emailVerified) {
-        //     // return res.status(401).send('Your must verify your email');
-        // }
-
-        // req.body.global_googleUID = decodedToken.uid;
-        // req.body.global_email = decodedToken.email;
-
-        // TO HERE ********************************************************************************
+        req.body.global_googleUID = decodedToken.uid;
+        req.body.global_email = decodedToken.email;
 
 
 

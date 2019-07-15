@@ -1,5 +1,6 @@
 import { MongoClient, Db, Collection } from 'mongodb';
 import { Item } from '../models/item_model';
+import { User } from '../models/user_model';
 
 const uri = "mongodb+srv://admin:verleihmasters99@cluster0-58wqp.mongodb.net/test?retryWrites=true&w=majority";
 
@@ -14,6 +15,7 @@ export let db: Db;
 
 // DECLARE COLLECTIONS HERE
 export let itemCollection: Collection<Item>;
+export let userCollection: Collection<User>;
 
 export const connectMongoDB = async () => {
     try {
@@ -23,6 +25,7 @@ export const connectMongoDB = async () => {
 
         // INIT COLLECTIONS HERE
         itemCollection = db.collection('items');
+        userCollection = db.collection('users');
 
         console.log('Connected successfully to server');
     } catch (e) {

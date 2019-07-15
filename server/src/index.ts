@@ -22,9 +22,8 @@ app.get('/api/items', checkAuth, itemController.getItems);
 app.delete('/api/item/:itemID', checkAuth, itemController.deleteItem);
 
 // * USERS
-app.post('/api/newUser', userController.createUser);
-app.post('/api/signin', userController.login);
-app.get('/api/getUser/:userID', checkAuth, userController.getUser);
+app.post('/api/register', userController.register);
+app.get('/api/user/:userID', checkAuth, userController.getUser);
 // * TRANSACTIONS
 app.post('/api/transaction', checkAuth, transactionController.createTransaction);
 app.get('/api/transaction/:transactionID', checkAuth, transactionController.getTransaction);

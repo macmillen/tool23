@@ -1,85 +1,66 @@
 import { Component, OnInit } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+import { MoreComponent } from './more/more.component';
+import { User } from 'src/app/models/user.model';
+import { Item } from 'src/app/models/item.model';
+import { UserService } from 'src/app/services/user.service';
+import { ItemService } from 'src/app/services/item.service';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
-	selector: 'app-account-view',
-	templateUrl: './account-view.page.html',
-	styleUrls: ['./account-view.page.scss']
+    selector: 'app-account-view',
+    templateUrl: './account-view.page.html',
+    styleUrls: ['./account-view.page.scss']
 })
 export class AccountViewPage implements OnInit {
-	user: Object;
-	items: Object[];
+    user: User;
+    items: Item[];
 
-	constructor() {}
+    userImageURL = 'assets/placeholder.png';
 
-	ngOnInit() {
-		this.user = {
-			name: 'Max Euler',
-			email: 'max@gmail.com',
-			city: 'Frankfurt am Main',
-			review: 4.9,
-			image:
-				'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAfCbeRRyzbx0OPvC8R8yxQLt_sO1n8Ks5dfTSkESsU1PHxTj7'
-		};
+    constructor(
+        private popoverController: PopoverController,
+        private userService: UserService,
+        private itemService: ItemService,
+        private fireStorage: AngularFireStorage,
+    ) { }
 
-		this.items = [
-			{
-				name: 'Item1',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item2',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item3',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item4',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item5',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item6',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item7',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item8',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item9',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			},
-			{
-				name: 'Item10',
-				image:
-					'https://cdn1.louis.de/content/catalogue/articles/img298x298/Gedore-Schlosserhammer-60350740_910_FR01_18.JPG'
-			}
-		];
-	}
+    async presentPopover(ev: any) {
+        const popover = await this.popoverController.create({
+            component: MoreComponent,
+            event: ev,
+            translucent: true
+        });
+        return await popover.present();
+    }
+    ngOnInit() {
+        this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
+            next: user => {
+                this.user = user;
+                console.log(user);
+                
+                this.getUserImageURL();
+            }
+        });
+        this.itemService.getAllItems().subscribe({
+            next: items => this.items = items
+        });
+    }
 
-	editAccount() {
-		console.log('Edit');
-	}
+    getUserImageURL() {
+        const ref = this.fireStorage.ref(`profilepics/${this.user.userID}.jpg`);
+        ref.getDownloadURL().subscribe({
+            next: url => { this.userImageURL = url; },
+            error: e => { console.log(e); }
+        });
 
-	showHistory() {
-		console.log('Show History');
-	}
+    }
+
+    editAccount() {
+        console.log('Edit');
+    }
+
+    showHistory() {
+        console.log('Show History');
+    }
 }

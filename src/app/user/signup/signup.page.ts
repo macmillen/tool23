@@ -1,81 +1,62 @@
 import { Component, OnInit } from '@angular/core';
-import axios from 'axios';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
-import { Address } from '../../models/address.model';
+import { UserService } from 'src/app/services/user.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
-	selector: 'app-signup',
-	templateUrl: './signup.page.html',
-	styleUrls: ['./signup.page.scss']
+    selector: 'app-signup',
+    templateUrl: './signup.page.html',
+    styleUrls: ['./signup.page.scss']
 })
 export class SignupPage implements OnInit {
-	user: User;
-	address: Address;
-	email: string;
-	username: string;
-	password: string;
-	confirmPassword: string;
-	zip: string;
-	city: string;
-	res: any;
-	haveAccount = true;
+    user: User;
+    password: string;
+    confirmPassword: string;
+    haveAccount = true;
 
-	constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private userService: UserService,
+        private navController: NavController,
+    ) { }
 
-	ngOnInit() {}
+    ngOnInit() {
+        this.initUser();
+        this.isAuth();
+    }
 
-	async registerUser() {
-		if (this.haveAccount) {
-			if (this.email == null || this.password == null) return;
-			this.res = await axios.post('http://localhost:3000/api/signin', {
-				email: this.email,
-				password: this.password
-			});
-		} else {
-			if (
-				!this.email.length ||
-				!this.username.length ||
-				!this.password.length ||
-				!this.zip.length ||
-				!this.city.length
-			)
-				return;
-			if (this.password != this.confirmPassword) {
-				throw Error('Passwords do not match!');
-			}
+    isAuth() {
+        this.userService.isAuthenticated().subscribe({
+            next: isAuth => isAuth ? this.navController.navigateRoot('/account-view') : null
+        });
+    }
 
-			console.log('test');
-			this.user = new User(
-				null,
-				null,
-				this.email,
-				this.username,
-				this.password,
-				this.zip,
-				null,
-				null,
-				this.city
-			);
+    register() {
+        this.userService.register(this.user, this.password).subscribe({
+            next: () => this.signin(),
+            error: e => console.log(e)
+        });
+    }
 
-			this.res = await axios.post(
-				'http://localhost:3000/api/newUser',
-				this.user
-			);
-		}
-	}
+    signin() {
+        this.userService.signin(this.user.email, this.password).subscribe(
+            () => this.router.navigate(['main-list']),
+            e => console.log(e)
+        );
+    }
 
-	toggleHaveAccount() {
-		this.haveAccount = !this.haveAccount;
-		this.clearInputs();
-	}
+    toggleHaveAccount() {
+        this.haveAccount = !this.haveAccount;
+        this.clearInputs();
+    }
 
-	clearInputs() {
-		this.email = '';
-		this.username = '';
-		this.password = '';
-		this.confirmPassword = '';
-		this.city = '';
-		this.zip = '';
-	}
+    private clearInputs() {
+        this.password = '';
+        this.confirmPassword = '';
+    }
+
+    private initUser() {
+        this.user = { email: '', username: '', address: { city: '', houseNumber: '', street: '', zip: '' } };
+    }
 }

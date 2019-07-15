@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Item erstellen</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input type="text" maxlength="10" required [(ngModel)]="item.title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Beschreibung</ion-label>
+      <ion-textarea type="text" minlength="20" required [(ngModel)]="item.description"></ion-textarea>
+    </ion-item>
+
+    <ion-list-header>Tags</ion-list-header>
+    <ion-item>
+      <ion-label position="floating">Tags hinzufügen</ion-label>
+      <ion-input type="text" maxlength="10" [(ngModel)]="tagInput"></ion-input>
+      <ion-button (click)="addTag()" slot="end">Add Tag</ion-button>
+    </ion-item>
+    <ion-item *ngIf="item.tags.length">
+      <label text-wrap>
+        <ion-chip *ngFor="let t of item.tags">
+          <ion-label>{{t}}</ion-label>
+        </ion-chip>
+      </label>
+    </ion-item>
+
+    <ion-list-header>Status</ion-list-header>
+    <ion-item>
+      <ion-label>Aktiv</ion-label>
+      <ion-toggle [(ngModel)]="statusBool"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <ion-button style="margin: 10px 10px" expand="full" (click)="createItem()">Item erstellen</ion-button>
+
+{{item | json}}
+
+</ion-content>

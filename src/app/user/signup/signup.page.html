@@ -8,11 +8,11 @@
 	<div class="ion-padding" *ngIf="!haveAccount">
 		<ion-item>
 			<ion-label position="stacked">Email:</ion-label>
-			<ion-input type="email" name="email" [(ngModel)]="email"></ion-input>
+			<ion-input type="email" name="email" [(ngModel)]="user.email"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Benutzername:</ion-label>
-			<ion-input [(ngModel)]="username"></ion-input>
+			<ion-input [(ngModel)]="user.username"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Passwort:</ion-label>
@@ -24,29 +24,27 @@
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">PLZ:</ion-label>
-			<ion-input [(ngModel)]="zip"></ion-input>
+			<ion-input [(ngModel)]="user.address.zip"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Wohnort:</ion-label>
-			<ion-input [(ngModel)]="city"></ion-input>
+			<ion-input [(ngModel)]="user.address.city"></ion-input>
 		</ion-item>
 		<br />
-		<ion-button expand="block" (click)="registerUser()"
-			>Registrieren</ion-button
-		>
+		<ion-button [disabled]="password && password !== confirmPassword" expand="block" (click)="register()">Registrieren</ion-button>
 	</div>
 
 	<div class="ion-padding" *ngIf="haveAccount">
 		<ion-item>
 			<ion-label position="stacked">Email:</ion-label>
-			<ion-input type="email" [(ngModel)]="email"></ion-input>
+			<ion-input type="email" [(ngModel)]="user.email"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Passwort:</ion-label>
 			<ion-input type="password" [(ngModel)]="password"></ion-input>
 		</ion-item>
 		<br />
-		<ion-button expand="block" (click)="registerUser()">Anmelden</ion-button>
+		<ion-button expand="block" (click)="signin()">Anmelden</ion-button>
 	</div>
 </ion-content>
 

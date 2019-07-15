@@ -1,48 +1,63 @@
 import { Request, Response } from 'express';
 import { itemCollection } from '../config/mongodb';
 import { Item } from '../models/item_model';
+import { ObjectId } from 'bson';
 
 export const createItem = async (req: Request, res: Response) => {
-    console.log("test");
-
-
-    res.send('success');
     const userID: string = req.body.global_googleUID;
-    await itemCollection.insertOne({
-        address:{
-            city:'',
-            houseNumber:'',
-            street:'',
-            zip:''
-        },
-        creationDate:new Date(),
-        description:'',
-        imageUrl:'',
-        tags:[],
-        title:'',
-        userID: userID});
-    
-    throw Error('TODO');
+    const item: Item = req.body.item;
 
-    
-
-    // try {
-    //     await itemCollection.insertOne({ /* TODO */ });
-    //     res.status(201).json({ /* TODO */ });
-    // } catch (e) { console.log(e); }
+    try {
+        await itemCollection.insertOne({
+            address: item.address,
+            creationDate: new Date(),
+            description: item.description,
+            status: item.status,
+            tags: item.tags,
+            title: item.title,
+            userID
+        });
+        res.status(201).end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).end('Error creating Item');
+    }
 }
 
 export const getItems = async (req: Request, res: Response) => {
-    throw Error('TODO');
-    
+    const userID: string = req.body.global_googleUID;
+
+    try {
+        const items = await itemCollection.find({ userID }).toArray();
+        res.status(200).json(items);
+    } catch (e) {
+        console.log(e);
+        res.status(404).end('Error getting Items');
+    }
 }
 
 export const getItem = async (req: Request, res: Response) => {
-    throw Error('TODO');
-   
+    const itemID: string = req.params.itemID;
+
+    try {
+        const item = await itemCollection.findOne({ _id: new ObjectId(itemID) });
+        res.status(200).json(item);
+    } catch (e) {
+        console.log(e);
+        res.status(404).end('Error getting Item');
+    }
 }
 
 export const deleteItem = async (req: Request, res: Response) => {
-    throw Error('TODO');
+    const userID: string = req.body.global_googleUID;
+    const itemID: string = req.params.itemID;
+
+    try {
+        const item = await itemCollection.deleteOne({ userID, _id: new ObjectId(itemID) });
+        res.status(200).json(item);
+    } catch (e) {
+        console.log(e);
+        res.status(404).end('Error deleting Item');
+    }
 }
 
