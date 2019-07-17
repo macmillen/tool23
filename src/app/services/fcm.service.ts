@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SERVER_URL } from 'src/environments/environment';
 import { FCM } from '@ionic-native/fcm/ngx';
+import { ToastController, NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ export class FcmService {
 
   constructor(
     private http: HttpClient,
+    private toastController: ToastController,
+    private navController: NavController,
     private fcm: FCM
   ) { }
 
@@ -31,11 +34,17 @@ export class FcmService {
 
   // Listen to incoming FCM messages
   listenToNotifications() {
-    this.fcm.onNotification().subscribe(data => {
+    this.fcm.onNotification().subscribe(async data => {
       if (data.wasTapped) {
-        console.log('Received in background');
+        // Received in background
+        this.navController.navigateRoot('/transaction-list');
       } else {
-        console.log('Received in foreground');
+        // Received in foreground
+        const toast = await this.toastController.create({
+          message: 'Sie haben eine neue Anfrage erhalten.',
+          duration: 2000
+        });
+        toast.present();
       }
     });
   }

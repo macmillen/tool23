@@ -8,16 +8,13 @@ import { HttpClient } from '@angular/common/http';
 
 export class TransactionService {
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    getTransaction(ID: string){
-        // Should return one transactiob
-        return this.http.get<Transaction>(SERVER_URL + '/api/transaction/' + ID);
+    getTransactions() {
+        return this.http.get<Transaction[]>(SERVER_URL + '/api/transactions');
     }
 
-    createTransaction(transIn: Transaction) {
-        return this.http.post(SERVER_URL + '/api/transaction', {
-            transaction: transIn
-        });
+    requestItem(transaction: Transaction, itemID: string) {
+        return this.http.post(SERVER_URL + '/api/request-item', { transaction, itemID });
     }
 }

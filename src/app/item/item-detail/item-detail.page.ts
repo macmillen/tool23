@@ -74,7 +74,7 @@ export class ItemDetailPage implements OnInit {
   }
 
   goToTransactionDetail() {
-    this.navController.navigateForward('/transaction-detail');
+    this.navController.navigateForward(`/transaction-detail/${this.item._id}`);
   }
 
   goToAccountView() {

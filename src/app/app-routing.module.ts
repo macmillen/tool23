@@ -33,7 +33,7 @@ const routes: Routes = [
         loadChildren: './main/main-list/main-list.module#MainListPageModule'
     },
     {
-        path: 'transaction-detail',
+        path: 'transaction-detail/:itemID',
         canActivate: [AuthGuard],
         loadChildren: './transaction/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
     },

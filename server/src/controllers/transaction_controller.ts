@@ -23,18 +23,19 @@ export const requestItem = async (req: Request, res: Response) => {
     const transaction: Transaction = req.body.transaction;
 
     try {
-
-        const payload = {
-            notification: {
-                title: 'Neue Anfrage',
-                body: `Hello`,
-                icon: 'https://goo.gl/Fz9nrQ'
-            }
-          }
-
         const tokensObj = await tokenCollection.find({ userID: transaction.giverID }).toArray();
         const tokens = tokensObj.map(t => t.token);
-        await fireMessaging.sendToDevice(tokens, payload);
+
+        if (tokens.length) {
+            const payload = {
+                notification: {
+                    title: 'Neue Anfrage',
+                    body: `Hello`,
+                    icon: 'https://goo.gl/Fz9nrQ'
+                }
+            }
+            await fireMessaging.sendToDevice(tokens, payload);
+        }
 
         await transactionCollection.insertOne({
             itemID,
