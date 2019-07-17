@@ -17,12 +17,12 @@ export class EditViewPage implements OnInit {
 		private userService: UserService,
 		private navController: NavController,
 		private route: ActivatedRoute
-	) {}
+	) { }
 
 	ngOnInit() {
 		// TODO current userID
 		this.initUser();
-		this.id = this.route.snapshot.paramMap.get('userId');
+		this.id = this.route.snapshot.paramMap.get('userID');
 		this.userService.getUser(this.id).subscribe({
 			next: user => {
 				this.user = user;

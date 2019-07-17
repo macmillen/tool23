@@ -43,7 +43,7 @@ const routes: Routes = [
         loadChildren: './transaction/transaction-list/transaction-list.module#TransactionListPageModule'
     },
     {
-        path: 'edit-view/:userId',
+        path: 'edit-view/:userID',
         loadChildren: './user/edit-view/edit-view.module#EditViewPageModule'
     }
 ];

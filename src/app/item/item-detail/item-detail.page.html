@@ -4,9 +4,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="user && item">
 
-  <ion-item lines="full">
+  <ion-item lines="full"> 
     <ion-label slot="start">
       <h1>
         {{item.title}}
