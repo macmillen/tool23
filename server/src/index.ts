@@ -25,10 +25,10 @@ app.delete('/api/item/:itemID', checkAuth, itemController.deleteItem);
 app.post('/api/register', userController.register);
 app.get('/api/user/:userID', checkAuth, userController.getUser);
 app.post('/api/updateUser', userController.updateUser);
-// * TRANSACTIONS
-app.post('/api/transaction', checkAuth, transactionController.createTransaction);
-app.get('/api/transaction/:transactionID', checkAuth, transactionController.getTransactions);
 
+// * TRANSACTIONS
+app.post('/api/request-item', checkAuth, transactionController.requestItem);
+app.get('/api/transactions', checkAuth, transactionController.getTransactions);
 
 app.get('*', () => console.log('OOOOOO'));
 

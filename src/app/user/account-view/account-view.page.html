@@ -54,7 +54,10 @@
 
 			<ion-item-sliding *ngFor="let i of items">
 				<ion-item (click)="goToItemDetail(i._id)">
-					<ion-label>{{i.title}}</ion-label>
+					<ion-label [style.color]="i.status === 'disabled' ? 'gray' : 'black'">
+						{{i.title}}
+					</ion-label>
+					<ion-icon slot="end" *ngIf="i.status === 'disabled'" name="pause"> </ion-icon>
 				</ion-item>
 				<ion-item-options side="end">
 					<ion-item-option *ngIf="i.status === 'active'"
