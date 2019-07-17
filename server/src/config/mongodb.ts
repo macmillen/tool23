@@ -1,6 +1,8 @@
 import { MongoClient, Db, Collection } from 'mongodb';
 import { Item } from '../models/item_model';
 import { User } from '../models/user_model';
+import { Token } from '../models/token_model';
+import { Transaction } from '../models/transaction_model';
 
 const uri = "mongodb+srv://admin:verleihmasters99@cluster0-58wqp.mongodb.net/test?retryWrites=true&w=majority";
 
@@ -16,16 +18,19 @@ export let db: Db;
 // DECLARE COLLECTIONS HERE
 export let itemCollection: Collection<Item>;
 export let userCollection: Collection<User>;
+export let tokenCollection: Collection<Token>;
+export let transactionCollection: Collection<Transaction>;
 
 export const connectMongoDB = async () => {
     try {
         await client.connect();
         db = client.db();
 
-
         // INIT COLLECTIONS HERE
         itemCollection = db.collection('items');
         userCollection = db.collection('users');
+        tokenCollection = db.collection('tokens');
+        transactionCollection = db.collection('transactions');
 
         console.log('Connected successfully to server');
     } catch (e) {

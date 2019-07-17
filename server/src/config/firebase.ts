@@ -9,3 +9,4 @@ const app = admin.initializeApp({
 
 export const fireFirestore = app.firestore();
 export const fireAuth = app.auth();
+export const fireMessaging = app.messaging();

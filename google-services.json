@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1038727690377",
+    "firebase_url": "https://verleihapp.firebaseio.com",
+    "project_id": "verleihapp",
+    "storage_bucket": "verleihapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038727690377:android:16e2bb21976a1e94",
+        "android_client_info": {
+          "package_name": "io.ionic.verleihapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1038727690377-2roemivrrjnpf17ok65clqvdr7mua9j0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.ionic.verleihapp",
+            "certificate_hash": "1b5abac397a6695ff19db33cd1298b2f98f688e6"
+          }
+        },
+        {
+          "client_id": "1038727690377-npi3ekkp9a2qbedi23m0qqnk7i44441b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCekIKHBZ8wZwuNaK7QdOBjaqKkQj2Dgt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1038727690377-npi3ekkp9a2qbedi23m0qqnk7i44441b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
