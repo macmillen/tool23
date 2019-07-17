@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
       useClass: TokenInterceptor,
       multi: true
     },
+    FCM
   ],
   bootstrap: [AppComponent]
 })

@@ -38,8 +38,6 @@ export class AccountViewPage implements OnInit {
         this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
             next: user => {
                 this.user = user;
-                console.log(user);
-
                 this.getUserImageURL();
             }
         });
