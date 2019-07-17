@@ -39,6 +39,6 @@ export class UserService {
 	}
 
 	updateUser(user: User) {
-		return this.http.post(SERVER_URL + '/api/updateUser', { user });
+		return this.http.put(SERVER_URL + '/api/update-user', { user });
 	}
 }

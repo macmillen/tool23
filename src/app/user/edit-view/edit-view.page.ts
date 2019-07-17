@@ -40,10 +40,6 @@ export class EditViewPage implements OnInit {
 		);
 	}
 
-	cancel() {
-		this.navController.pop();
-	}
-
 	private initUser() {
 		this.user = {
 			email: '',

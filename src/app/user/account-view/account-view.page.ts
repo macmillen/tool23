@@ -54,7 +54,7 @@ export class AccountViewPage implements OnInit {
         const ref = this.fireStorage.ref(`profilepics/${this.user.userID}.jpg`);
         ref.getDownloadURL().subscribe({
             next: url => { this.userImageURL = url; },
-            error: e => { console.log(e); }
+            // error: e => { console.log(e); }
         });
     }
 
