@@ -58,11 +58,10 @@ export class AccountViewPage implements OnInit {
             next: url => { this.userImageURL = url; },
             error: e => { console.log(e); }
         });
-
     }
 
-    editAccount() {
-        console.log('Edit');
+    goToEditAccount() {
+        this.navController.navigateForward(`/edit-view/${this.user.userID}`);
     }
 
     showHistory() {

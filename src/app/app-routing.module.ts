@@ -41,6 +41,10 @@ const routes: Routes = [
         path: 'transaction-list',
         canActivate: [AuthGuard],
         loadChildren: './transaction/transaction-list/transaction-list.module#TransactionListPageModule'
+    },
+    {
+        path: 'edit-view/:userId',
+        loadChildren: './user/edit-view/edit-view.module#EditViewPageModule'
     }
 ];
 

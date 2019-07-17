@@ -9,9 +9,9 @@ import { User } from 'server/src/models/user_model';
 import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
-  selector: 'app-item-detail',
-  templateUrl: './item-detail.page.html',
-  styleUrls: ['./item-detail.page.scss'],
+	selector: 'app-item-detail',
+	templateUrl: './item-detail.page.html',
+	styleUrls: ['./item-detail.page.scss']
 })
 export class ItemDetailPage implements OnInit {
 

@@ -8,8 +8,16 @@ export const register = async (req: Request, res: Response) => {
 	const password: string = req.body.password;
 
 	try {
-		const newUser = await fireAuth.createUser({ email: user.email, password, emailVerified: false });
-		await userCollection.insertOne({ ...user, reviewScore: 0, userID: newUser.uid });
+		const newUser = await fireAuth.createUser({
+			email: user.email,
+			password,
+			emailVerified: false
+		});
+		await userCollection.insertOne({
+			...user,
+			reviewScore: 0,
+			userID: newUser.uid
+		});
 
 		res.end();
 	} catch (e) {
@@ -20,7 +28,9 @@ export const register = async (req: Request, res: Response) => {
 
 export const getUser = async (req: Request, res: Response) => {
 	let userID: string = req.params.userID;
-	if (userID === '0') { userID = req.body.global_googleUID; }
+	if (userID === '0') {
+		userID = req.body.global_googleUID;
+	}
 
 	try {
 		const user = await userCollection.findOne({ userID });
@@ -32,3 +42,8 @@ export const getUser = async (req: Request, res: Response) => {
 	}
 };
 
+export const updateUser = async (req: Request, res: Response) => {
+	const user: User = req.body.user;
+	// TODO update user
+	res.json(user);
+};
