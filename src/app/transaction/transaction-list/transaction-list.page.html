@@ -1,0 +1,63 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons slot="start">
+			<ion-back-button></ion-back-button>
+		</ion-buttons>
+		<ion-title>transaction-list</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-segment (ionChange)="segmentChanged($event)">
+		<ion-segment-button value="inbound" checked>
+			<ion-label>Eingehend</ion-label>
+		</ion-segment-button>
+		<ion-segment-button value="outbound">
+			<ion-label>Ausgehend</ion-label>
+		</ion-segment-button>
+		<ion-segment-button value="current">
+			<ion-label>Laufend</ion-label>
+		</ion-segment-button>
+	</ion-segment>
+
+	<ion-list>
+		<div *ngFor="let trans of filteredTransactions">
+			<ion-card>
+				<ion-card-header>
+					<ion-card-subtitle>{{
+						filter == 'inbound' ? trans.ausleiherID : trans.verleiherID
+					}}</ion-card-subtitle>
+					<ion-card-title>{{ trans.item }}</ion-card-title>
+				</ion-card-header>
+
+				<ion-card-content>
+					{{ trans.startDate }} - {{ trans.endDate }}
+					<hr />
+					Keep close to Nature's heart... and break clear away, once in awhile,
+					and climb a mountain or spend a week in the woods. Wash your spirit
+					clean.
+				</ion-card-content>
+				<ion-grid>
+					<ion-row>
+						<ion-col>
+							<ion-button
+								*ngIf="trans.status == 'pending' && filter == 'inbound'"
+								(click)="changeTransactionStatus('accepted')"
+							>
+								Akzeptieren
+							</ion-button>
+						</ion-col>
+						<ion-col>
+							<ion-button
+								*ngIf="trans.status == 'pending' && filter == 'inbound'"
+								(click)="changeTransactionStatus('declined')"
+							>
+								Ablehnen
+							</ion-button>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
+			</ion-card>
+		</div>
+	</ion-list>
+</ion-content>

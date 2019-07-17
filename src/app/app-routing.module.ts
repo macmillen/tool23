@@ -5,7 +5,7 @@ import { AuthGuard } from './guards/auth.guard';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'item-detail',
+        redirectTo: 'main-list',
         pathMatch: 'full'
     },
     {
@@ -31,6 +31,16 @@ const routes: Routes = [
         path: 'main-list',
         canActivate: [AuthGuard],
         loadChildren: './main/main-list/main-list.module#MainListPageModule'
+    },
+    {
+        path: 'transaction-detail',
+        canActivate: [AuthGuard],
+        loadChildren: './transaction/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
+    },
+    {
+        path: 'transaction-list',
+        canActivate: [AuthGuard],
+        loadChildren: './transaction/transaction-list/transaction-list.module#TransactionListPageModule'
     }
 ];
 

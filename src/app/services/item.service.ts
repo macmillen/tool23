@@ -24,5 +24,4 @@ export class ItemService {
     deleteItem(itemID: string) {
         return this.http.delete(SERVER_URL + '/api/item/' + itemID);
     }
-
 }
