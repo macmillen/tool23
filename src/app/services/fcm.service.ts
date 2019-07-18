@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SERVER_URL } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { ToastController, NavController } from '@ionic/angular';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +13,28 @@ export class FcmService {
   constructor(
     private http: HttpClient,
     private toastController: ToastController,
+    private userService: UserService,
     private navController: NavController,
     private fcm: FCM
   ) { }
 
-  // Get permission from the user
   async getToken() {
-    this.fcm.getToken().then(token => {
-      this.createToken(token);
-    });
-    this.fcm.onTokenRefresh().subscribe(token => {
-      this.createToken(token);
+    this.userService.isAuthenticated().subscribe({
+      next: isAuth => {
+        if (isAuth) {
+          this.fcm.getToken().then(token => {
+            this.createToken(token);
+          });
+          this.fcm.onTokenRefresh().subscribe(token => {
+            this.createToken(token);
+          });
+        }
+      }
     });
   }
 
   private createToken(token: string) {
-    this.http.post(`${SERVER_URL}/create-token`, { token }).subscribe({
+    this.http.post(`${environment.SERVER_URL}/api/create-token`, { token }).subscribe({
       error: e => console.log(e)
     });
   }
