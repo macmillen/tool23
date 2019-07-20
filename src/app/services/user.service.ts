@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SERVER_URL } from '../../environments/environment';
+import { environment } from '../../environments/environment';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -11,7 +11,7 @@ export class UserService {
 	constructor(private http: HttpClient, private fireAuth: AngularFireAuth) {}
 
 	register(user: User, password: string) {
-		return this.http.post(SERVER_URL + '/api/register', { user, password });
+		return this.http.post(environment.SERVER_URL + '/api/register', { user, password });
 	}
 
 	signin(email: string, password: string) {
@@ -23,7 +23,7 @@ export class UserService {
 	}
 
 	getUser(userID: string) {
-		return this.http.get<User>(SERVER_URL + '/api/user/' + userID);
+		return this.http.get<User>(environment.SERVER_URL + '/api/user/' + userID);
 	}
 
 	getIdToken() {
@@ -39,6 +39,6 @@ export class UserService {
 	}
 
 	updateUser(user: User) {
-		return this.http.put(SERVER_URL + '/api/update-user', { user });
+		return this.http.put(environment.SERVER_URL + '/api/update-user', { user });
 	}
 }

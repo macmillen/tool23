@@ -31,11 +31,10 @@ export class ItemDetailPage implements OnInit {
   ngOnInit() {
     let id: string;
     this.route.paramMap.subscribe(params => {
-      id = params.get('id');
+      id = params.get('itemID');
       console.log(id);
     });
     this.loadItem(id);
-    this.loadUser(this.item.userID);
   }
 
   loadItem(itemID: string) {
@@ -43,8 +42,8 @@ export class ItemDetailPage implements OnInit {
       next: item => {
         this.item = item;
         console.log(item);
-
         this.getItemImageURL();
+        this.loadUser(this.item.userID);
       }
     });
   }
@@ -64,7 +63,6 @@ export class ItemDetailPage implements OnInit {
     const ref = this.fireStorage.ref(`profilepics/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
         next: url => { this.userImageURL = url; },
-        error: e => { console.log(e); }
     });
   }
 
@@ -72,12 +70,11 @@ export class ItemDetailPage implements OnInit {
     const ref = this.fireStorage.ref(`itempics/${this.item._id}.jpg`);
     ref.getDownloadURL().subscribe({
         next: url => { this.itemImageURL = url; },
-        error: e => { console.log(e); }
     });
   }
 
   goToTransactionDetail() {
-    this.navController.navigateForward('/transaction-detail');
+    this.navController.navigateForward(`/transaction-detail/${this.item._id}`);
   }
 
   goToAccountView() {

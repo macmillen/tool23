@@ -33,7 +33,7 @@ const routes: Routes = [
         loadChildren: './main/main-list/main-list.module#MainListPageModule'
     },
     {
-        path: 'transaction-detail',
+        path: 'transaction-detail/:itemID',
         canActivate: [AuthGuard],
         loadChildren: './transaction/transaction-detail/transaction-detail.module#TransactionDetailPageModule'
     },
@@ -43,7 +43,7 @@ const routes: Routes = [
         loadChildren: './transaction/transaction-list/transaction-list.module#TransactionListPageModule'
     },
     {
-        path: 'edit-view/:userId',
+        path: 'edit-view/:userID',
         loadChildren: './user/edit-view/edit-view.module#EditViewPageModule'
     }
 ];

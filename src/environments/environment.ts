@@ -12,10 +12,9 @@ export const environment = {
     storageBucket: 'verleihapp.appspot.com',
     messagingSenderId: '1038727690377',
     appId: '1:1038727690377:web:35fede7a14827134'
-  }
+  },
+  SERVER_URL: 'http://localhost:3000'
 };
-
-export const SERVER_URL = 'http://localhost:3000';
 
 /*
  * For easier debugging in development mode, you can import the following file

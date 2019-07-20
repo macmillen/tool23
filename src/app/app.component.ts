@@ -21,8 +21,10 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.fcm.getToken();
-      this.fcm.listenToNotifications();
+      if (this.platform.is('android')) {
+        this.fcm.getToken();
+        this.fcm.listenToNotifications();
+      }
 
       this.statusBar.styleDefault();
       this.splashScreen.hide();

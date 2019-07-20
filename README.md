@@ -1,0 +1,12 @@
+# TO-DO
+- [ ] Update User || Milan
+- [ ] Accept Decline Request  eigen Routes || Milan
+- [ ] Wiki || Alle 
+- [ ] Transaction Liste || Max
+- [ ] Sign Up Clean Up || Max
+- [ ] Create Transaction || Eric
+- [ ] Bilder Hochladen Cordova || Eric
+- [ ] Edit Item || Eric
+- [ ] Suche Items || Christoph
+- [ ] Map || Christoph
+- [ ] Ion Input required Attribut || Alle

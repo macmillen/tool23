@@ -44,6 +44,17 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
 	const user: User = req.body.user;
-	// TODO update user
-	res.json(user);
+	const userID = req.body.global_googleUID;
+	const updatedData = {
+		username: user.username,
+		address: user.address
+	};
+
+	try {
+		await userCollection.updateOne({ userID }, { $set: updatedData });
+		res.end();
+	} catch (e) {
+		console.log(e);
+		res.status(400).end('Error updating User');
+	}
 };
