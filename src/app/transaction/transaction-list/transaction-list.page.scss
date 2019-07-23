@@ -1,0 +1,18 @@
+ion-segment {
+	margin: 1rem auto;
+	width: 80%;
+}
+
+.trans-item {
+	display: flex;
+	flex-direction: column;
+	margin: 0.5rem 0;
+	h3,
+	p {
+		margin: 0.25rem;
+	}
+	.buttons {
+		display: flex;
+		justify-content: space-around;
+	}
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, NavController } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
 import { User } from 'src/app/models/user.model';
 import { Item } from 'src/app/models/item.model';
@@ -23,6 +23,7 @@ export class AccountViewPage implements OnInit {
         private userService: UserService,
         private itemService: ItemService,
         private fireStorage: AngularFireStorage,
+        private navController: NavController
     ) { }
 
     async presentPopover(ev: any) {
@@ -37,8 +38,6 @@ export class AccountViewPage implements OnInit {
         this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
             next: user => {
                 this.user = user;
-                console.log(user);
-                
                 this.getUserImageURL();
             }
         });
@@ -47,17 +46,20 @@ export class AccountViewPage implements OnInit {
         });
     }
 
+    goToItemDetail(itemID: string) {
+        this.navController.navigateForward(`/item-detail/${itemID}`);
+    }
+
     getUserImageURL() {
         const ref = this.fireStorage.ref(`profilepics/${this.user.userID}.jpg`);
         ref.getDownloadURL().subscribe({
             next: url => { this.userImageURL = url; },
-            error: e => { console.log(e); }
+            error: e => {  }
         });
-
     }
 
-    editAccount() {
-        console.log('Edit');
+    goToEditAccount() {
+        this.navController.navigateForward(`/edit-view/${this.user.userID}`);
     }
 
     showHistory() {

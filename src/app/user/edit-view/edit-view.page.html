@@ -1,0 +1,42 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>Account bearbeiten</ion-title>
+		<ion-buttons slot="start">
+			<ion-back-button></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div class="ion-padding">
+		<ion-item>
+			<ion-label position="stacked">Email:</ion-label>
+			<ion-input type="email" name="email" [(ngModel)]="user.email"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Benutzername:</ion-label>
+			<ion-input [(ngModel)]="user.username"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">PLZ:</ion-label>
+			<ion-input [(ngModel)]="user.address.zip" type="number"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Wohnort:</ion-label>
+			<ion-input [(ngModel)]="user.address.city"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Street:</ion-label>
+			<ion-input [(ngModel)]="user.address.street"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Housenumber:</ion-label>
+			<ion-input
+				[(ngModel)]="user.address.houseNumber"
+				type="number"
+			></ion-input>
+		</ion-item>
+		<br />
+		<ion-button expand="block" (click)="updateUser()">Speichern</ion-button>
+	</div>
+</ion-content>

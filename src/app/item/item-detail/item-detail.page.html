@@ -4,29 +4,35 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="user && item">
 
-  <ion-item lines="full">
+  <ion-item lines="full"> 
     <ion-label slot="start">
       <h1>
         {{item.title}}
       </h1>
     </ion-label>
-    <ion-thumbnail button slot="end">
-        <img src="https://i.ytimg.com/vi/VnY3rb-c4ho/maxresdefault.jpg">
-      </ion-thumbnail>
-    <p slot="end">Enton</p>
+    <ion-chip (click)="goToAccountView()" slot="end">
+      <ion-avatar>
+        <img [src]="userImageURL">
+      </ion-avatar>
+      <ion-label>{{user.username}}</ion-label>
+    </ion-chip>
   </ion-item>
 
-  <ion-img [src]="item.imageURL" width="50" height="50"></ion-img>
+  <ion-img [src]="itemImageURL" width="50" height="50"></ion-img>
   
   <ion-item>
     <ion-label>
       <ion-icon name="pin"></ion-icon> {{item.address.city}} {{item.address.zip}}
     </ion-label>
     <ion-text>
-      <p>{{item.creationDate | date}}</p>  
+      <p>Seit: {{item.creationDate | date}}</p>  
     </ion-text>
+  </ion-item>
+
+  <ion-item>
+    <ion-label text-wrap><h3>Details: </h3> {{item.description}} </ion-label>
   </ion-item>
 
   <ion-item>
@@ -34,16 +40,11 @@
       Kategorie: {{item.tags}}
     </ion-label>
   </ion-item>
-
-  <ion-item>
-    <ion-label text-wrap><h3>Details: </h3> {{item.description}} </ion-label>
-  </ion-item>
-
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+  
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+    <ion-fab-button (click)="goToTransactionDetail()">
       <ion-icon name="mail"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-<app-footer></app-footer>
+<app-footer></app-footer> 

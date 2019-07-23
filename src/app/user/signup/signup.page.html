@@ -24,14 +24,19 @@
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">PLZ:</ion-label>
-			<ion-input [(ngModel)]="user.address.zip"></ion-input>
+			<ion-input [(ngModel)]="user.address.zip" type="number"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Wohnort:</ion-label>
 			<ion-input [(ngModel)]="user.address.city"></ion-input>
 		</ion-item>
 		<br />
-		<ion-button [disabled]="password && password !== confirmPassword" expand="block" (click)="register()">Registrieren</ion-button>
+		<ion-button
+			[disabled]="password && password !== confirmPassword"
+			expand="block"
+			(click)="register()"
+			>Registrieren</ion-button
+		>
 	</div>
 
 	<div class="ion-padding" *ngIf="haveAccount">

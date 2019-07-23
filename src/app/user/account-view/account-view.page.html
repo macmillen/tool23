@@ -4,11 +4,11 @@
 
 		<ion-buttons slot="end">
 			<ion-button (click)="showHistory()">
-				<ion-icon slot="icon-only" name="time"> </ion-icon>
+				<ion-icon slot="icon-only" name="filing"> </ion-icon>
 			</ion-button>
 		</ion-buttons>
 		<ion-buttons slot="end">
-			<ion-button (click)="editAccount()">
+			<ion-button (click)="goToEditAccount()">
 				<ion-icon slot="icon-only" name="create"> </ion-icon>
 			</ion-button>
 		</ion-buttons>
@@ -25,20 +25,26 @@
 		<img [src]="userImageURL" />
 	</div>
 
-	<div class="userDetails" *ngIf="user">
-		<ul>
-			<li>Nutzername:</li>
-			<li>E-Mail:</li>
-			<li>Wohnort:</li>
-			<li>Bewertung:</li>
-		</ul>
-		<ul>
-			<li>{{ user.username }}</li>
-			<li>{{ user.email }}</li>
-			<li>{{ user.address.city }}</li>
-			<li>{{ user.reviewScore }}</li>
-		</ul>
-	</div>
+	<ion-item-sliding *ngIf="user">
+		<ion-item>
+			<ion-label>Nutzername:</ion-label>
+			<ion-note slot="end" color="dark">{{ user.username }}</ion-note>
+		</ion-item>
+		<ion-item>
+			<ion-label>E-Mail:</ion-label>
+			<ion-note slot="end" color="dark">{{ user.email }}</ion-note>
+		</ion-item>
+		<ion-item>
+			<ion-label>Wohnort:</ion-label>
+			<ion-note slot="end" color="dark">{{ user.address.city }}</ion-note>
+		</ion-item>
+		<ion-item>
+			<ion-label>Bewertung:</ion-label>
+			<ion-note slot="end" color="dark">{{
+				user.reviewScore
+			}}</ion-note>
+		</ion-item>
+	</ion-item-sliding>
 
 	<div class="items">
 		<ion-list>
@@ -47,12 +53,19 @@
 			</ion-list-header>
 
 			<ion-item-sliding *ngFor="let i of items">
-				<ion-item>
-					<ion-label>{{i.title}}</ion-label>
+				<ion-item (click)="goToItemDetail(i._id)">
+					<ion-label [style.color]="i.status === 'disabled' ? 'gray' : 'black'">
+						{{i.title}}
+					</ion-label>
+					<ion-icon slot="end" *ngIf="i.status === 'disabled'" name="pause"> </ion-icon>
 				</ion-item>
 				<ion-item-options side="end">
-					<ion-item-option *ngIf="i.status === 'active'">Deaktivieren</ion-item-option>
-					<ion-item-option *ngIf="i.status === 'disabled'">Aktivieren</ion-item-option>
+					<ion-item-option *ngIf="i.status === 'active'"
+						>Deaktivieren</ion-item-option
+					>
+					<ion-item-option *ngIf="i.status === 'disabled'"
+						>Aktivieren</ion-item-option
+					>
 					<ion-item-option color="danger">Löschen</ion-item-option>
 				</ion-item-options>
 			</ion-item-sliding>
