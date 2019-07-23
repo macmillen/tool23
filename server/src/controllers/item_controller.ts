@@ -5,7 +5,26 @@ import { ObjectId } from 'bson';
 
 export const createItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
-    const item: Item = req.body.item;
+    let item: Item = req.body.item;
+    
+    //GeoCoder Usage
+    let NodeGeocoder = require('node-geocoder');
+    let geocoder = NodeGeocoder({
+        provider: 'opencage',
+        apiKey: 'a48917e616164965be4cb14a9d3bd734'
+      });
+    //Generating Address-String for geoCoder
+    const   address_string = 
+              item.address.street + ' '
+            + item.address.houseNumber + ', '
+            + item.address.zip + ', '
+            + item.address.city;
+    geocoder.geocode(address_string, function(err: any, res: any) {
+        let geocode = JSON.parse(res);
+        console.log(res);
+        item.address.latitude = res[0]["latitude"];
+		item.address.longitude = res[0]["longitude"];
+    });
 
     try {
         await itemCollection.insertOne({

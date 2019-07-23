@@ -4,8 +4,26 @@ import { User } from '../models/user_model';
 import { userCollection } from '../config/mongodb';
 
 export const register = async (req: Request, res: Response) => {
-	const user: User = req.body.user;
+	let user: User = req.body.user;
 	const password: string = req.body.password;
+
+	//GeoCoder Usage
+	let NodeGeocoder = require('node-geocoder');
+	let geocoder = NodeGeocoder({
+		provider: 'opencage',
+		apiKey: 'a48917e616164965be4cb14a9d3bd734'
+		});
+	//Generating Address-String for geoCoder
+	const   address_string = 
+			user.address.street + ' '
+			+ user.address.houseNumber + ', '
+			+ user.address.zip + ', '
+			+ user.address.city;
+	geocoder.geocode(address_string, function(err: any, res: any) {
+        console.log(res);
+		user.address.latitude = res[0]["latitude"];
+		user.address.longitude = res[0]["longitude"];
+	});
 
 	try {
 		const newUser = await fireAuth.createUser({ email: user.email, password, emailVerified: false });

@@ -18,6 +18,7 @@
 		"firebase-functions": "^2.3.0",
 		"firebase-tools": "^6.6.0",
 		"mongodb": "^3.2.3",
+		"node-geocoder": "^3.23.0",
 		"tslint": "^5.16.0",
 		"typescript": "^3.4.4"
 	},
