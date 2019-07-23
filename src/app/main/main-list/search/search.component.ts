@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Item } from 'src/app/models/item.model';
-import { ModalController, IonSearchbar } from '@ionic/angular';
+import { ModalController, IonSearchbar, NavParams } from '@ionic/angular';
 
 @Component({
   selector: 'app-search',
@@ -18,8 +18,8 @@ export class SearchComponent implements OnInit {
   @ViewChild(IonSearchbar)
   private searchbar: IonSearchbar;  
 
-  constructor(private modalController: ModalController) {
-    this.items = this.itemList;
+  constructor(private modalController: ModalController, navParams: NavParams) {
+    this.items = navParams.get('items');
     this.filteredItems = this.items;
   }
 
@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit {
   }
 
   ionViewDidEnter() { 
-    this.searchbar.setFocus();    
+    this.searchbar.setFocus();
   }
 
   clearSearchbar() {
@@ -39,7 +39,7 @@ export class SearchComponent implements OnInit {
     this.filteredItems = this.items;
   }
 
-  doSearch() {      
+  doSearch() {
     this.filteredItems = this.items.filter(r => {
       return (
         r.title.search(this.searchbar.value) > -1 || 

@@ -4,7 +4,7 @@ import { NavController, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { ItemService } from 'src/app/services/item.service';
 import { User } from 'server/src/models/user_model';
-import { SearchComponentModule } from './search/search.component.module';
+import { SearchComponent } from './search/search.component';
 
 
 @Component({
@@ -76,7 +76,7 @@ export class MainListPage implements OnInit {
 
     const item1: Item = {
       address: { city: 'Gießen', houseNumber: '75', street: 'Frankfurter Straße', zip: '35392', latitude: 50.575635, longitude: 8.6626056},
-      description: '', status: 'active', tags: [], title: 'asd', userID: ''
+      description: '', status: 'active', tags: ["test","hammer","fork"], title: 'asd', userID: ''
     };
 
     //   let item1: Itme = {
@@ -94,16 +94,16 @@ export class MainListPage implements OnInit {
   async searchItem() {
     const modal: HTMLIonModalElement =
        await this.modalController.create({
-          component: SearchComponentModule,
+          component: SearchComponent,
           componentProps: {
-             itemList: this.items
+             items: this.items
           }
     });
      
     modal.onDidDismiss().then(data => {
       if (data['data'] != null) {
         console.log('The id:', data['data']);
-        this.gotoDetail(data['data']);
+        this.gotoDetail(data['data']._id);
       }else{
        console.log('No Return Value added!');
       }

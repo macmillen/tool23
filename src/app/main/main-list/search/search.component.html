@@ -9,7 +9,7 @@
 <ion-content>
 <ion-list>
   <div *ngFor="let item of filteredItems;">
-    <ion-item button (click)="modalController.dismiss(item._id)">
+    <ion-item button (click)="modalController.dismiss(item)">
       <ion-img [src]="item.imageURL" style="border-radius: 50%; width: 2em; height: 2em;"></ion-img>
       <ion-label class="ion-padding-start ion-margin-start">{{item.title}}</ion-label>
     </ion-item>
