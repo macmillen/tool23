@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Item } from '../../models/item.model';
 import { NavController, ModalController } from '@ionic/angular';
-import { Address } from 'src/app/models/address.model';
 import { UserService } from 'src/app/services/user.service';
 import { ItemService } from 'src/app/services/item.service';
 import { User } from 'server/src/models/user_model';
-import { HttpClient } from '@angular/common/http';
-import { calcBindingFlags } from '@angular/core/src/view/util';
+import { SearchComponentModule } from './search/search.component.module';
 
 
 @Component({
@@ -25,11 +23,9 @@ export class MainListPage implements OnInit {
     private navController: NavController,
     private modalController: ModalController,
     private userService: UserService,
-    private itemService: ItemService,
-    private http: HttpClient) {
-
+    private itemService: ItemService
+  ) {
     this.generateTestValues();
-
   }
 
   ngOnInit() {
@@ -95,6 +91,25 @@ export class MainListPage implements OnInit {
     this.items.push(item1);
   }
 
-  searchItem() { }
+  async searchItem() {
+    const modal: HTMLIonModalElement =
+       await this.modalController.create({
+          component: SearchComponentModule,
+          componentProps: {
+             itemList: this.items
+          }
+    });
+     
+    modal.onDidDismiss().then(data => {
+      if (data['data'] != null) {
+        console.log('The id:', data['data']);
+        this.gotoDetail(data['data']);
+      }else{
+       console.log('No Return Value added!');
+      }
+   });
+
+    await modal.present();
+  }
 
 }
