@@ -2,45 +2,48 @@ import { Request, Response } from 'express';
 import { itemCollection } from '../config/mongodb';
 import { Item } from '../models/item_model';
 import { ObjectId } from 'bson';
+import { geocoder } from '../config/geocoder';
 
 export const createItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
-    let item: Item = req.body.item;
-    
-    //GeoCoder Usage
-    let NodeGeocoder = require('node-geocoder');
-    let geocoder = NodeGeocoder({
-        provider: 'opencage',
-        apiKey: 'a48917e616164965be4cb14a9d3bd734'
-      });
+    const item: Item = req.body.item;
+
     //Generating Address-String for geoCoder
-    const   address_string = 
-              item.address.street + ' '
-            + item.address.houseNumber + ', '
-            + item.address.zip + ', '
-            + item.address.city;
-    geocoder.geocode(address_string, function(err: any, res: any) {
-        let geocode = JSON.parse(res);
-        console.log(res);
-        item.address.latitude = res[0]["latitude"];
-		item.address.longitude = res[0]["longitude"];
+    const address_string =
+        item.address.street + ' '
+        + item.address.houseNumber + ', '
+        + item.address.zip + ', '
+        + item.address.city;
+    geocoder.geocode(address_string, async (err: any, resGeo: any[]) => {
+        resGeo.sort((a, b) => a.extra.confidence - b.extra.confidence)
+        console.log(resGeo);
+
+        if (resGeo.length === 0) {
+            console.log("geocode returned 0-Array");
+            res.status(522).end('Developer sober\nGeoCode return no values');
+            return;
+        }
+        item.address.longitude = resGeo[0]["longitude"];
+        item.address.latitude = resGeo[0]["latitude"];
+
+        try {
+            await itemCollection.insertOne({
+                address: item.address,
+                creationDate: new Date(),
+                description: item.description,
+                status: item.status,
+                tags: item.tags,
+                title: item.title,
+                userID
+            });
+            res.status(201).end();
+        } catch (e) {
+            console.log(e);
+            res.status(404).end('Error creating Item');
+        }
+
     });
 
-    try {
-        await itemCollection.insertOne({
-            address: item.address,
-            creationDate: new Date(),
-            description: item.description,
-            status: item.status,
-            tags: item.tags,
-            title: item.title,
-            userID
-        });
-        res.status(201).end();
-    } catch (e) {
-        console.log(e);
-        res.status(404).end('Error creating Item');
-    }
 }
 
 export const getItems = async (req: Request, res: Response) => {
