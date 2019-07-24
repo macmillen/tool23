@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import axios from 'axios';
+import { TransactionService } from '../../services/transaction.service';
+import { Transaction } from 'server/src/models/transaction_model';
+import { UserService } from 'src/app/services/user.service';
+import { User } from '../../models/user.model';
 
 @Component({
 	selector: 'app-transaction-list',
@@ -7,43 +10,65 @@ import axios from 'axios';
 	styleUrls: ['./transaction-list.page.scss']
 })
 export class TransactionListPage implements OnInit {
-	filter: String;
+	filter: string;
 	transactions: [];
-	filteredTransactions: [];
+	filteredTransactions: Transaction[];
+	user: User;
 
-	constructor() {}
+	constructor(
+		private transactionService: TransactionService,
+		private userService: UserService
+	) {}
 
 	ngOnInit() {}
 
+	// change the list: inbound, outbound or current
 	segmentChanged({ target: { value } }) {
 		this.filter = value;
 		this.fetchTransactions();
 	}
 
-	async fetchTransactions() {
-		const res = await axios.get('http://localhost:3000/api/transactions');
+	// get all transactions to display them in a list
+	fetchTransactions() {
+		this.userService.getUser('0').subscribe({
+			next: user => (this.user = user)
+		});
 
-		// current user: 123
-		if (this.filter == 'inbound') {
-			this.filteredTransactions = res.data.filter(
-				trans => trans.ausleiherID == '321' && trans.status == 'pending'
-			);
-		} else if (this.filter == 'outbound') {
-			this.filteredTransactions = res.data.filter(
-				trans => trans.verleiherID == '321'
-			);
-		} else if (this.filter == 'current') {
-			this.filteredTransactions = res.data.filter(
-				trans => trans.status == 'accepted'
-			);
-		}
+		this.transactionService.getTransactions().subscribe({
+			next: trans => {
+				if (this.filter === 'inbound') {
+					this.filteredTransactions = trans.filter(
+						tr => tr.giverID === this.user.userID && tr.status === 'pending'
+					);
+				} else if (this.filter === 'outbound') {
+					this.filteredTransactions = trans.filter(
+						tr => tr.giverID !== this.user.userID
+					);
+				} else if (this.filter === 'current') {
+					this.filteredTransactions = trans.filter(
+						tr => tr.status === 'accepted'
+					);
+				}
+			}
+		});
 	}
 
-	async changeTransactionStatus(status: String, transId: String) {
-		await axios.post('http://localhost:3000/api/changeTransStatus', {
-			status,
-			id: transId
-		});
-		this.fetchTransactions();
+	// accept or decline a transaction
+	changeTransactionStatus(status: string, trans: Transaction) {
+		if (status === 'accept') {
+			this.transactionService.acceptTransaction(trans).subscribe({
+				next: () =>
+					(this.filteredTransactions = this.filteredTransactions.filter(
+						transaction => transaction._id !== trans._id
+					))
+			});
+		} else {
+			this.transactionService.declineTransaction(trans).subscribe({
+				next: () =>
+					(this.filteredTransactions = this.filteredTransactions.filter(
+						transaction => transaction._id !== trans._id
+					))
+			});
+		}
 	}
 }

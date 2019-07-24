@@ -27,6 +27,7 @@ export class SignupPage implements OnInit {
 		this.isAuth();
 	}
 
+	// check if the user is logged in
 	isAuth() {
 		this.userService.isAuthenticated().subscribe({
 			next: isAuth =>
@@ -34,6 +35,7 @@ export class SignupPage implements OnInit {
 		});
 	}
 
+	// create a new user
 	register() {
 		const {
 			email,
