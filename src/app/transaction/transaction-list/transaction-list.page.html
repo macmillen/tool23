@@ -25,9 +25,9 @@
 			<ion-card>
 				<ion-card-header>
 					<ion-card-subtitle>{{
-						filter == 'inbound' ? trans.ausleiherID : trans.verleiherID
+						filter == 'inbound' ? trans.takerID : trans.giverID
 					}}</ion-card-subtitle>
-					<ion-card-title>{{ trans.item }}</ion-card-title>
+					<ion-card-title>{{ trans.itemID }}</ion-card-title>
 				</ion-card-header>
 
 				<ion-card-content>
