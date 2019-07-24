@@ -23,6 +23,14 @@
 			<ion-input type="password" [(ngModel)]="confirmPassword"></ion-input>
 		</ion-item>
 		<ion-item>
+			<ion-label position="stacked">Straße:</ion-label>
+			<ion-input [(ngModel)]="user.address.street"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label position="stacked">Hausnummer:</ion-label>
+			<ion-input [(ngModel)]="user.address.houseNumber"></ion-input>
+		</ion-item>
+		<ion-item>
 			<ion-label position="stacked">PLZ:</ion-label>
 			<ion-input [(ngModel)]="user.address.zip" type="number"></ion-input>
 		</ion-item>
