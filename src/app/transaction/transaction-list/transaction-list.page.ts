@@ -22,11 +22,13 @@ export class TransactionListPage implements OnInit {
 
 	ngOnInit() {}
 
+	// change the list: inbound, outbound or current
 	segmentChanged({ target: { value } }) {
 		this.filter = value;
 		this.fetchTransactions();
 	}
 
+	// get all transactions to display them in a list
 	async fetchTransactions() {
 		this.userService.getUser('0').subscribe({
 			next: user => (this.user = user)
@@ -51,6 +53,7 @@ export class TransactionListPage implements OnInit {
 		});
 	}
 
+	// accept or decline a transaction
 	async changeTransactionStatus(status: String, trans: Transaction) {
 		if (status == 'accept') {
 			this.transactionService.acceptTransaction(trans).subscribe({

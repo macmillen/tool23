@@ -26,6 +26,7 @@ export class SignupPage implements OnInit {
 		this.isAuth();
 	}
 
+	// check if the user is logged in
 	isAuth() {
 		this.userService.isAuthenticated().subscribe({
 			next: isAuth =>
@@ -33,6 +34,7 @@ export class SignupPage implements OnInit {
 		});
 	}
 
+	// create a new user
 	register() {
 		this.userService.register(this.user, this.password).subscribe({
 			next: () => this.signin(),
@@ -49,6 +51,7 @@ export class SignupPage implements OnInit {
 			);
 	}
 
+	// switch between signin and signup view
 	toggleHaveAccount() {
 		this.haveAccount = !this.haveAccount;
 		this.clearInputs();
