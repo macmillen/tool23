@@ -5,6 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ItemService } from 'src/app/services/item.service';
 import { User } from 'server/src/models/user_model';
 import { SearchComponent } from './search/search.component';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class MainListPage implements OnInit {
     private navController: NavController,
     private modalController: ModalController,
     private userService: UserService,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private fireStorage: AngularFireStorage
   ) {
     //this.generateTestValues();
     this.loadItems();
@@ -69,6 +71,14 @@ export class MainListPage implements OnInit {
     let dis = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
     console.log(dis);
     return dis;
+  }
+
+  getItemImageURL(item: Item){
+    const ref = this.fireStorage.ref(`itempics/${item._id}.jpg`);
+    
+    ref.getDownloadURL().subscribe({
+        next: url => {return String(url); },
+    });
   }
 
   gotoDetail(itemID: string) {

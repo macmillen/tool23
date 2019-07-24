@@ -9,13 +9,15 @@ export const createItem = async (req: Request, res: Response) => {
     const item: Item = req.body.item;
 
     //Generating Address-String for geoCoder
-    const address_string =
-        item.address.street + ' '
-        + item.address.houseNumber + ', '
-        + item.address.zip + ', '
-        + item.address.city;
-    geocoder.geocode(address_string, async (err: any, resGeo: any[]) => {
-        resGeo.sort((a, b) => a.extra.confidence - b.extra.confidence)
+//Generating Address-String for geoCoder
+    const address_string = 
+            item.address.street + ' '
+            + item.address.houseNumber + ', '
+            + item.address.zip + ', '
+            + item.address.city;
+    console.log(address_string);
+    geocoder.geocode(address_string, function(err: any, resGeo:any[]) {
+        resGeo.sort((a ,b) => a.extra.confidence - b.extra.confidence)
         console.log(resGeo);
 
         if (resGeo.length === 0) {
@@ -25,6 +27,7 @@ export const createItem = async (req: Request, res: Response) => {
         }
         item.address.longitude = resGeo[0]["longitude"];
         item.address.latitude = resGeo[0]["latitude"];
+    });
 
         try {
             await itemCollection.insertOne({
@@ -42,7 +45,6 @@ export const createItem = async (req: Request, res: Response) => {
             res.status(404).end('Error creating Item');
         }
 
-    });
 
 }
 
