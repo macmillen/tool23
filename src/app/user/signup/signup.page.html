@@ -28,7 +28,10 @@
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Hausnummer:</ion-label>
-			<ion-input [(ngModel)]="user.address.houseNumber"></ion-input>
+			<ion-input
+				[(ngModel)]="user.address.houseNumber"
+				type="number"
+			></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">PLZ:</ion-label>
