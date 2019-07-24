@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from 'src/app/services/user.service';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-signup',
@@ -18,7 +18,8 @@ export class SignupPage implements OnInit {
 	constructor(
 		private router: Router,
 		private userService: UserService,
-		private navController: NavController
+		private navController: NavController,
+		private toastController: ToastController
 	) {}
 
 	ngOnInit() {
@@ -34,19 +35,64 @@ export class SignupPage implements OnInit {
 	}
 
 	register() {
+		const {
+			email,
+			username,
+			address: { city, houseNumber, zip }
+		} = this.user;
+
+		if (
+			email == '' ||
+			username == '' ||
+			city == '' ||
+			houseNumber == null ||
+			zip == null
+		) {
+			this.presentToast('Alle Felder müssen ausgefüllt werden!');
+			return;
+		}
+
+		if (username.length < 5) {
+			this.presentToast(
+				'Der Benutzername muss mindestens fünf Zeichen lang sein!'
+			);
+			return;
+		}
+
+		if (this.password.length < 6) {
+			this.presentToast(
+				'Das Passwort muss mindestens sechs Zeichen lang sein!'
+			);
+			return;
+		}
+
 		this.userService.register(this.user, this.password).subscribe({
 			next: () => this.signin(),
-			error: e => console.log(e)
+			error: e => this.presentToast('Es gab ein Server Problem. Sorry!')
 		});
 	}
 
 	signin() {
+		if (this.user.email === '' || this.password === '') {
+			this.presentToast('Beide Felder müssen ausgefüllt werden!');
+			return;
+		}
 		this.userService
 			.signin(this.user.email, this.password)
 			.subscribe(
 				() => this.router.navigate(['main-list']),
-				e => console.log(e)
+				e => this.presentToast(e.message)
 			);
+	}
+
+	async presentToast(message: string) {
+		const toast = await this.toastController.create({
+			header: 'Hinweis!',
+			message,
+			position: 'top',
+			duration: 2000
+		});
+		toast.present();
 	}
 
 	toggleHaveAccount() {
