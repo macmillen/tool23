@@ -9,4 +9,5 @@ export interface Item {
     creationDate?: Date;
     address: Address;
     tags: string[];
+    distance?: number;
 }

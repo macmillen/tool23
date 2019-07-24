@@ -25,7 +25,8 @@ export class MainListPage implements OnInit {
     private userService: UserService,
     private itemService: ItemService
   ) {
-    this.generateTestValues();
+    //this.generateTestValues();
+    this.loadItems();
   }
 
   ngOnInit() {
@@ -37,29 +38,37 @@ export class MainListPage implements OnInit {
     });
   }
 
-  getRange(item: Item) : string{
-    return this.calculateDistance(
-      item.address.latitude,
-      this.user.address.latitude,
-      item.address.longitude,
-      this.user.address.longitude
-    );
+  getRange(item: Item) : string {
+    return (item.distance < 1)
+    ? String(item.distance * 1000) + ' m'
+    : String(item.distance) + ' km';
   }
 
+  loadItems() {
+    this.itemService.getAllItems().subscribe({
+      next: items => {
+        this.items = items;
+        console.log(items);
+        this.items
+          .forEach(temp => temp.distance = 
+            this.calculateDistance(
+              temp.address.latitude,
+              this.user.address.latitude,
+              temp.address.longitude,
+              this.user.address.longitude));
+        this.items
+          .sort((a, b) => (a.distance > b.distance) ? 1 : -1);
+      }
+    });
+  }
 
-  
-
-  calculateDistance(lat1:number, lat2:number, long1: number, long2: number) : string{
+  calculateDistance(lat1:number, lat2:number, long1: number, long2: number) : number{
     let p = 0.017453292519943295;    // Math.PI / 180
     let c = Math.cos;
     let a = 0.5 - c((lat1-lat2) * p) / 2 + c(lat2 * p) *c((lat1) * p) * (1 - c(((long1- long2) * p))) / 2;
     let dis = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
     console.log(dis);
-    if (dis > 1) {
-      return String(dis.toFixed(1)) + " km";
-    }else{
-      return String(dis*100) + " m";
-    }
+    return dis;
   }
 
   gotoDetail(itemID: string) {
@@ -99,7 +108,7 @@ export class MainListPage implements OnInit {
              items: this.items
           }
     });
-     
+
     modal.onDidDismiss().then(data => {
       if (data['data'] != null) {
         console.log('The id:', data['data']);
