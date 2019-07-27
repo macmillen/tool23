@@ -18,18 +18,24 @@ export const searchItems = async (req: Request, res: Response) => {
 
     const user = await userCollection.findOne({ userID });
 
-    if (!user || !user.address.latitude || !user.address.longitude) {
+    if (!user) {
         res.status(404).send('User not found');
         return;
     }
 
-    const items = await itemCollection.aggregate([
-        { $addFields: { dist: calculateDistance(user.address.latitude, 1, 1, 1) } },
-        // { $match: {} }
-    ]);
+    const items = await itemCollection.aggregate([{
+        $geoNear: {
+            near: user.location,
+            distanceField: "distance",
+            //maxDistance: 2,
+            query: { type: "public" },
+            num: 10, // limit
+            spherical: true
+        }
+    }]);
 
     console.log(items);
-    
+
 
 }
 
@@ -39,13 +45,11 @@ export const createItem = async (req: Request, res: Response) => {
 
     const resGeo = await getGeoLocation(item);
 
-    if (resGeo.length === 0) {
-        console.log("geocode returned 0-Array");
-        res.status(404).end('Developer sober\nGeoCode return no values');
+    if (!resGeo) {
+        res.status(404).end('GeoCode returned no values');
         return;
     }
-    item.address.longitude = resGeo[0]["longitude"];
-    item.address.latitude = resGeo[0]["latitude"];
+    item.location = { coordinates: resGeo, type: 'Point' };
 
     try {
         await itemCollection.insertOne({
@@ -55,7 +59,8 @@ export const createItem = async (req: Request, res: Response) => {
             status: item.status,
             tags: item.tags,
             title: item.title,
-            userID
+            userID,
+            location: item.location
         });
         res.status(201).end();
     } catch (e) {

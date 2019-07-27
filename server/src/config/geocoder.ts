@@ -9,13 +9,11 @@ export const geocoder = NodeGeocoder({
 
 export const getGeoLocation = async (obj: Item | User) => {
     //Generating Address-String for geoCoder
-    const address_string =
-        obj.address.street + ' '
-        + obj.address.houseNumber + ', '
-        + obj.address.zip + ', '
-        + obj.address.city;
+    const address_string =`${obj.address.street} ${obj.address.houseNumber}, ${obj.address.zip}, ${obj.address.city}`;
     const resGeo: any[] = await geocoder.geocode(address_string);
     resGeo.sort((a, b) => a.extra.confidence - b.extra.confidence);
-    console.log(resGeo);
-    return resGeo;
+
+    if (!resGeo || resGeo.length === 0) { return null; }
+
+    return [resGeo[0]["longitude"], resGeo[0]["latitude"]] as number[];
 };

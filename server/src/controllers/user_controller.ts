@@ -10,14 +10,11 @@ export const register = async (req: Request, res: Response) => {
 
     const resGeo = await getGeoLocation(user);
 
-    if (resGeo.length === 0) {
-        console.log("geocode returned 0-Array");
-        res.status(404).end('Developer sober\nGeoCode return no values');
+    if (!resGeo) {
+        res.status(404).end('GeoCode returned no values');
         return;
     }
-    user.address.longitude = resGeo[0]["longitude"];
-    user.address.latitude = resGeo[0]["latitude"];
-
+    user.location = { coordinates: resGeo, type: 'Point' };
 
     try {
         const newUser = await fireAuth.createUser({
