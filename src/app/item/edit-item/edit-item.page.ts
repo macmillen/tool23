@@ -6,6 +6,7 @@ import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 import { Item } from 'src/app/models/item.model';
 import { User } from 'src/app/models/user.model';
+import { ImagePicker } from '@ionic-native/image-picker';
 
 @Component({
   selector: 'app-edit-item',
@@ -14,21 +15,22 @@ import { User } from 'src/app/models/user.model';
 })
 export class EditItemPage implements OnInit {
 
-  item: Item;
+
   user: User;
   itemImageURL = '../../../assets/placeholder_item.png';
 
-  tem: Item = {userID: '0', description: '', status: 'active', tags: [],
+  item: Item = {userID: '0', description: '', status: 'active', tags: [],
                 title: '', address: { city: '', houseNumber: '', street: '', zip: '' } };
   tagInput = '';
-  statusBool = true;
+  statusBool: boolean;
 
   constructor(private navController: NavController,
               private route: ActivatedRoute,
               private fireStorage: AngularFireStorage,
               private itemService: ItemService,
               private toastController: ToastController,
-              private userService: UserService) {
+              private userService: UserService,
+              private imagePicker: ImagePicker) {
 }
 
   ngOnInit() {
@@ -45,6 +47,7 @@ export class EditItemPage implements OnInit {
         this.item = item;
         this.getItemImageURL();
         this.loadUser();
+        this.statusBool = this.item.status === 'active' ? true : false;
       }
     });
   }

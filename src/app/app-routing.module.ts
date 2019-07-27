@@ -47,11 +47,7 @@ const routes: Routes = [
         loadChildren: './user/edit-view/edit-view.module#EditViewPageModule'
     },
     {   path: 'edit-item/:itemID',
-        canActivate: [AuthGuard],
-        loadChildren: './item/edit-item/edit-item.module#EditItemPageModule'
-    },
-    {   path: 'edit-item',
-        loadChildren: './item/edit-item/edit-item.module#EditItemPageModule' 
+        loadChildren: 'src/app/item/edit-item/edit-item.module.ts'
     }
 ];
 

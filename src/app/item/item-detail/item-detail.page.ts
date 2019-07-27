@@ -90,7 +90,6 @@ export class ItemDetailPage implements OnInit {
   }
 
   goToEditItem() {
-  
     this.navController.navigateForward(`/edit-item/${this.item._id}`);
   }
 
