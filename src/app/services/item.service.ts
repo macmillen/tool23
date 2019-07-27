@@ -24,4 +24,12 @@ export class ItemService {
     deleteItem(itemID: string) {
         return this.http.delete(environment.SERVER_URL + '/api/item/' + itemID);
     }
+
+    searchItems(searchString: string) {
+        return this.http.get<Item[]>(environment.SERVER_URL + '/api/search-items/' + searchString);
+    }
+
+    getTags() {
+        return this.http.get<string[]>(environment.SERVER_URL + '/api/tags');
+    }
 }

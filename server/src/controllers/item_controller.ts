@@ -4,17 +4,33 @@ import { Item } from '../models/item_model';
 import { ObjectId } from 'bson';
 import { getGeoLocation } from '../config/geocoder';
 
-const calculateDistance = (lat1: number, lat2: number, long1: number, long2: number): number => {
-    const p = 0.017453292519943295;    // Math.PI / 180
-    const c = Math.cos;
-    const a = 0.5 - c((lat1 - lat2) * p) / 2 + c(lat2 * p) * c((lat1) * p) * (1 - c(((long1 - long2) * p))) / 2;
-    const dist = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
-    return dist;
-}
+export const getTags = async (req: Request, res: Response) => {
+    const tags = (await itemCollection.aggregate([
+        {
+            "$group": {
+                "_id": 0,
+                "tags": { "$push": "$tags" }
+            }
+        },
+        {
+            "$project": {
+                "tags": {
+                    "$reduce": {
+                        "input": "$tags",
+                        "initialValue": [],
+                        "in": { "$setUnion": ["$$value", "$$this"] }
+                    }
+                }
+            }
+        }
+    ]).toArray() as any[])[0].tags;
+
+    res.json(tags);
+};
 
 export const searchItems = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
-    const searchString: string = req.body.searchString;
+    const searchString: string = req.params.searchString;
 
     const user = await userCollection.findOne({ userID });
 
@@ -28,14 +44,20 @@ export const searchItems = async (req: Request, res: Response) => {
             near: user.location,
             distanceField: "distance",
             //maxDistance: 2,
-            query: { type: "public" },
+            query: {
+                status: "active",
+                userID: { $ne: user.userID },
+                $or: [
+                    { title: { $regex: `.*${searchString}.*`, $options: 'i' } },
+                    { tags: { $regex: `.*${searchString}.*`, $options: 'i' } }
+                ]
+            },
             num: 10, // limit
             spherical: true
         }
-    }]);
+    }]).toArray();
 
-    console.log(items);
-
+    res.json(items);
 
 }
 

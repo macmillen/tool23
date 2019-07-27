@@ -47,21 +47,8 @@ export class MainListPage implements OnInit {
   }
 
   loadItems() {
-    this.itemService.getAllItems().subscribe({
-      next: items => {
-        this.items = items;
-        console.log(items);
-        this.items
-          .forEach(temp => temp.distance = 
-            this.calculateDistance(
-              temp.address.latitude,
-              this.user.address.latitude,
-              temp.address.longitude,
-              this.user.address.longitude));
-        this.items
-          .sort((a, b) => (a.distance > b.distance) ? 1 : -1);
-      }
-    });
+      this.itemService.searchItems("Dose").subscribe();
+      this.itemService.getTags().subscribe(t=>console.log(t));
   }
 
   calculateDistance(lat1:number, lat2:number, long1: number, long2: number) : number{
@@ -93,10 +80,10 @@ export class MainListPage implements OnInit {
     // TODO ** needs to be removed if in production
     // Generates a set of fixed items for item list
 
-    const item1: Item = {
-      address: { city: 'Gießen', houseNumber: '75', street: 'Frankfurter Straße', zip: '35392', latitude: 50.575635, longitude: 8.6626056},
-      description: '', status: 'active', tags: ["test","hammer","fork"], title: 'asd', userID: ''
-    };
+    // const item1: Item = {
+    //   address: { city: 'Gießen', houseNumber: '75', street: 'Frankfurter Straße', zip: '35392', latitude: 50.575635, longitude: 8.6626056},
+    //   description: '', status: 'active', tags: ["test","hammer","fork"], title: 'asd', userID: ''
+    // };
 
     //   let item1: Itme = {
     //   'ID1',
@@ -107,7 +94,7 @@ export class MainListPage implements OnInit {
     //   null, null, null, null,
     //   ["hammer","zimmermanshammer","schlagen"]
     // };
-    this.items.push(item1);
+    //this.items.push(item1);
   }
 
   async searchItem() {
