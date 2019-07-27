@@ -45,6 +45,9 @@ const routes: Routes = [
     {
         path: 'edit-view/:userID',
         loadChildren: './user/edit-view/edit-view.module#EditViewPageModule'
+    },
+    {   path: 'edit-item/:itemID',
+        loadChildren: 'src/app/item/edit-item/edit-item.module.ts'
     }
 ];
 

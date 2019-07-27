@@ -46,6 +46,12 @@ export class AccountViewPage implements OnInit {
         });
     }
 
+    ionViewWillEnter() {
+        this.itemService.getAllItems().subscribe({
+            next: items => this.items = items
+        });
+    }
+
     goToItemDetail(itemID: string) {
         this.navController.navigateForward(`/item-detail/${itemID}`);
     }
