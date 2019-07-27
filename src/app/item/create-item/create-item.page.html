@@ -18,11 +18,10 @@
       <ion-textarea type="text" minlength="20" required [(ngModel)]="item.description"></ion-textarea>
     </ion-item>
 
-    <ion-list-header>Tags</ion-list-header>
     <ion-item>
       <ion-label position="floating">Tags hinzufügen</ion-label>
-      <ion-input type="text" maxlength="10" [(ngModel)]="tagInput"></ion-input>
-      <ion-button (click)="addTag()" slot="end">Add Tag</ion-button>
+      <ion-input (keyup.enter)="addTag()" type="text" maxlength="10" [(ngModel)]="tagInput"></ion-input>
+      <ion-icon (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
     </ion-item>
     <ion-item *ngIf="item.tags.length">
       <label text-wrap>
@@ -37,10 +36,26 @@
       <ion-label>Aktiv</ion-label>
       <ion-toggle [(ngModel)]="statusBool"></ion-toggle>
     </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Straße</ion-label>
+      <ion-input [(ngModel)]="item.address.street"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Hausnummer</ion-label>
+      <ion-input [(ngModel)]="item.address.houseNumber"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">PLZ</ion-label>
+      <ion-input [(ngModel)]="item.address.zip" type="number"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Wohnort</ion-label>
+      <ion-input [(ngModel)]="item.address.city"></ion-input>
+    </ion-item>
+
   </ion-list>
 
   <ion-button style="margin: 10px 10px" expand="full" (click)="createItem()">Item erstellen</ion-button>
-
-{{item | json}}
 
 </ion-content>
