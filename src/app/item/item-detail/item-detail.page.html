@@ -1,7 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Angebot</ion-title>
+
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-buttons slot="end">  
+      <ion-button  (click)="goToEditItem()" *ngIf="isAllowedToEdit">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
+  
+
 </ion-header>
 
 <ion-content *ngIf="user && item">
@@ -36,12 +45,14 @@
   </ion-item>
 
   <ion-item>
-    <ion-label>
-      Kategorie: {{item.tags}}
-    </ion-label>
+    <label text-wrap>
+      <ion-chip *ngFor="let tag of item.tags">
+        <ion-label>{{tag}}</ion-label>
+      </ion-chip>
+    </label>
   </ion-item>
   
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="goToTransactionDetail()">
       <ion-icon name="mail"></ion-icon>
     </ion-fab-button>

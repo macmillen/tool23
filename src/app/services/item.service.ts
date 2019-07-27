@@ -24,4 +24,9 @@ export class ItemService {
     deleteItem(itemID: string) {
         return this.http.delete(environment.SERVER_URL + '/api/item/' + itemID);
     }
+
+    updateItem(item: Item) {
+        console.log(item);
+        return this.http.put(environment.SERVER_URL + '/api/item/', { item });
+    }
 }

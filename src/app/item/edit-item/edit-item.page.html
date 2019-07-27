@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Angebot</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+  
+
+<ion-content *ngIf="user && item">
+  <ion-list>
+
+    <!-- title -->
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input type="text" maxlength="10" required [(ngModel)]="item.title"></ion-input>
+    </ion-item>
+
+    <!-- image -->
+    <ion-img (click)="selectImage()" [src]="itemImageURL" width="50" height="50"></ion-img>
+    
+    <!-- description -->
+    <ion-item>
+      <ion-label position="floating">Beschreibung</ion-label>
+      <ion-textarea type="text" minlength="20" required [(ngModel)]="item.description"></ion-textarea>
+    </ion-item>
+
+    <!-- adress -->
+    <ion-item>
+      <ion-label>
+        <ion-icon name="pin"></ion-icon> 
+      </ion-label>
+      <ion-input>{{item.address.city}} {{item.address.zip}}</ion-input>
+    </ion-item>
+  
+    <!-- details -->
+    <ion-item>
+      <ion-label text-wrap><h3>Details: </h3> </ion-label>
+      <ion-input>{{item.description}}</ion-input>
+    </ion-item>
+
+    <!-- tags -->
+    <ion-list-header>Tags</ion-list-header>
+    <ion-item>
+      <ion-label position="floating">Tags hinzufügen</ion-label>
+      <ion-input type="text" maxlength="10" [(ngModel)]="tagInput"></ion-input>
+      <ion-button (click)="addTag()" slot="end">Add Tag</ion-button>
+    </ion-item>
+    <ion-item *ngIf="item.tags.length">
+      <label text-wrap>
+        <ion-chip *ngFor="let t of item.tags">
+          <ion-label>{{t}}</ion-label>
+        </ion-chip>
+      </label>
+    </ion-item>
+
+    <!-- status -->
+    <ion-list-header>Status</ion-list-header>
+    <ion-item>
+      <ion-label>Aktiv</ion-label>
+      <ion-toggle [(ngModel)]="statusBool"></ion-toggle>
+    </ion-item>
+
+  </ion-list>
+  <ion-button style="margin: 10px 10px" expand="full" (click)="updateItem()">Item Speichern</ion-button>
+  
+</ion-content>
+

@@ -20,6 +20,7 @@ app.post('/api/item', checkAuth, itemController.createItem);
 app.get('/api/item/:itemID', checkAuth, itemController.getItem);
 app.get('/api/items', checkAuth, itemController.getItems);
 app.delete('/api/item/:itemID', checkAuth, itemController.deleteItem);
+app.put('/api/item/', checkAuth, itemController.updateItem);
 
 // * USERS
 app.post('/api/register', userController.register);

@@ -23,12 +23,14 @@
     "@angular/router": "^7.2.2",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/fcm": "^5.10.0",
+    "@ionic-native/image-picker": "^4.20.0",
     "@ionic-native/splash-screen": "^5.0.0",
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.1.0",
     "axios": "^0.19.0",
     "cordova-android": "^8.0.0",
     "cordova-plugin-fcm-with-dependecy-updated": "2.4.0",
+    "cordova-plugin-telerik-imagepicker": "2.3.3",
     "core-js": "^2.5.4",
     "firebase": "^6.3.0",
     "rxjs": "~6.5.1",
@@ -79,7 +81,10 @@
       "cordova-plugin-ionic-webview": {
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-telerik-imagepicker": {
+        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "Ein Bild sagt mehr als tausend Worte"
+      }
     },
     "platforms": [
       "android"

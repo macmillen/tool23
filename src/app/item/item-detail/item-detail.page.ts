@@ -9,14 +9,16 @@ import { User } from 'server/src/models/user_model';
 import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
-	selector: 'app-item-detail',
-	templateUrl: './item-detail.page.html',
-	styleUrls: ['./item-detail.page.scss']
+  selector: 'app-item-detail',
+  templateUrl: './item-detail.page.html',
+  styleUrls: ['./item-detail.page.scss']
 })
 export class ItemDetailPage implements OnInit {
 
   item: Item;
   user: User;
+  currentUser: User;
+  isAllowedToEdit = false;
   userImageURL = '../../../assets/placeholder.png';
   itemImageURL = '../../../assets/placeholder_item.png';
 
@@ -32,16 +34,15 @@ export class ItemDetailPage implements OnInit {
     let id: string;
     this.route.paramMap.subscribe(params => {
       id = params.get('itemID');
-      console.log(id);
     });
     this.loadItem(id);
   }
+
 
   loadItem(itemID: string) {
     this.itemService.getItem(itemID).subscribe({
       next: item => {
         this.item = item;
-        console.log(item);
         this.getItemImageURL();
         this.loadUser(this.item.userID);
       }
@@ -51,10 +52,17 @@ export class ItemDetailPage implements OnInit {
   loadUser(userID: string) {
     this.userService.getUser(userID).subscribe({
       next: user => {
-          this.user = user;
-          console.log(user);
+        this.user = user;
+        this.getUserImageURL();
+      }
+    });
 
-          this.getUserImageURL();
+    this.userService.getUser('0').subscribe({
+      next: user => {
+        this.currentUser = user;
+        if (this.item.userID === this.currentUser.userID) {
+          this.isAllowedToEdit = true;
+        }
       }
     });
   }
@@ -62,14 +70,14 @@ export class ItemDetailPage implements OnInit {
   getUserImageURL() {
     const ref = this.fireStorage.ref(`profilepics/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
-        next: url => { this.userImageURL = url; },
+      next: url => { this.userImageURL = url; },
     });
   }
 
   getItemImageURL() {
     const ref = this.fireStorage.ref(`itempics/${this.item._id}.jpg`);
     ref.getDownloadURL().subscribe({
-        next: url => { this.itemImageURL = url; },
+      next: url => { this.itemImageURL = url; },
     });
   }
 
@@ -80,4 +88,10 @@ export class ItemDetailPage implements OnInit {
   goToAccountView() {
     this.navController.navigateForward('/account-view');
   }
+
+  goToEditItem() {
+  
+    this.navController.navigateForward(`/edit-item/${this.item._id}`);
+  }
+
 }
