@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Item } from '../../models/item.model';
-import { Address } from 'src/app/models/address.model';
 import { NavController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { ItemService } from 'src/app/services/item.service';
