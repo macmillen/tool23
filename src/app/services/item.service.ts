@@ -26,7 +26,14 @@ export class ItemService {
     }
 
     updateItem(item: Item) {
-        console.log(item);
         return this.http.put(environment.SERVER_URL + '/api/item/', { item });
+    }
+
+    searchItems(searchString: string) {
+        return this.http.get<Item[]>(environment.SERVER_URL + '/api/search-items/' + searchString);
+    }
+
+    getTags() {
+        return this.http.get<string[]>(environment.SERVER_URL + '/api/tags');
     }
 }

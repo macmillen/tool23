@@ -7,4 +7,5 @@ export interface User {
     email: string;
     username: string;
     address: Address;
+    location?: { type: "Point", coordinates: number[] };
 }

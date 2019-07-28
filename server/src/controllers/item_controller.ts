@@ -1,51 +1,94 @@
 import { Request, Response } from 'express';
-import { itemCollection } from '../config/mongodb';
+import { itemCollection, userCollection } from '../config/mongodb';
 import { Item } from '../models/item_model';
 import { ObjectId } from 'bson';
-import { geocoder } from '../config/geocoder';
+import { getGeoLocation } from '../config/geocoder';
+
+export const getTags = async (req: Request, res: Response) => {
+    const tags = (await itemCollection.aggregate([
+        {
+            "$group": {
+                "_id": 0,
+                "tags": { "$push": "$tags" }
+            }
+        },
+        {
+            "$project": {
+                "tags": {
+                    "$reduce": {
+                        "input": "$tags",
+                        "initialValue": [],
+                        "in": { "$setUnion": ["$$value", "$$this"] }
+                    }
+                }
+            }
+        }
+    ]).toArray() as any[])[0].tags;
+
+    res.json(tags);
+};
+
+export const searchItems = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const searchString: string = req.params.searchString;
+
+    const user = await userCollection.findOne({ userID });
+
+    if (!user) {
+        res.status(404).send('User not found');
+        return;
+    }
+
+    const items = await itemCollection.aggregate([{
+        $geoNear: {
+            near: user.location,
+            distanceField: "distance",
+            //maxDistance: 2,
+            query: {
+                status: "active",
+                userID: { $ne: user.userID },
+                $or: [
+                    { title: { $regex: `.*${searchString}.*`, $options: 'i' } },
+                    { tags: { $regex: `.*${searchString}.*`, $options: 'i' } }
+                ]
+            },
+            num: 10, // limit
+            spherical: true
+        }
+    }]).toArray();
+
+    res.json(items);
+
+}
 
 export const createItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const item: Item = req.body.item;
 
-    //Generating Address-String for geoCoder
-//Generating Address-String for geoCoder
-    const address_string = 
-            item.address.street + ' '
-            + item.address.houseNumber + ', '
-            + item.address.zip + ', '
-            + item.address.city;
-    console.log(address_string);
-    geocoder.geocode(address_string, function(err: any, resGeo:any[]) {
-        resGeo.sort((a ,b) => a.extra.confidence - b.extra.confidence)
-        console.log(resGeo);
+    const resGeo = await getGeoLocation(item);
 
-        if (resGeo.length === 0) {
-            console.log("geocode returned 0-Array");
-            res.status(522).end('Developer sober\nGeoCode return no values');
-            return;
-        }
-        item.address.longitude = resGeo[0]["longitude"];
-        item.address.latitude = resGeo[0]["latitude"];
-    });
+    if (!resGeo) {
+        res.status(404).end('GeoCode returned no values');
+        return;
+    }
+    item.location = { coordinates: resGeo, type: 'Point' };
 
-        try {
-            await itemCollection.insertOne({
-                address: item.address,
-                creationDate: new Date(),
-                description: item.description,
-                status: item.status,
-                tags: item.tags,
-                title: item.title,
-                userID
-            });
-            res.status(201).end();
-        } catch (e) {
-            console.log(e);
-            res.status(404).end('Error creating Item');
-        }
-
-
+    try {
+        await itemCollection.insertOne({
+            address: item.address,
+            creationDate: new Date(),
+            description: item.description,
+            status: item.status,
+            tags: item.tags,
+            title: item.title,
+            userID,
+            location: item.location
+        });
+        res.status(201).end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).end('Error creating Item');
+    }
 }
 
 export const getItems = async (req: Request, res: Response) => {
