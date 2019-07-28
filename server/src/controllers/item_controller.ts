@@ -30,7 +30,7 @@ export const getTags = async (req: Request, res: Response) => {
 
 export const searchItems = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
-    const searchString: string = req.params.searchString;
+    const searchString: string = req.params.searchString || '';
 
     const user = await userCollection.findOne({ userID });
 
@@ -133,6 +133,15 @@ export const updateItem = async (req: Request, res: Response ) => {
     const item: Item = req.body.item;
     const itemID = item._id;
     delete item._id
+
+    const resGeo = await getGeoLocation(item);
+
+    if (!resGeo) {
+        res.status(404).end('GeoCode returned no values');
+        return;
+    }
+    item.location = { coordinates: resGeo, type: 'Point' };
+
     try {
         const i = 
         await itemCollection.updateOne(

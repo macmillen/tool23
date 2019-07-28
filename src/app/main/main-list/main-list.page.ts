@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Item } from '../../models/item.model';
-import { NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController, ToastController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { ItemService } from 'src/app/services/item.service';
 import { User } from 'server/src/models/user_model';
@@ -15,69 +15,57 @@ import { AngularFireStorage } from '@angular/fire/storage';
 })
 
 export class MainListPage implements OnInit {
-  
 
   items: Item[] = [];
+  tags: string[] = [];
   user: User;
+  searchMode = false;
+  searching = false;
+  itemImageURLs = new Map<string, string>();
 
   constructor(
     private navController: NavController,
     private modalController: ModalController,
     private userService: UserService,
     private itemService: ItemService,
-    private fireStorage: AngularFireStorage
-  ) {
-    //this.generateTestValues();
-    this.loadItems();
-  }
+    private fireStorage: AngularFireStorage,
+    private toastController: ToastController,
+  ) { }
+
 
   ngOnInit() {
-    this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
-      next: user => {
-          this.user = user;
-          console.log(user);
-      }
-    });
+    this.getUser();
+    this.searchItems('');
   }
 
-  getRange(item: Item) : string {
-    return (item.distance < 1)
-    ? String(item.distance * 1000) + ' m'
-    : String(item.distance) + ' km';
-  }
-
-  loadItems() {
-    this.itemService.getAllItems().subscribe({
+  searchItems(searchString: string) {
+    this.searching = true;
+    this.items = [];
+    this.itemService.searchItems(searchString).subscribe({
       next: items => {
         this.items = items;
-        console.log(items);
-        this.items
-          .forEach(temp => temp.distance = 
-            this.calculateDistance(
-              temp.address.latitude,
-              this.user.address.latitude,
-              temp.address.longitude,
-              this.user.address.longitude));
-        this.items
-          .sort((a, b) => (a.distance > b.distance) ? 1 : -1);
-      }
+        items.forEach(i => this.getItemImageURL(i));
+      },
+      error: error => this.presentToast('Upsi, bei der Suche gabs ein Problem'),
+      complete: () => this.searching = false
     });
   }
 
-  calculateDistance(lat1:number, lat2:number, long1: number, long2: number) : number{
-    let p = 0.017453292519943295;    // Math.PI / 180
-    let c = Math.cos;
-    let a = 0.5 - c((lat1-lat2) * p) / 2 + c(lat2 * p) *c((lat1) * p) * (1 - c(((long1- long2) * p))) / 2;
-    let dis = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
-    console.log(dis);
-    return dis;
+  getUser() {
+    this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
+      next: user => this.user = user
+    });
   }
 
-  getItemImageURL(item: Item){
-    const ref = this.fireStorage.ref(`itempics/${item._id}.jpg`);
-    
+  getRange(distance: number): string {
+    const distM = Math.round(distance);
+    return distance < 1000 ? distM + ' m' : (distM / 1000).toFixed(2) + ' km';
+  }
+
+  getItemImageURL(item: Item) {
+    const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
     ref.getDownloadURL().subscribe({
-        next: url => {return String(url); },
+      next: url => this.itemImageURLs.set(item._id, url)
     });
   }
 
@@ -89,46 +77,33 @@ export class MainListPage implements OnInit {
     this.navController.navigateForward(`/create-item`);
   }
 
-  generateTestValues() {
-    // TODO ** needs to be removed if in production
-    // Generates a set of fixed items for item list
-
-    const item1: Item = {
-      address: { city: 'Gießen', houseNumber: '75', street: 'Frankfurter Straße', zip: '35392', latitude: 50.575635, longitude: 8.6626056},
-      description: '', status: 'active', tags: ["test","hammer","fork"], title: 'asd', userID: ''
-    };
-
-    //   let item1: Itme = {
-    //   'ID1',
-    //   'Hammer1',
-    //   'Das ist mein Hammer',
-    //   new Date(),
-    //   'https://cdn.pixabay.com/photo/2016/04/01/10/49/great-hammer-1300043_960_720.png',
-    //   null, null, null, null,
-    //   ["hammer","zimmermanshammer","schlagen"]
-    // };
-    this.items.push(item1);
-  }
-
   async searchItem() {
     const modal: HTMLIonModalElement =
-       await this.modalController.create({
-          component: SearchComponent,
-          componentProps: {
-             items: this.items
-          }
-    });
+      await this.modalController.create({
+        component: SearchComponent,
+        componentProps: {
+          items: this.items
+        }
+      });
 
     modal.onDidDismiss().then(data => {
-      if (data['data'] != null) {
-        console.log('The id:', data['data']);
-        this.gotoDetail(data['data']._id);
-      }else{
-       console.log('No Return Value added!');
+      const searchString = data.data.searchString;
+      if (searchString) {
+        this.searchItems(searchString);
       }
-   });
+    });
 
     await modal.present();
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      header: 'Hinweis!',
+      message,
+      position: 'top',
+      duration: 2000
+    });
+    toast.present();
   }
 
 }
