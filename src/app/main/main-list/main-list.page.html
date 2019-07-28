@@ -11,12 +11,16 @@
 </ion-header>
 
 <ion-content>
+  <ion-spinner style="margin: 50px auto; display: flex;" *ngIf="searching" name="dots"></ion-spinner>
+
   <ion-list>
     <div *ngFor="let item of items;">
       <ion-item button (click)="gotoDetail(item._id)">
-        <ion-img [src]="item.imageURL" style="border-radius: 50%; width: 2em; height: 2em;"></ion-img>
+        <ion-thumbnail slot="start">
+          <ion-img [src]="itemImageURLs.get(item._id)"></ion-img>
+        </ion-thumbnail>
         <ion-label class="ion-padding-start ion-margin-start">{{item.title}}</ion-label>
-        <ion-label class="ion-float-right ion-text-end">{{getRange(item)}}</ion-label>
+        <ion-label class="ion-float-right ion-text-end">{{getRange(item.distance)}}</ion-label>
       </ion-item>
     </div>
   </ion-list>

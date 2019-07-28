@@ -1,18 +1,15 @@
 <ion-header>
-  <ion-searchbar (ionInput)="doSearch()"
-    (ionClear)="clearSearchbar()"
-    [showCancelButton]="true"
-    (ionCancel)="modalController.dismiss()">
+  <ion-searchbar (ionClear)="clearSearchbar()" [showCancelButton]="true" (ionCancel)="modalController.dismiss()"
+    (ionInput)="setTags($event)" (keyup.enter)="search()">
   </ion-searchbar>
 </ion-header>
 
 <ion-content>
-<ion-list>
-  <div *ngFor="let item of filteredItems;">
-    <ion-item button (click)="modalController.dismiss(item)">
-      <ion-img [src]="item.imageURL" style="border-radius: 50%; width: 2em; height: 2em;"></ion-img>
-      <ion-label class="ion-padding-start ion-margin-start">{{item.title}}</ion-label>
-    </ion-item>
-  </div>
-</ion-list>
+  <ion-list>
+    <div *ngFor="let tag of filteredTags;">
+      <ion-item button (click)="search(tag)">
+        <ion-label class="ion-padding-start ion-margin-start">{{tag}}</ion-label>
+      </ion-item>
+    </div>
+  </ion-list>
 </ion-content>

@@ -6,8 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MainListPage } from './main-list.page';
-import { FooterComponentModule} from '../../footer/footer.component.module';
-import { SearchComponentModule } from './search/search.component.module';
+import { FooterComponentModule } from '../../footer/footer.component.module';
+import { SearchComponent } from './search/search.component';
 
 
 const routes: Routes = [
@@ -24,8 +24,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     FooterComponentModule,
-    SearchComponentModule
   ],
-  declarations: [MainListPage]
+  declarations: [MainListPage, SearchComponent],
+  entryComponents: [SearchComponent]
 })
-export class MainListPageModule {}
+export class MainListPageModule { }
