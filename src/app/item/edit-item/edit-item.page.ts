@@ -6,7 +6,6 @@ import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 import { Item } from 'src/app/models/item.model';
 import { User } from 'src/app/models/user.model';
-import { ImagePicker } from '@ionic-native/image-picker';
 
 @Component({
   selector: 'app-edit-item',
@@ -29,8 +28,7 @@ export class EditItemPage implements OnInit {
               private fireStorage: AngularFireStorage,
               private itemService: ItemService,
               private toastController: ToastController,
-              private userService: UserService,
-              private imagePicker: ImagePicker) {
+              private userService: UserService) {
 }
 
   ngOnInit() {
