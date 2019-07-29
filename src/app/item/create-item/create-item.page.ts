@@ -10,8 +10,10 @@ import { NavController, ToastController } from '@ionic/angular';
 })
 export class CreateItemPage implements OnInit {
 
-  item: Item = {userID: '0', description: '', status: 'active', tags: [],
-                title: '', address: { city: '', houseNumber: '', street: '', zip: '' } };
+  item: Item = {
+    description: '', status: 'active', tags: [],
+    title: '', address: { city: '', houseNumber: '', street: '', zip: '' }
+  };
   tagInput = '';
   statusBool = true;
 
@@ -25,6 +27,7 @@ export class CreateItemPage implements OnInit {
   }
 
   addTag() {
+    if (!this.tagInput) { return; }
     const tags = new Set<string>(this.item.tags);
     tags.add(this.tagInput);
     this.item.tags = Array.from(tags);

@@ -1,74 +1,110 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionService } from '../../services/transaction.service';
-import { Transaction } from 'server/src/models/transaction_model';
 import { UserService } from 'src/app/services/user.service';
-import { User } from '../../models/user.model';
+import { TransactionRequest } from 'server/src/models/transaction_request';
+import { User } from 'src/app/models/user.model';
 
 @Component({
-	selector: 'app-transaction-list',
-	templateUrl: './transaction-list.page.html',
-	styleUrls: ['./transaction-list.page.scss']
+    selector: 'app-transaction-list',
+    templateUrl: './transaction-list.page.html',
+    styleUrls: ['./transaction-list.page.scss']
 })
 export class TransactionListPage implements OnInit {
-	filter: string;
-	transactions: [];
-	filteredTransactions: Transaction[];
-	user: User;
+    transactionRequests: TransactionRequest[];
+    filter: 'inbound' | 'outbound' | 'current' = 'inbound';
+    user: User;
 
-	constructor(
-		private transactionService: TransactionService,
-		private userService: UserService
-	) {}
+    constructor(
+        private transactionService: TransactionService,
+        private userService: UserService,
+    ) { }
 
-	ngOnInit() {}
+    ngOnInit() {
+        this.userService.getUser('0').subscribe({
+            next: user => this.user = user
+        });
+        this.fetchTransactions();
+    }
 
-	// change the list: inbound, outbound or current
-	segmentChanged({ target: { value } }) {
-		this.filter = value;
-		this.fetchTransactions();
-	}
+    // change the list: inbound, outbound or current
+    segmentChanged({ target: { value } }) {
+        this.filter = value;
+    }
 
-	// get all transactions to display them in a list
-	fetchTransactions() {
-		this.userService.getUser('0').subscribe({
-			next: user => (this.user = user)
-		});
+    // get all transactions to display them in a list
+    fetchTransactions(event?: any) {
+        this.transactionService.getTransactions().subscribe({
+            next: transactionRequests => {
+                this.transactionRequests = transactionRequests;
+                if (event) {
+                    event.target.complete();
+                }
+            }
+        });
+    }
 
-		this.transactionService.getTransactions().subscribe({
-			next: trans => {
-				if (this.filter === 'inbound') {
-					this.filteredTransactions = trans.filter(
-						tr => tr.giverID === this.user.userID && tr.status === 'pending'
-					);
-				} else if (this.filter === 'outbound') {
-					this.filteredTransactions = trans.filter(
-						tr => tr.giverID !== this.user.userID
-					);
-				} else if (this.filter === 'current') {
-					this.filteredTransactions = trans.filter(
-						tr => tr.status === 'accepted'
-					);
-				}
-			}
-		});
-	}
+    acceptTransaction(transactionID: string, takerID: string) {
+        this.transactionService.acceptTransaction(transactionID, takerID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
 
-	// accept or decline a transaction
-	changeTransactionStatus(status: string, trans: Transaction) {
-		if (status === 'accept') {
-			this.transactionService.acceptTransaction(trans).subscribe({
-				next: () =>
-					(this.filteredTransactions = this.filteredTransactions.filter(
-						transaction => transaction._id !== trans._id
-					))
-			});
-		} else {
-			this.transactionService.declineTransaction(trans).subscribe({
-				next: () =>
-					(this.filteredTransactions = this.filteredTransactions.filter(
-						transaction => transaction._id !== trans._id
-					))
-			});
-		}
-	}
+    declineTransaction(transactionID: string, takerID: string) {
+        this.transactionService.declineTransaction(transactionID, takerID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    markGivenTransaction(transactionID: string) {
+        this.transactionService.markGivenTransaction(transactionID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    markTakenTransaction(transactionID: string) {
+        this.transactionService.markTakenTransaction(transactionID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    markGivenBackTransaction(transactionID: string) {
+        this.transactionService.markGivenBackTransaction(transactionID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    markTakenBackTransaction(transactionID: string) {
+        this.transactionService.markTakenBackTransaction(transactionID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    rateTakerTransaction(transactionID: string, comment: string, rating: number) {
+        this.transactionService.rateTakerTransaction(transactionID, comment, rating).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    rateGiverTransaction(transactionID: string, comment: string, rating: number) {
+        this.transactionService.rateGiverTransaction(transactionID, comment, rating).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    revokeTransaction(transactionID: string) {
+        this.transactionService.revokeTransaction(transactionID).subscribe({
+            next: () => this.fetchTransactions()
+        });
+    }
+
+    formatDate(date: Date) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return (new Date(date)).toLocaleDateString('de-DE', options);
+    }
+
+    refresh(event: any) {
+        this.transactionRequests = [];
+        this.fetchTransactions(event);
+    }
+
 }

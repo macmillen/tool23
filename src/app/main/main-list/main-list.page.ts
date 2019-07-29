@@ -64,6 +64,7 @@ export class MainListPage implements OnInit {
 
   getItemImageURL(item: Item) {
     const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
+    this.itemImageURLs.set(item._id, '../../../assets/placeholder_item.png');
     ref.getDownloadURL().subscribe({
       next: url => this.itemImageURLs.set(item._id, url)
     });

@@ -45,6 +45,10 @@ export class TransactionDetailPage implements OnInit {
           message: '',
           itemID: item._id,
           giverID: item.userID,
+          markedAsGiven: false,
+          markedAsGivenBack: false,
+          markedAsTaken: false,
+          markedAsTakenBack: false,
         };
       },
       error: e => console.log(e)

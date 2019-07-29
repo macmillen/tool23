@@ -18,18 +18,21 @@ export class EditItemPage implements OnInit {
   user: User;
   itemImageURL = '../../../assets/placeholder_item.png';
 
-  item: Item = {userID: '0', description: '', status: 'active', tags: [],
-                title: '', address: { city: '', houseNumber: '', street: '', zip: '' } };
+  item: Item = {
+    userID: '0', description: '', status: 'active', tags: [],
+    title: '', address: { city: '', houseNumber: '', street: '', zip: '' }
+  };
   tagInput = '';
   statusBool: boolean;
 
-  constructor(private navController: NavController,
-              private route: ActivatedRoute,
-              private fireStorage: AngularFireStorage,
-              private itemService: ItemService,
-              private toastController: ToastController,
-              private userService: UserService) {
-}
+  constructor(
+    private navController: NavController,
+    private route: ActivatedRoute,
+    private fireStorage: AngularFireStorage,
+    private itemService: ItemService,
+    private toastController: ToastController,
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
     let id: string;
@@ -65,6 +68,7 @@ export class EditItemPage implements OnInit {
   }
 
   addTag() {
+    if (!this.tagInput) { return; }
     const tags = new Set<string>(this.item.tags);
     tags.add(this.tagInput);
     this.item.tags = Array.from(tags);
