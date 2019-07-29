@@ -16,6 +16,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { FCM } from '@ionic-native/fcm/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+
 
 
 @NgModule({
@@ -33,6 +35,7 @@ import { FCM } from '@ionic-native/fcm/ngx';
   providers: [
     StatusBar,
     SplashScreen,
+    Camera,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     AuthGuard,
     {

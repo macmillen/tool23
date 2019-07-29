@@ -6,6 +6,10 @@ import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 import { Item } from 'src/app/models/item.model';
 import { User } from 'src/app/models/user.model';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Platform } from '@ionic/angular';
+
+
 
 @Component({
   selector: 'app-edit-item',
@@ -16,27 +20,57 @@ export class EditItemPage implements OnInit {
 
 
   user: User;
-  itemImageURL = '../../../assets/placeholder_item.png';
 
-  item: Item = {userID: '0', description: '', status: 'active', tags: [],
-                title: '', address: { city: '', houseNumber: '', street: '', zip: '' } };
+  pageTitle: string;
+  item: Item = {
+    userID: '0', description: '', status: 'active', tags: [],
+    title: '', address: { city: '', houseNumber: '', street: '', zip: '' }
+  };
   tagInput = '';
   statusBool: boolean;
+  imageBase64: any = '../../../assets/placeholder_item.png';
+  isEditMode = false;
+  itemID: string;
+  imageUploaded = false;
 
   constructor(private navController: NavController,
               private route: ActivatedRoute,
               private fireStorage: AngularFireStorage,
               private itemService: ItemService,
               private toastController: ToastController,
-              private userService: UserService) {
-}
+              private userService: UserService,
+              private camera: Camera,
+              public plt: Platform) {
+                if (this.plt.is('android')) {
+                  this.options.destinationType = this.camera.DestinationType.FILE_URI;
+                  this.options.sourceType = this.camera.PictureSourceType.CAMERA;
+                }
+  }
+
+
+  options: CameraOptions = {
+    quality: 50,
+    destinationType: this.camera.DestinationType.DATA_URL,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE,
+    sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
+    targetHeight: 100
+  };
+
+
 
   ngOnInit() {
-    let id: string;
-    this.route.paramMap.subscribe(params => {
-      id = params.get('itemID');
-    });
-    this.loadItem(id);
+    this.itemID = this.route.snapshot.paramMap.get('itemID');
+    if (this.itemID) {
+      this.isEditMode = true;
+      this.pageTitle = 'Item bearbeiten';
+    } else {
+      this.isEditMode = false;
+      this.pageTitle = 'Item erstellen';
+    }
+    if (this.isEditMode) {
+      this.loadItem(this.itemID);
+    }
   }
 
   loadItem(itemID: string) {
@@ -58,9 +92,9 @@ export class EditItemPage implements OnInit {
   }
 
   getItemImageURL() {
-    const ref = this.fireStorage.ref(`itempics/${this.item._id}.jpg`);
+    const ref = this.fireStorage.ref(`item-images/${this.item._id}.jpg`);
     ref.getDownloadURL().subscribe({
-      next: url => { this.itemImageURL = url; },
+      next: url => { this.imageBase64 = url; }
     });
   }
 
@@ -73,6 +107,12 @@ export class EditItemPage implements OnInit {
 
   updateItem() {
     this.item.status = this.statusBool ? 'active' : 'disabled';
+
+    if (this.imageUploaded) {
+      const ref = this.fireStorage.storage.ref().child(`/item-images/${this.item._id}.jpg`);
+      ref.putString(this.imageBase64, 'data_url', { contentType: 'image/jpg' });
+    }
+
     this.itemService.updateItem(this.item).subscribe({
       next: async () => {
         const toast = await this.toastController.create({
@@ -85,6 +125,22 @@ export class EditItemPage implements OnInit {
       }
     });
   }
+
+  createItem() {
+    this.item.status = this.statusBool ? 'active' : 'disabled';
+    this.itemService.createItem(this.item).subscribe({
+      next: async () => {
+        const toast = await this.toastController.create({
+          message: `Der Gegenstand '${this.item.title}' wurde erstellt!`,
+          duration: 2000
+        });
+        toast.present();
+
+        this.navController.navigateRoot('/account-view');
+      }
+    });
+  }
+
 
   deleteItem() {
     this.itemService.deleteItem(this.item._id).subscribe({
@@ -100,12 +156,15 @@ export class EditItemPage implements OnInit {
     });
   }
 
-  selectImage() {
-    // this.imagePicker.getPictures({maximumImagesCount: 1, width: 100, height: 100}).then((results) => {
-    //   for (var i = 0; i < results.length; i++) {
-    //       console.log('Image URI: ' + results[i]);
-    //   }
-    // }, (err) => { });
+  openCamera() {
+    this.camera.getPicture(this.options).then((imageData) => {
+      // If it's base64 (DATA_URL):
+      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
+      this.imageUploaded = true;
+    }, (err) => {
+      // Handle error
+    });
   }
+
 
 }

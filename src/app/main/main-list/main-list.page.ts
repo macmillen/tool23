@@ -74,7 +74,7 @@ export class MainListPage implements OnInit {
   }
 
   goToCreateItem() {
-    this.navController.navigateForward(`/create-item`);
+    this.navController.navigateForward(`/edit-item/`);
   }
 
   async searchItem() {

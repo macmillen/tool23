@@ -67,14 +67,14 @@ export class ItemDetailPage implements OnInit {
   }
 
   getUserImageURL() {
-    const ref = this.fireStorage.ref(`profilepics/${this.user.userID}.jpg`);
+    const ref = this.fireStorage.ref(`profile-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
       next: url => { this.userImageURL = url; },
     });
   }
 
   getItemImageURL() {
-    const ref = this.fireStorage.ref(`itempics/${this.item._id}.jpg`);
+    const ref = this.fireStorage.ref(`item-images/${this.item._id}.jpg`);
     ref.getDownloadURL().subscribe({
       next: url => { this.itemImageURL = url; },
     });

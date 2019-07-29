@@ -7,12 +7,14 @@ import { IonicModule } from '@ionic/angular';
 
 import { EditItemPage } from './edit-item.page';
 
+
 const routes: Routes = [
   {
     path: '',
     component: EditItemPage
   }
 ];
+
 
 @NgModule({
   imports: [
@@ -21,6 +23,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [EditItemPage]
+  declarations: [EditItemPage],
+  providers: [
+  ]
 })
 export class EditItemPageModule {}

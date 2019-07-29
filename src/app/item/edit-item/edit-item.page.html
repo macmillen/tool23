@@ -1,24 +1,34 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Angebot</ion-title>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+    <ion-title>{{pageTitle}}</ion-title>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-buttons slot="ende">
+      <ion-button  (click)="deleteItem()" *ngIf="isEditMode">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
     </ion-buttons>
+
+    
   </ion-toolbar>
 </ion-header>
   
 
-<ion-content *ngIf="user && item">
-  <ion-list>
+<ion-content *ngIf="user && isEditMode || !isEditMode ">
+  <ion-list lines="full">
 
     <!-- title -->
     <ion-item>
       <ion-label position="floating">Title</ion-label>
-      <ion-input type="text" maxlength="10" required [(ngModel)]="item.title"></ion-input>
+      <ion-input type="text" maxlength="25" required [(ngModel)]="item.title"></ion-input>
     </ion-item>
 
     <!-- image -->
-    <ion-img (click)="selectImage()" [src]="itemImageURL" width="50" height="50"></ion-img>
+
+    <ion-item>
+      <ion-label position="floating">Bild auswählen</ion-label>
+    </ion-item>
+
+    <ion-img (click)="openCamera()" [src]="imageBase64" width="50" height="50"></ion-img>
     
     <!-- description -->
     <ion-item>
@@ -44,18 +54,12 @@
       <ion-input [(ngModel)]="item.address.city"></ion-input>
     </ion-item>
   
-    <!-- details -->
-    <ion-item>
-      <ion-label text-wrap><h3>Details: </h3> </ion-label>
-      <ion-input>{{item.description}}</ion-input>
-    </ion-item>
-
+  
     <!-- tags -->
-    <ion-list-header>Tags</ion-list-header>
     <ion-item>
       <ion-label position="floating">Tags hinzufügen</ion-label>
-      <ion-input type="text" maxlength="10" [(ngModel)]="tagInput"></ion-input>
-      <ion-button (click)="addTag()" slot="end">Add Tag</ion-button>
+      <ion-input type="text" maxlength="10" (keyup.enter)="addTag()" [(ngModel)]="tagInput"></ion-input>
+      <ion-icon (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
     </ion-item>
     <ion-item *ngIf="item.tags.length">
       <label text-wrap>
@@ -73,7 +77,8 @@
     </ion-item>
 
   </ion-list>
-  <ion-button style="margin: 10px 10px" expand="full" (click)="updateItem()">Item Speichern</ion-button>
+  <ion-button *ngIf="!isEditMode" style="margin: 10px 10px" expand="full" (click)="createItem()">Item Speichern</ion-button>
+  <ion-button *ngIf="isEditMode" style="margin: 10px 10px" expand="full" (click)="updateItem()">Item Speichern</ion-button>
   
 </ion-content>
 
