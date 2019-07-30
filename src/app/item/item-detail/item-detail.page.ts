@@ -67,7 +67,7 @@ export class ItemDetailPage implements OnInit {
   }
 
   getUserImageURL() {
-    const ref = this.fireStorage.ref(`profile-images/${this.user.userID}.jpg`);
+    const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
       next: url => { this.userImageURL = url; },
     });
@@ -85,7 +85,11 @@ export class ItemDetailPage implements OnInit {
   }
 
   goToAccountView() {
-    this.navController.navigateForward('/account-view');
+    if (this.isAllowedToEdit) {
+      this.navController.navigateForward(`/account-view/`);
+    } else {
+      this.navController.navigateForward(`/account-view/${this.user.userID}`);
+    }
   }
 
   goToEditItem() {

@@ -9,6 +9,11 @@ const routes: Routes = [
         pathMatch: 'full'
     },
     {
+        path: 'account-view/:userID',
+        canActivate: [AuthGuard],
+        loadChildren: './user/account-view/account-view.module#AccountViewPageModule'
+    },
+    {
         path: 'account-view',
         canActivate: [AuthGuard],
         loadChildren: './user/account-view/account-view.module#AccountViewPageModule'
@@ -17,11 +22,6 @@ const routes: Routes = [
         path: 'item-detail/:itemID',
         canActivate: [AuthGuard],
         loadChildren: './item/item-detail/item-detail.module#ItemDetailPageModule'
-    },
-    {
-        path: 'create-item',
-        canActivate: [AuthGuard],
-        loadChildren: './item/create-item/create-item.module#CreateItemPageModule'
     },
     {
         path: 'signup',
@@ -43,8 +43,8 @@ const routes: Routes = [
         loadChildren: './transaction/transaction-list/transaction-list.module#TransactionListPageModule'
     },
     {
-        path: 'edit-view/:userID',
-        loadChildren: './user/edit-view/edit-view.module#EditViewPageModule'
+        path: 'edit-user/:userID',
+        loadChildren: './user/edit-user/edit-user.module#EditUserPageModule'
     },
     {
         path: 'edit-item/:itemID',

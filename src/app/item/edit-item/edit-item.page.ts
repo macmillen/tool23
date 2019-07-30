@@ -33,21 +33,6 @@ export class EditItemPage implements OnInit {
   itemID: string;
   imageUploaded = false;
 
-  constructor(private navController: NavController,
-              private route: ActivatedRoute,
-              private fireStorage: AngularFireStorage,
-              private itemService: ItemService,
-              private toastController: ToastController,
-              private userService: UserService,
-              private camera: Camera,
-              public plt: Platform) {
-                if (this.plt.is('android')) {
-                  this.options.destinationType = this.camera.DestinationType.FILE_URI;
-                  this.options.sourceType = this.camera.PictureSourceType.CAMERA;
-                }
-  }
-
-
   options: CameraOptions = {
     quality: 50,
     destinationType: this.camera.DestinationType.DATA_URL,
@@ -57,7 +42,20 @@ export class EditItemPage implements OnInit {
     targetHeight: 100
   };
 
-
+  constructor(
+    private navController: NavController,
+    private route: ActivatedRoute,
+    private fireStorage: AngularFireStorage,
+    private itemService: ItemService,
+    private toastController: ToastController,
+    private userService: UserService,
+    private camera: Camera,
+    public plt: Platform) {
+      if (this.plt.is('android')) {
+        this.options.destinationType = this.camera.DestinationType.FILE_URI;
+        this.options.sourceType = this.camera.PictureSourceType.CAMERA;
+      }
+  }
 
   ngOnInit() {
     this.itemID = this.route.snapshot.paramMap.get('itemID');

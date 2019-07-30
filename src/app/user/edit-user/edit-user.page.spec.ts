@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditViewPage } from './edit-view.page';
+import { EditUserPage } from './edit-user.page';
 
-describe('EditViewPage', () => {
-  let component: EditViewPage;
-  let fixture: ComponentFixture<EditViewPage>;
+describe('EditUserPage', () => {
+  let component: EditUserPage;
+  let fixture: ComponentFixture<EditUserPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditViewPage ],
+      declarations: [ EditUserPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditViewPage);
+    fixture = TestBed.createComponent(EditUserPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

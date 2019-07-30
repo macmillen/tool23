@@ -17,8 +17,8 @@ export class ItemService {
         return this.http.get<Item>(environment.SERVER_URL + '/api/item/' + itemID);
     }
 
-    getAllItems() {
-        return this.http.get<Item[]>(environment.SERVER_URL + '/api/items/');
+    getItems(userID: string) {
+        return this.http.get<Item[]>(environment.SERVER_URL + `/api/items/${userID}`);
     }
 
     deleteItem(itemID: string) {
