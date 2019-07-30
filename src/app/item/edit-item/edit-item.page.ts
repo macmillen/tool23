@@ -52,10 +52,6 @@ export class EditItemPage implements OnInit {
     private camera: Camera,
     private alertController: AlertController,
     public plt: Platform) {
-      if (this.plt.is('android')) {
-        this.options.destinationType = this.camera.DestinationType.FILE_URI;
-        this.options.sourceType = this.camera.PictureSourceType.CAMERA;
-      }
   }
 
   ngOnInit() {
