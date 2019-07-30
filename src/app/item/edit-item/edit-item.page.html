@@ -3,7 +3,7 @@
     <ion-title>{{pageTitle}}</ion-title>
     <ion-back-button slot="start"></ion-back-button>
     <ion-buttons slot="end">
-      <ion-button (click)="deleteItem()" *ngIf="isEditMode">
+      <ion-button (click)="presentAlertConfirm()" *ngIf="isEditMode">
         <ion-icon slot="icon-only" name="trash"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -19,7 +19,7 @@
     <!-- title -->
     <ion-item>
       <ion-label position="floating">Title</ion-label>
-      <ion-input type="text" maxlength="25" required [(ngModel)]="item.title"></ion-input>
+      <ion-input type="text" maxlength="25" required="true" [(ngModel)]="item.title"></ion-input>
     </ion-item>
 
     <!-- image -->
@@ -33,7 +33,7 @@
     <!-- description -->
     <ion-item>
       <ion-label position="floating">Beschreibung</ion-label>
-      <ion-textarea type="text" minlength="20" required [(ngModel)]="item.description"></ion-textarea>
+      <ion-textarea type="text" minlength="20" required="true" [(ngModel)]="item.description"></ion-textarea>
     </ion-item>
 
     <!-- adress -->
@@ -59,7 +59,7 @@
     <ion-item>
       <ion-label position="floating">Tags hinzufügen</ion-label>
       <ion-input type="text" maxlength="10" (keyup.enter)="addTag()" [(ngModel)]="tagInput"></ion-input>
-      <ion-icon (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
+      <ion-icon  (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
     </ion-item>
     <ion-item *ngIf="item.tags.length">
       <label text-wrap>

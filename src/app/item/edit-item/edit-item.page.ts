@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
+import { NavController, ToastController, AlertController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ItemService } from 'src/app/services/item.service';
@@ -50,6 +50,7 @@ export class EditItemPage implements OnInit {
     private toastController: ToastController,
     private userService: UserService,
     private camera: Camera,
+    private alertController: AlertController,
     public plt: Platform) {
       if (this.plt.is('android')) {
         this.options.destinationType = this.camera.DestinationType.FILE_URI;
@@ -70,6 +71,31 @@ export class EditItemPage implements OnInit {
       this.loadItem(this.itemID);
     }
   }
+
+  async presentAlertConfirm(item: Item) {
+    const alert = await this.alertController.create({
+      header: 'Bestätigen',
+      message: 'Message <strong>Item wirklich löschen?</strong>',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            this.deleteItem();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
 
   loadItem(itemID: string) {
     this.itemService.getItem(itemID).subscribe({
@@ -97,6 +123,9 @@ export class EditItemPage implements OnInit {
   }
 
   addTag() {
+    if (this.tagInput === '') {
+      return;
+    }
     const tags = new Set<string>(this.item.tags);
     tags.add(this.tagInput);
     this.item.tags = Array.from(tags);

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { PopoverController, NavController } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { PopoverController, NavController, ToastController, IonItemSliding } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
 import { User } from 'src/app/models/user.model';
 import { Item } from 'src/app/models/item.model';
@@ -7,6 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ItemService } from 'src/app/services/item.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-account-view',
@@ -28,17 +29,10 @@ export class AccountViewPage  {
     private userService: UserService,
     private itemService: ItemService,
     private fireStorage: AngularFireStorage,
-    private navController: NavController
+    private navController: NavController,
+    private toastController: ToastController,
+    private alertController: AlertController
   ) { }
-
-  async presentPopover(ev: any) {
-    const popover = await this.popoverController.create({
-      component: MoreComponent,
-      event: ev,
-      translucent: true
-    });
-    return await popover.present();
-  }
 
 
   ionViewWillEnter() {
@@ -49,13 +43,84 @@ export class AccountViewPage  {
       next: user => {
         this.user = user;
         this.getUserImageURL();
-        this.itemService.getItems('').subscribe({
-          next: items => {
-            this.items = items;
-            items.forEach(i => this.getItemImageURL(i));
-            this.pending = false;
-          },
+        this.getItems();
+      }
+    });
+  }
+
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: MoreComponent,
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
+  }
+
+  async presentAlertConfirm(slidingItem: IonItemSliding, item: Item) {
+    const alert = await this.alertController.create({
+      header: 'Bestätigen',
+      message: 'Message <strong>Item wirklich löschen?</strong>',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+            slidingItem.close();
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            this.deleteItem(item);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
+  getItems() {
+    this.pending = true;
+    this.itemService.getItems('').subscribe({
+      next: items => {
+        this.items = items;
+        items.forEach(i => this.getItemImageURL(i));
+        this.pending = false;
+      },
+    });
+  }
+
+  updateItem(slidingItem: IonItemSliding, item: Item) {
+    item.status = item.status === 'disabled' ? 'active' : 'disabled';
+    slidingItem.close();
+    this.itemService.updateItem(item).subscribe({
+      next: async () => {
+        const toast = await this.toastController.create({
+          message: `Der Gegenstand '${item.title}' wurde aktualisiert!`,
+          duration: 2000
         });
+        toast.present();
+
+        this.navController.navigateRoot('/account-view');
+      }
+    });
+  }
+
+  deleteItem( item: Item) {
+    this.itemService.deleteItem(item._id).subscribe({
+      next: async () => {
+        const toast = await this.toastController.create({
+          message: `Der Gegenstand' ${item.title} ' wurde gelöscht`,
+          duration: 2000
+        });
+        toast.present();
+
+        this.navController.navigateRoot('/account-view');
+        this.getItems();
       }
     });
   }
@@ -78,7 +143,6 @@ export class AccountViewPage  {
       next: url => this.itemImageURLs.set(item._id, url)
     });
   }
-
 
   goToEditAccount() {
     this.navController.navigateForward(`/edit-user/${this.user.userID}`);
