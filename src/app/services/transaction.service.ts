@@ -41,11 +41,13 @@ export class TransactionService {
     }
 
     rateTakerTransaction(transactionID: string, comment: string, rating: number) {
-        return this.http.put(environment.SERVER_URL + '/api/rate-taker-transaction', { comment, rating });
+        return this.http.put(environment.SERVER_URL + '/api/rate-taker-transaction',
+            { transactionID, takerComment: comment, takerRating: rating });
     }
 
     rateGiverTransaction(transactionID: string, comment: string, rating: number) {
-        return this.http.put(environment.SERVER_URL + '/api/rate-giver-transaction', { comment, rating });
+        return this.http.put(environment.SERVER_URL + '/api/rate-giver-transaction',
+            { transactionID, giverComment: comment, giverRating: rating });
     }
 
     revokeTransaction(transactionID: string) {

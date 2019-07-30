@@ -253,8 +253,8 @@ export const revokeTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
 
-console.log(userID);
-console.log(transactionID);
+    console.log(userID);
+    console.log(transactionID);
 
 
     try {
@@ -262,9 +262,7 @@ console.log(transactionID);
             { _id: new ObjectId(transactionID), takerID: userID, status: 'pending' },
             { $set: { status: 'revoked' } });
 
-        if (!info.modifiedCount) {
-            throw Error('No transaction was modified');
-        }
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
 
         res.end();
     } catch (e) {
@@ -281,12 +279,10 @@ export const rateTakerTransaction = async (req: Request, res: Response) => {
 
     try {
         const info = await transactionCollection.updateOne(
-            { _id: new ObjectId(transactionID), takerID: userID, status: 'finished', "review.takerRating": 0 },
-            { $set: { review: { takerRating, takerComment } } });
+            { _id: new ObjectId(transactionID), takerID: userID, $or: [{ status: 'transfered' }, { status: 'finished' }], "review.takerRating": null },
+            { $set: { 'review.takerRating': takerRating, 'review.takerComment': takerComment } });
 
-        if (!info.modifiedCount) {
-            throw Error('No transaction was modified');
-        }
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
 
         res.end();
     } catch (e) {
@@ -303,12 +299,12 @@ export const rateGiverTransaction = async (req: Request, res: Response) => {
 
     try {
         const info = await transactionCollection.updateOne(
-            { _id: new ObjectId(transactionID), giverID: userID, status: 'finished', "review.takerRating": 0 },
-            { $set: { review: { giverRating, giverComment } } });
+            {
+                _id: new ObjectId(transactionID), giverID: userID, $or: [{ status: 'transfered' }, { status: 'finished' }], "review.giverRating": null 
+            },
+            { $set: { 'review.giverRating': giverRating, 'review.giverComment': giverComment } });
 
-        if (!info.modifiedCount) {
-            throw Error('No transaction was modified');
-        }
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
 
         res.end();
     } catch (e) {

@@ -92,7 +92,7 @@ export const createItem = async (req: Request, res: Response) => {
 }
 
 export const getItems = async (req: Request, res: Response) => {
-    const userID: string = req.body.global_googleUID;
+    const userID: string = req.params.userID || req.body.global_googleUID;
 
     try {
         const items = await itemCollection.find({ userID }).toArray();
@@ -128,7 +128,7 @@ export const deleteItem = async (req: Request, res: Response) => {
     }
 }
 
-export const updateItem = async (req: Request, res: Response ) => {
+export const updateItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const item: Item = req.body.item;
     const itemID = item._id;
@@ -143,11 +143,11 @@ export const updateItem = async (req: Request, res: Response ) => {
     item.location = { coordinates: resGeo, type: 'Point' };
 
     try {
-        const i = 
-        await itemCollection.updateOne(
-            {userID, _id: new ObjectId(itemID)},
-            {$set: item}
-        )
+        const i =
+            await itemCollection.updateOne(
+                { userID, _id: new ObjectId(itemID) },
+                { $set: item }
+            )
         console.log(i);
         res.end();
     } catch (e) {

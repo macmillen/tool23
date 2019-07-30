@@ -18,7 +18,8 @@ app.use(cors());
 // * ITEMS
 app.post('/api/item', checkAuth, itemController.createItem);
 app.get('/api/item/:itemID', checkAuth, itemController.getItem);
-app.get('/api/items', checkAuth, itemController.getItems);
+app.get('/api/items/:userID', checkAuth, itemController.getItems);
+app.get('/api/items/', checkAuth, itemController.getItems);
 app.delete('/api/item/:itemID', checkAuth, itemController.deleteItem);
 app.put('/api/item/', checkAuth, itemController.updateItem);
 app.get('/api/search-items/:searchString', checkAuth, itemController.searchItems);
