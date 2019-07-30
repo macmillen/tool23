@@ -37,6 +37,7 @@
     "cordova-plugin-telerik-imagepicker": "2.3.3",
     "core-js": "^2.5.4",
     "firebase": "^6.3.0",
+    "ionic4-rating": "^1.0.9",
     "node-geocoder": "^3.23.0",
     "opencage-api-client": "^0.5.0",
     "rxjs": "~6.5.1",

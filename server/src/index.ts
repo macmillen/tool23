@@ -18,7 +18,8 @@ app.use(cors());
 // * ITEMS
 app.post('/api/item', checkAuth, itemController.createItem);
 app.get('/api/item/:itemID', checkAuth, itemController.getItem);
-app.get('/api/items', checkAuth, itemController.getItems);
+app.get('/api/items/:userID', checkAuth, itemController.getItems);
+app.get('/api/items/', checkAuth, itemController.getItems);
 app.delete('/api/item/:itemID', checkAuth, itemController.deleteItem);
 app.put('/api/item/', checkAuth, itemController.updateItem);
 app.get('/api/search-items/:searchString', checkAuth, itemController.searchItems);
@@ -36,6 +37,13 @@ app.get('/api/transactions', checkAuth, transactionController.getTransactions);
 app.post('/api/create-token', checkAuth, transactionController.createToken);
 app.post('/api/accept-transaction', checkAuth, transactionController.acceptItem);
 app.post('/api/decline-transaction', checkAuth, transactionController.declineItem);
+app.put('/api/mark-given-transaction', checkAuth, transactionController.markGivenTransaction);
+app.put('/api/mark-taken-transaction', checkAuth, transactionController.markTakenTransaction);
+app.put('/api/mark-given-back-transaction', checkAuth, transactionController.markGivenBackTransaction);
+app.put('/api/mark-taken-back-transaction', checkAuth, transactionController.markTakenBackTransaction);
+app.put('/api/rate-taker-transaction', checkAuth, transactionController.rateTakerTransaction);
+app.put('/api/rate-giver-transaction', checkAuth, transactionController.rateGiverTransaction);
+app.put('/api/revoke-transaction', checkAuth, transactionController.revokeTransaction);
 
 app.get('*', () => console.log('OOOOOO'));
 

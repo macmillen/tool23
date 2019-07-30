@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
-import { tokenCollection, transactionCollection } from '../config/mongodb';
+import { tokenCollection, transactionCollection, userCollection, itemCollection } from '../config/mongodb';
 import { Transaction } from '../models/transaction_model';
 import { fireMessaging } from '../config/firebase';
 import { ObjectId } from 'bson';
+import { TransactionRequest } from '../models/transaction_request';
+import { User } from '../models/user_model';
+import { Item } from '../models/item_model';
 
 export const getTransactions = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
@@ -11,7 +14,40 @@ export const getTransactions = async (req: Request, res: Response) => {
         const transactions = await transactionCollection.find({
             $or: [{ giverID: userID }, { takerID: userID }]
         }).toArray();
-        res.json(transactions);
+
+        const userIDs = new Set<string>();
+        const itemIDs = new Set<ObjectId>();
+
+        for (const t of transactions) {
+            if (!t.giverID || !t.takerID) { continue; }
+            userIDs.add(t.giverID);
+            userIDs.add(t.takerID);
+            itemIDs.add(new ObjectId(t.itemID));
+        }
+
+        const usersPromise = userCollection.find({ userID: { $in: Array.from(userIDs) } }).toArray();
+        const itemsPromise = itemCollection.find({ _id: { $in: Array.from(itemIDs) } }).toArray();
+
+        const promiseResult: (User[] | Item[])[] = [];
+
+        for await (const subResult of [usersPromise, itemsPromise]) {
+            promiseResult.push(subResult);
+        }
+
+        const users = promiseResult[0] as User[];
+        const items = promiseResult[1] as Item[];
+
+        const transactionRequests: TransactionRequest[] = [];
+
+        for (const t of transactions) {
+            const user = users.find(u => u.userID === t.takerID || u.userID === t.giverID);
+            const item = items.find(i => i._id ? i._id.toString() === t.itemID : null);
+
+            if (!user || !item) { continue; }
+            transactionRequests.push({ ...t, user, item });
+        }
+
+        res.json(transactionRequests);
     } catch (e) {
         console.log(e);
         res.status(404).send('Error creating Token');
@@ -45,6 +81,10 @@ export const requestItem = async (req: Request, res: Response) => {
             takerID: userID,
             giverID: transaction.giverID,
             message: transaction.message,
+            markedAsGiven: false,
+            markedAsGivenBack: false,
+            markedAsTaken: false,
+            markedAsTakenBack: false,
             review: {},
             status: 'pending'
         });
@@ -57,12 +97,13 @@ export const requestItem = async (req: Request, res: Response) => {
 
 export const acceptItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
-    const transaction: Transaction = req.body.transaction;
+    const transactionID: string = req.body.transactionID;
+    const takerID: string = req.body.takerID;
 
     try {
-        await transactionCollection.updateOne({ _id: new ObjectId(transaction._id), giverID: userID }, { $set: { status: 'accepted' } });
+        await transactionCollection.updateOne({ _id: new ObjectId(transactionID), giverID: userID }, { $set: { status: 'accepted' } });
 
-        const tokensObj = await tokenCollection.find({ userID: transaction.takerID }).toArray();
+        const tokensObj = await tokenCollection.find({ userID: takerID }).toArray();
         const tokens = tokensObj.map(t => t.token);
 
         if (tokens.length) {
@@ -84,12 +125,13 @@ export const acceptItem = async (req: Request, res: Response) => {
 
 export const declineItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
-    const transaction: Transaction = req.body.transaction;
+    const transactionID: string = req.body.transactionID;
+    const takerID: string = req.body.takerID;
 
     try {
-        await transactionCollection.updateOne({ _id: new ObjectId(transaction._id), giverID: userID }, { $set: { status: 'declined' } });
+        await transactionCollection.updateOne({ _id: new ObjectId(transactionID), giverID: userID }, { $set: { status: 'declined' } });
 
-        const tokensObj = await tokenCollection.find({ userID: transaction.takerID }).toArray();
+        const tokensObj = await tokenCollection.find({ userID: takerID }).toArray();
         const tokens = tokensObj.map(t => t.token);
 
         if (tokens.length) {
@@ -106,6 +148,168 @@ export const declineItem = async (req: Request, res: Response) => {
     } catch (e) {
         console.log(e);
         res.status(404).send('Error declining Item');
+    }
+}
+
+const makeStateTransitionTransfered = async (userID: string, transactionID: string) => {
+    return await transactionCollection.updateOne(
+        {
+            _id: new ObjectId(transactionID), $or: [{ takerID: userID }, { giverID: userID }],
+            status: 'accepted', markedAsGiven: true, markedAsTaken: true
+        },
+        { $set: { status: 'transfered' } });
+}
+
+const makeStateTransitionFinished = async (userID: string, transactionID: string) => {
+    return await transactionCollection.updateOne(
+        {
+            _id: new ObjectId(transactionID), $or: [{ takerID: userID }, { giverID: userID }],
+            status: 'transfered', markedAsGivenBack: true, markedAsTakenBack: true
+        },
+        { $set: { status: 'finished' } });
+}
+
+export const markGivenTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+
+    try {
+        const info = await transactionCollection.updateOne(
+            { _id: new ObjectId(transactionID), giverID: userID, status: 'accepted' },
+            { $set: { markedAsGiven: true } });
+
+        const stateChange = await makeStateTransitionTransfered(userID, transactionID);
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error giving Item');
+    }
+}
+
+export const markTakenTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+
+    try {
+        const info = await transactionCollection.updateOne(
+            { _id: new ObjectId(transactionID), takerID: userID, status: 'accepted' },
+            { $set: { markedAsTaken: true } });
+
+        const stateChange = await makeStateTransitionTransfered(userID, transactionID);
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error taking Item');
+    }
+}
+
+export const markGivenBackTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+
+    try {
+        const info = await transactionCollection.updateOne(
+            { _id: new ObjectId(transactionID), takerID: userID, status: 'transfered' },
+            { $set: { markedAsGivenBack: true } });
+
+        const stateChange = await makeStateTransitionFinished(userID, transactionID);
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error giving back Item');
+    }
+}
+
+export const markTakenBackTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+
+    try {
+        const info = await transactionCollection.updateOne(
+            { _id: new ObjectId(transactionID), giverID: userID, status: 'transfered' },
+            { $set: { markedAsTakenBack: true } });
+
+        const stateChange = await makeStateTransitionFinished(userID, transactionID);
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error taking back Item');
+    }
+}
+
+export const revokeTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+
+    console.log(userID);
+    console.log(transactionID);
+
+
+    try {
+        const info = await transactionCollection.updateOne(
+            { _id: new ObjectId(transactionID), takerID: userID, status: 'pending' },
+            { $set: { status: 'revoked' } });
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error revoking Item');
+    }
+}
+
+export const rateTakerTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+    const takerRating: string = req.body.takerRating;
+    const takerComment: string = req.body.takerComment;
+
+    try {
+        const info = await transactionCollection.updateOne(
+            { _id: new ObjectId(transactionID), takerID: userID, $or: [{ status: 'transfered' }, { status: 'finished' }], "review.takerRating": null },
+            { $set: { 'review.takerRating': takerRating, 'review.takerComment': takerComment } });
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error rating Item');
+    }
+}
+
+export const rateGiverTransaction = async (req: Request, res: Response) => {
+    const userID: string = req.body.global_googleUID;
+    const transactionID: string = req.body.transactionID;
+    const giverRating: string = req.body.giverRating;
+    const giverComment: string = req.body.giverComment;
+
+    try {
+        const info = await transactionCollection.updateOne(
+            {
+                _id: new ObjectId(transactionID), giverID: userID, $or: [{ status: 'transfered' }, { status: 'finished' }], "review.giverRating": null 
+            },
+            { $set: { 'review.giverRating': giverRating, 'review.giverComment': giverComment } });
+
+        if (!info.modifiedCount) { throw Error('Transaction was not modified'); }
+
+        res.end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send('Error rating Item');
     }
 }
 

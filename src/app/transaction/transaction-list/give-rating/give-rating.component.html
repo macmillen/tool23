@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalController.dismiss()">
+        <ion-icon name="close"> </ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Bewertung abgeben</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-item lines="full" style="margin-bottom: 30px">
+    <ion-label slot="start" style="overflow: visible">
+      <h1>{{transaction.item.title}}</h1>
+    </ion-label>
+    <ion-chip slot="end">
+      <ion-avatar>
+        <img [src]="userImageURL">
+      </ion-avatar>
+      <ion-label>{{transaction.user.username}}</ion-label>
+    </ion-chip>
+  </ion-item>
+
+  <rating [(ngModel)]="rating" readonly="false" size="default" style="margin: 50px 0;"> </rating>
+
+  <ion-item-divider></ion-item-divider>
+
+  <ion-item>
+    <ion-label position="floating">Kommentar</ion-label>
+    <ion-textarea [(ngModel)]="comment" placeholder="Ich fand es..."></ion-textarea>
+  </ion-item>
+
+  <ion-button style="margin-top: 30px" expand="block" [disabled]="!rating" (click)="rate()">Bewertung abgeben
+  </ion-button>
+
+</ion-content>

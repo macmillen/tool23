@@ -123,9 +123,7 @@ export class EditItemPage implements OnInit {
   }
 
   addTag() {
-    if (this.tagInput === '') {
-      return;
-    }
+    if (!this.tagInput) { return; }
     const tags = new Set<string>(this.item.tags);
     tags.add(this.tagInput);
     this.item.tags = Array.from(tags);

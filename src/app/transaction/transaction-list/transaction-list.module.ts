@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { TransactionListPage } from './transaction-list.page';
 import { FooterComponentModule } from 'src/app/footer/footer.component.module';
+import { IonicRatingModule } from 'ionic4-rating';
+import { GiveRatingComponent } from './give-rating/give-rating.component';
 
 const routes: Routes = [
   {
@@ -21,8 +23,10 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     FooterComponentModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    IonicRatingModule
   ],
-  declarations: [TransactionListPage]
+  declarations: [TransactionListPage, GiveRatingComponent],
+  entryComponents: [GiveRatingComponent]
 })
-export class TransactionListPageModule {}
+export class TransactionListPageModule { }

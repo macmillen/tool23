@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { fireAuth } from '../config/firebase';
 import { User } from '../models/user_model';
-import { userCollection } from '../config/mongodb';
+import { userCollection, transactionCollection } from '../config/mongodb';
 import { getGeoLocation } from '../config/geocoder';
 
 export const register = async (req: Request, res: Response) => {
@@ -44,7 +44,28 @@ export const getUser = async (req: Request, res: Response) => {
 
     try {
         const user = await userCollection.findOne({ userID });
+        if (!user) { throw Error('User not found'); }
 
+        const transactionsGiver = await transactionCollection.find({ giverID: userID }).toArray();
+        const transactionsTaker = await transactionCollection.find({ takerID: userID }).toArray();
+
+        let ratingTotalScore = 0;
+        let ratingsCount = 0;
+
+        for (const t of transactionsGiver) {
+            if (!t.review || !t.review.takerRating) { continue; }
+            ratingsCount++;
+            ratingTotalScore += t.review.takerRating;
+        }
+        for (const t of transactionsTaker) {
+            if (!t.review || !t.review.giverRating) { continue; }
+            ratingsCount++;
+            ratingTotalScore += t.review.giverRating;
+        }
+
+        const ratingScore = ratingTotalScore / ratingsCount;
+        user.reviewScore = ratingScore;
+        
         res.json(user);
     } catch (e) {
         console.log(e);

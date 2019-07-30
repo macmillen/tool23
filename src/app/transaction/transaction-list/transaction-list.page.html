@@ -1,65 +1,225 @@
 <ion-header>
-	<ion-toolbar>
-		<ion-buttons slot="start">
-			<ion-back-button></ion-back-button>
-		</ion-buttons>
-		<ion-title>transaction-list</ion-title>
-	</ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Anfragen</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-	<ion-segment (ionChange)="segmentChanged($event)">
-		<ion-segment-button value="inbound" checked>
-			<ion-label>Eingehend</ion-label>
-		</ion-segment-button>
-		<ion-segment-button value="outbound">
-			<ion-label>Ausgehend</ion-label>
-		</ion-segment-button>
-		<ion-segment-button value="current">
-			<ion-label>Laufend</ion-label>
-		</ion-segment-button>
-	</ion-segment>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-	<ion-list>
-		<div *ngFor="let trans of filteredTransactions">
-			<ion-card>
-				<ion-card-header>
-					<ion-card-subtitle>{{
-						filter == 'inbound' ? trans.takerID : trans.giverID
-					}}</ion-card-subtitle>
-					<ion-card-title>{{ trans.itemID }}</ion-card-title>
-				</ion-card-header>
+  <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="inbound" checked>
+      <ion-label>Eingehend</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="outbound">
+      <ion-label>Ausgehend</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="current">
+      <ion-label>Laufend</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
-				<ion-card-content>
-					{{ trans.startDate }} - {{ trans.endDate }}
-					<hr />
-					Keep close to Nature's heart... and break clear away, once in awhile,
-					and climb a mountain or spend a week in the woods. Wash your spirit
-					clean.
-				</ion-card-content>
-				<ion-grid>
-					<ion-row>
-						<ion-col>
-							<ion-button
-								*ngIf="trans.status == 'pending' && filter == 'inbound'"
-								(click)="changeTransactionStatus('accepted', trans)"
-							>
-								Akzeptieren
-							</ion-button>
-						</ion-col>
-						<ion-col>
-							<ion-button
-								*ngIf="trans.status == 'pending' && filter == 'inbound'"
-								(click)="changeTransactionStatus('declined', trans)"
-							>
-								Ablehnen
-							</ion-button>
-						</ion-col>
-					</ion-row>
-				</ion-grid>
-			</ion-card>
-		</div>
-	</ion-list>
+  <ion-list>
+    <div
+      *ngIf="(filter === 'inbound' && noData.inbound) || (filter === 'outbound' && noData.outbound) || (filter === 'current' && noData.current)">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title style="text-align: center; margin: 10px 0">Keine Einträge vorhanden</ion-card-title>
+        </ion-card-header>
+      </ion-card>
+    </div>
+
+    <div *ngFor="let t of transactionRequests">
+      <!-- State: Inbound Pending -->
+      <ion-card *ngIf="filter === 'inbound' && t.status === 'pending' && t.giverID === this.user.userID">
+        <ng-container *ngIf="setNoData('inbound')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="acceptTransaction(t._id, t.takerID)">Akzeptieren</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button expand="block" (click)="declineTransaction(t._id, t.takerID)">Ablehnen</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Outbound Pending -->
+      <ion-card *ngIf="filter === 'outbound' && t.status === 'pending' && t.takerID === this.user.userID">
+        <ng-container *ngIf="setNoData('outbound')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="revokeTransaction(t._id)">Anfrage zurückziehen</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Accepted Giver -->
+      <ion-card
+        *ngIf="filter === 'current' && t.status === 'accepted' && t.giverID === this.user.userID && !t.markedAsGiven">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="presentAlert('accepted-giver', t)">Artikel übergeben</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Accepted Giver Waiting -->
+      <ion-card style="opacity: 0.7;"
+        *ngIf="filter === 'current' && t.status === 'accepted' && t.giverID === this.user.userID && t.markedAsGiven && !t.markedAsTaken">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <h4>Warte auf Annahme</h4>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Accepted Taker -->
+      <ion-card
+        *ngIf="filter === 'current' && t.status === 'accepted' && t.takerID === this.user.userID && !t.markedAsTaken">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="presentAlert('accepted-taker', t)">Artikel erhalten</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Accepted Taker Waiting -->
+      <ion-card style="opacity: 0.7;"
+        *ngIf="filter === 'current' && t.status === 'accepted' && t.takerID === this.user.userID && t.markedAsTaken && !t.markedAsGiven">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <h4>Warte auf Abgabe</h4>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Transfered Giver -->
+      <ion-card
+        *ngIf="filter === 'current' && t.status === 'transfered' && t.giverID === this.user.userID && !t.markedAsTakenBack">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="presentAlert('transfered-giver', t)">Artikel zurückerhalten
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Transfered Taker -->
+      <ion-card
+        *ngIf="filter === 'current' && t.status === 'transfered' && t.takerID === this.user.userID && !t.markedAsGivenBack">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="presentAlert('transfered-taker', t)">Artikel zurückgegeben
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Finished Taker -->
+      <ion-card
+        *ngIf="filter === 'current' && t.markedAsGivenBack && (t.status === 'transfered' || t.status === 'finished') && t.takerID === this.user.userID && !t.review.takerRating">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="presentModal('taker', t)">Transaktion bewerten</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <!-- State: Finished Giver -->
+      <ion-card
+        *ngIf="filter === 'current' && t.markedAsTakenBack && (t.status === 'transfered' || t.status === 'finished') && t.giverID === this.user.userID && !t.review.giverRating">
+        <ng-container *ngIf="setNoData('current')"></ng-container>
+        <ion-card-header>
+          <ion-card-subtitle>{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}</ion-card-subtitle>
+          <ion-card-title>{{t.item.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{t.message}}</ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" (click)="presentModal('giver', t)">Transaktion bewerten</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+    </div>
+  </ion-list>
 </ion-content>
 
 <app-footer></app-footer>
