@@ -14,11 +14,11 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./edit-user.page.scss']
 })
 export class EditUserPage implements OnInit {
-  id: string;
-  imageBase64: any = '../../../assets/placeholder.png';
+  id: string; // ID of current user
+  imageBase64: any = '../../../assets/placeholder.png'; // immage as base64 with placeholder
   imageUploaded = false;
-  percent = -1;
-  user: User = {
+  percent = -1;   // Percentage for loading image
+  user: User = {  // Empty user, ready to set
     email: '',
     username: '',
     address: { city: '', houseNumber: '', street: '', zip: '' }
@@ -54,6 +54,10 @@ export class EditUserPage implements OnInit {
     });
   }
 
+  /**
+  * Starts loading controller and displays message
+  * 
+  */
   async presentLoading() {
     const loading = await this.loadingController.create({
       message: 'Lädt...',
@@ -61,6 +65,11 @@ export class EditUserPage implements OnInit {
     await loading.present();
   }
 
+  
+  /**
+  * Fetch values from html and pushes the changed user values to the server; presents toast
+  * 
+  */
   updateUser() {
     if ( this.imageUploaded ) {
       const ref = this.fireStorage.ref(`/user-images/${this.user.userID}.jpg`);
@@ -90,6 +99,11 @@ export class EditUserPage implements OnInit {
     });
   }
 
+  
+  /**
+  * Fetches and sets user image class variable as base64 iamge
+  * 
+  */
   getUserImageURL() {
     const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
@@ -97,6 +111,11 @@ export class EditUserPage implements OnInit {
     });
   }
 
+  
+  /**
+  * opens camera and saves picture to image variable
+  * 
+  */
   openCamera() {
     this.camera.getPicture(this.options).then((imageData) => {
       // If it's base64 (DATA_URL):

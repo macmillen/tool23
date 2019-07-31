@@ -15,13 +15,13 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./account-view.page.scss']
 })
 export class AccountViewPage  {
-  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null};
-  items: Item[];
-  id: string;
-  pending = true;
+  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null};  // User with empty values, ready to be filled
+  items: Item[];  // uninitialized array for user-owned items
+  id: string;     // Variable for ID of current user
+  pending = true; // true, as long as not every data is fetched; false if finished
 
-  userImageURL = 'assets/placeholder.png';
-  itemImageURLs = new Map<string, string>();
+  userImageURL = 'assets/placeholder.png';    // user image with placeholder pic
+  itemImageURLs = new Map<string, string>();  //Map for matching images to their corresponding image url
 
   constructor(
     private popoverController: PopoverController,
@@ -34,7 +34,7 @@ export class AccountViewPage  {
     private alertController: AlertController
   ) { }
 
-
+  
   ionViewWillEnter() {
     this.id = this.route.snapshot.paramMap.get('userID');
     this.id = this.id ? this.id : '0';
@@ -51,6 +51,12 @@ export class AccountViewPage  {
     });
   }
 
+  /**
+  * activates and presents popover from event
+  * 
+  * @param {any} ev Event to present in popover
+  * @returns void (closes popover)
+  */  
   async presentPopover(ev: any) {
     const popover = await this.popoverController.create({
       component: MoreComponent,
@@ -60,6 +66,13 @@ export class AccountViewPage  {
     return await popover.present();
   }
 
+  /**
+  * Alert to confirm deletion of item
+  * 
+  * @param {IonItemSliding} slidingItem Respective html slider to inital position
+  * @param {Item} item Item which should be deleted
+  * @returns void (opens alert)
+  */
   async presentAlertConfirm(slidingItem: IonItemSliding, item: Item) {
     const alert = await this.alertController.create({
       header: 'Bestätigen',
@@ -84,6 +97,11 @@ export class AccountViewPage  {
     await alert.present();
   }
 
+  /**
+  * Fetches latest item list from server to array
+  * 
+  * @returns void (class variable items is set)
+  */
 
   getItems() {
     if (this.id === '0') {
@@ -105,6 +123,13 @@ export class AccountViewPage  {
     }
   }
 
+  /**
+  * Updates item status through slider
+  * 
+  * @param {IonItemSliding} slidingItem Respective html slider to inital position
+  * @param {Item} item Item which status should be updated
+  * @returns void (navigates to account-view)
+  */
   updateItem(slidingItem: IonItemSliding, item: Item) {
     item.status = item.status === 'disabled' ? 'active' : 'disabled';
     slidingItem.close();
@@ -122,6 +147,12 @@ export class AccountViewPage  {
     });
   }
 
+  /**
+  * Updates item status through slider
+  * 
+  * @param {Item} item Item which status should be deleted
+  * @returns void (navigates to account-view)
+  */
   deleteItem( item: Item) {
     this.itemService.deleteItem(item._id).subscribe({
       next: async () => {
@@ -138,18 +169,33 @@ export class AccountViewPage  {
     });
   }
 
+  /**
+  * Navigate to item-detail-page of item
+  * 
+  * @param {string} itemID ID of item to navigate to
+  */
   goToItemDetail(itemID: string) {
     this.navController.navigateForward(`/item-detail/${itemID}`);
   }
 
+  /**
+  * Navigate to item-creation-page of item
+  */
   goToCreateItem() {
     this.navController.navigateForward(`/edit-item/`);
   }
-
+  /**
+  * Navigate to account-page of current user
+  * 
+  */
   goToEditAccount() {
     this.navController.navigateForward(`/edit-user/${this.user.userID}`);
   }
 
+  /**
+  * Fetches and sets user image url
+  * 
+  */
   getUserImageURL() {
     const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
@@ -157,7 +203,11 @@ export class AccountViewPage  {
       error: e => { }
     });
   }
-
+  /**
+  * Fetches and sets item image url in class variable map
+  * 
+  * @param {Item} item Item to get Image from
+  */
   getItemImageURL(item: Item) {
     this.itemImageURLs.set(item._id, 'assets/placeholder_item.png');
     const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
@@ -165,7 +215,6 @@ export class AccountViewPage  {
       next: url => this.itemImageURLs.set(item._id, url)
     });
   }
-
 
   showHistory() {
     console.log('Show History');

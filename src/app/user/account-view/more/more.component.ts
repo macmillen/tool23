@@ -17,6 +17,11 @@ export class MoreComponent implements OnInit {
 
   ngOnInit() { }
 
+  /**
+  * signs current user out via server and closes popUp
+  * 
+  * @returns void (closes popup)
+  */
   signOut() {
     this.userService.signOut().subscribe({
       next: () => {
