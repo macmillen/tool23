@@ -39,6 +39,9 @@ export class AccountViewPage  {
     this.id = this.route.snapshot.paramMap.get('userID');
     this.id = this.id ? this.id : '0';
 
+    this.pending = true;
+    this.items = [];
+
     this.userService.getUser(this.id).subscribe({
       next: user => {
         this.user = user;
@@ -83,14 +86,23 @@ export class AccountViewPage  {
 
 
   getItems() {
-    this.pending = true;
-    this.itemService.getItems('').subscribe({
-      next: items => {
-        this.items = items;
-        items.forEach(i => this.getItemImageURL(i));
-        this.pending = false;
-      },
-    });
+    if (this.id === '0') {
+      this.itemService.getItems('').subscribe({
+        next: items => {
+          this.items = items;
+          items.forEach(i => this.getItemImageURL(i));
+          this.pending = false;
+        },
+      });
+    } else {
+      this.itemService.getItems(this.user.userID).subscribe({
+        next: items => {
+          this.items = items;
+          items.forEach(i => this.getItemImageURL(i));
+          this.pending = false;
+        },
+      });
+    }
   }
 
   updateItem(slidingItem: IonItemSliding, item: Item) {

@@ -5,6 +5,8 @@ import { NavController, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Platform } from '@ionic/angular';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { LoadingController } from '@ionic/angular';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-user',
@@ -15,6 +17,7 @@ export class EditUserPage implements OnInit {
   id: string;
   imageBase64: any = '../../../assets/placeholder.png';
   imageUploaded = false;
+  percent = -1;
   user: User = {
     email: '',
     username: '',
@@ -35,10 +38,12 @@ export class EditUserPage implements OnInit {
     private navController: NavController,
     private fireStorage: AngularFireStorage,
     private toastController: ToastController,
+    private loadingController: LoadingController,
     private camera: Camera,
     public plt: Platform
   ) {
   }
+
 
   ngOnInit() {
     this.userService.getUser('0').subscribe({
@@ -49,11 +54,28 @@ export class EditUserPage implements OnInit {
     });
   }
 
-  updateUser() {
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Lädt...',
+    });
+    await loading.present();
+  }
 
+  updateUser() {
     if ( this.imageUploaded ) {
-      const ref = this.fireStorage.storage.ref().child(`/user-images/${this.user.userID}.jpg`);
-      ref.putString(this.imageBase64, 'data_url', { contentType: 'image/jpg' });
+      const ref = this.fireStorage.ref(`/user-images/${this.user.userID}.jpg`);
+      const uploadTask = ref.putString(this.imageBase64, 'data_url', { contentType: 'image/jpg' });
+
+      this.presentLoading();
+      uploadTask.percentageChanges().subscribe( percent => {
+        this.percent = percent;
+      });
+      uploadTask.snapshotChanges().pipe(
+        finalize(() => ref.getDownloadURL().subscribe(itemImage => {
+          this.navController.navigateRoot('/account-view');
+          this.loadingController.dismiss();
+        }) )
+     ).subscribe();
     }
 
     this.userService.updateUser(this.user).subscribe({
@@ -63,8 +85,6 @@ export class EditUserPage implements OnInit {
           duration: 2000
         });
         toast.present();
-
-        this.navController.navigateRoot('/account-view');
       }
     });
   }

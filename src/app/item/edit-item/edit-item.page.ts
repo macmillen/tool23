@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, ToastController, AlertController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { LoadingController } from '@ionic/angular';
 import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 import { Item } from 'src/app/models/item.model';
 import { User } from 'src/app/models/user.model';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Platform } from '@ionic/angular';
+import { finalize } from 'rxjs/operators';
 
 
 
@@ -29,12 +31,14 @@ export class EditItemPage implements OnInit {
   tagInput = '';
   statusBool: boolean;
   imageBase64: any = '../../../assets/placeholder_item.png';
+  downloadURL = '';
   isEditMode = false;
   itemID: string;
   imageUploaded = false;
+  percent = -1;
 
   options: CameraOptions = {
-    quality: 50,
+    quality: 90,
     destinationType: this.camera.DestinationType.DATA_URL,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
@@ -48,6 +52,7 @@ export class EditItemPage implements OnInit {
     private fireStorage: AngularFireStorage,
     private itemService: ItemService,
     private toastController: ToastController,
+    private loadingController: LoadingController,
     private userService: UserService,
     private camera: Camera,
     private alertController: AlertController,
@@ -66,6 +71,10 @@ export class EditItemPage implements OnInit {
     if (this.isEditMode) {
       this.loadItem(this.itemID);
     }
+  }
+
+  viewWillEnter() {
+
   }
 
   async presentAlertConfirm(item: Item) {
@@ -91,6 +100,13 @@ export class EditItemPage implements OnInit {
     await alert.present();
   }
 
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Lädt...',
+    });
+    await loading.present();
+  }
+
 
   loadItem(itemID: string) {
     this.itemService.getItem(itemID).subscribe({
@@ -102,6 +118,8 @@ export class EditItemPage implements OnInit {
       }
     });
   }
+
+
   loadUser() {
     this.userService.getUser('0').subscribe({
       next: user => {
@@ -128,9 +146,22 @@ export class EditItemPage implements OnInit {
   updateItem() {
     this.item.status = this.statusBool ? 'active' : 'disabled';
 
+    // Uploading Image
     if (this.imageUploaded) {
-      const ref = this.fireStorage.storage.ref().child(`/item-images/${this.item._id}.jpg`);
-      ref.putString(this.imageBase64, 'data_url', { contentType: 'image/jpg' });
+      const ref = this.fireStorage.ref(`/item-images/${this.item._id}.jpg`);
+      const uploadTask = ref.putString(this.imageBase64, 'data_url', { contentType: 'image/jpg' });
+
+      // Presenting the Loading Screen
+      this.presentLoading();
+      uploadTask.percentageChanges().subscribe( percent => {
+        this.percent = percent;
+      });
+      uploadTask.snapshotChanges().pipe(
+        finalize(() => ref.getDownloadURL().subscribe(itemImage => {
+          this.navController.navigateRoot('/account-view');
+          this.loadingController.dismiss();
+        }) )
+      ).subscribe();
     }
 
     this.itemService.updateItem(this.item).subscribe({
@@ -141,7 +172,6 @@ export class EditItemPage implements OnInit {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
       }
     });
   }
