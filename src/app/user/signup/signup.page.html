@@ -28,9 +28,7 @@
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Hausnummer:</ion-label>
-			<ion-input
-				[(ngModel)]="user.address.houseNumber"
-			></ion-input>
+			<ion-input [(ngModel)]="user.address.houseNumber"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">PLZ:</ion-label>
@@ -41,12 +39,8 @@
 			<ion-input [(ngModel)]="user.address.city"></ion-input>
 		</ion-item>
 		<br />
-		<ion-button
-			[disabled]="password && password !== confirmPassword"
-			expand="block"
-			(click)="register()"
-			>Registrieren</ion-button
-		>
+		<ion-button [disabled]="password && password !== confirmPassword" expand="block" (click)="register()">
+			Registrieren</ion-button>
 	</div>
 
 	<div class="ion-padding" *ngIf="haveAccount">
@@ -61,6 +55,9 @@
 		<br />
 		<ion-button expand="block" (click)="signin()">Anmelden</ion-button>
 	</div>
+
+	<ion-spinner style="margin: 20px auto; display: flex;" *ngIf="loading" name="dots"></ion-spinner>
+
 </ion-content>
 
 <ion-footer no-shadow style="background:white">

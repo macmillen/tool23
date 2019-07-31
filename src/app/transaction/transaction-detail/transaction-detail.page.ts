@@ -65,10 +65,11 @@ export class TransactionDetailPage implements OnInit {
             next: async () => {
                 const toast = await this.toastController.create({
                     message: 'Anfrage wurde gestellt.',
-                    duration: 2000
+                    duration: 2000,
+                    position: 'top'
                 });
                 toast.present();
-                this.navController.navigateRoot('/transaction-list');
+                this.navController.navigateRoot('/transaction-list?segment=outbound');
             }
         });
     }

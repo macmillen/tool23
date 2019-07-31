@@ -46,9 +46,15 @@
   <div class="items">
 
     <ion-list>
-      <ion-list-header>
-        <ion-label *ngIf="id === '0'">Meine Anzeigen:</ion-label>
-        <ion-label *ngIf="id !== '0'">Anzeigen</ion-label>
+      <ion-item *ngIf="id === '0'">
+        <ion-label>Meine Anzeigen:</ion-label>
+        <ion-button (click)="goToCreateItem()" slot="end">
+          <ion-icon name="add"></ion-icon>
+          Anzeige erstellen
+        </ion-button>
+      </ion-item>
+      <ion-list-header *ngIf="id !== '0'">
+        <ion-label>Anzeigen</ion-label>
       </ion-list-header>
 
       <ion-spinner style="margin: 50px auto; display: flex;" *ngIf="pending" name="dots"></ion-spinner>
@@ -57,13 +63,14 @@
         <ion-card>
           <ion-card-header>
             <ion-card-title style="text-align: center; margin: 10px 0">Keine Anzeigen vorhanden</ion-card-title>
-            <ion-card-subtitle style="margin: 23px 0 -1px 0 !important;" class="ion-text-center">Willst du eine Anzeige erstellen?</ion-card-subtitle>
+            <ion-card-subtitle style="margin: 23px 0 -1px 0 !important;" class="ion-text-center">Willst du eine Anzeige
+              erstellen?</ion-card-subtitle>
             <ion-card-content>
               <ion-button expand="block" (click)="goToCreateItem()">Anzeige erstellen</ion-button>
             </ion-card-content>
           </ion-card-header>
         </ion-card>
-      
+
       </section>
 
       <ion-item-sliding #slidingItem *ngFor="let i of items">

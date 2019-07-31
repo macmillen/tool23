@@ -146,7 +146,6 @@ export class AccountViewPage  {
     this.navController.navigateForward(`/edit-item/`);
   }
 
-
   goToEditAccount() {
     this.navController.navigateForward(`/edit-user/${this.user.userID}`);
   }

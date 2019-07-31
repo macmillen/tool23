@@ -75,10 +75,6 @@ export class MainListPage implements OnInit {
     this.navController.navigateForward(`/item-detail/${itemID}`);
   }
 
-  goToCreateItem() {
-    this.navController.navigateForward(`/edit-item/`);
-  }
-
   async searchItem() {
     const modal: HTMLIonModalElement =
       await this.modalController.create({

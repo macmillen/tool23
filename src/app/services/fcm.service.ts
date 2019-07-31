@@ -49,7 +49,8 @@ export class FcmService {
         // Received in foreground
         const toast = await this.toastController.create({
           message: 'Sie haben eine neue Anfrage erhalten.',
-          duration: 2000
+          duration: 2000,
+          position: 'top'
         });
         toast.present();
       }

@@ -13,18 +13,18 @@
   </ion-refresher>
 
   <ion-segment (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="inbound" checked>
+    <ion-segment-button value="inbound" [checked]="filter === 'inbound'">
       <ion-label>Eingehend</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="outbound">
+    <ion-segment-button value="outbound" [checked]="filter === 'outbound'">
       <ion-label>Ausgehend</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="current">
+    <ion-segment-button value="current" [checked]="filter === 'current'">
       <ion-label>Laufend</ion-label>
     </ion-segment-button>
   </ion-segment>
 
-  <ion-list>
+  <ion-list *ngIf="user">
     <div
       *ngIf="(filter === 'inbound' && noData.inbound) || (filter === 'outbound' && noData.outbound) || (filter === 'current' && noData.current)">
       <ion-card>

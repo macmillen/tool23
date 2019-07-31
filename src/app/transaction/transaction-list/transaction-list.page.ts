@@ -6,6 +6,7 @@ import { User } from 'src/app/models/user.model';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Transaction } from 'src/app/models/transaction.model';
 import { GiveRatingComponent } from './give-rating/give-rating.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-transaction-list',
@@ -14,7 +15,7 @@ import { GiveRatingComponent } from './give-rating/give-rating.component';
 })
 export class TransactionListPage implements OnInit {
     transactionRequests: TransactionRequest[];
-    filter: 'inbound' | 'outbound' | 'current' = 'inbound';
+    filter: 'inbound' | 'outbound' | 'current';
     user: User;
     noData = { inbound: true, outbound: true, current: true };
 
@@ -24,6 +25,7 @@ export class TransactionListPage implements OnInit {
         private alertController: AlertController,
         private modalController: ModalController,
         private ngZone: NgZone,
+        private activatedRoute: ActivatedRoute,
     ) { }
 
     ngOnInit() {
@@ -31,11 +33,24 @@ export class TransactionListPage implements OnInit {
             next: user => this.user = user
         });
         this.fetchTransactions();
+
+        this.activatedRoute.queryParamMap.subscribe({
+            next: params => {
+                const segmentQueryParam = params.get('segment');
+                if (segmentQueryParam === 'outbound') {
+                    this.filter = 'outbound';
+                } else {
+                    this.filter = 'inbound';
+                }
+            }
+        });
     }
 
     // change the list: inbound, outbound or current
     segmentChanged({ target: { value } }) {
-        this.filter = value;
+        if (value) {
+            this.filter = value;
+        }
     }
 
     // get all transactions to display them in a list

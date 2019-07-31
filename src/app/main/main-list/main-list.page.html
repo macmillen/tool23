@@ -39,17 +39,11 @@
         </ion-thumbnail>
         <ion-label class="ion-padding-start ion-margin-start">{{item.title}}
         </ion-label>
-        <ion-icon slot="end" *ngIf="item.userID === user.userID" name="person"></ion-icon>
+        <ion-icon color="primary" slot="end" *ngIf="item.userID === user.userID" name="person"></ion-icon>
         <ion-label *ngIf="item.userID !== user.userID" class="ion-float-right ion-text-end">{{getRange(item.distance)}}
         </ion-label>
       </ion-item>
     </div>
   </ion-list>
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="goToCreateItem()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>
 <app-footer></app-footer>

@@ -171,7 +171,8 @@ export class EditItemPage implements OnInit {
       next: async () => {
         const toast = await this.toastController.create({
           message: `Der Gegenstand '${this.item.title}' wurde aktualisiert!`,
-          duration: 2000
+          duration: 2000,
+          position: 'top'
         });
         toast.present();
 
@@ -185,7 +186,8 @@ export class EditItemPage implements OnInit {
       next: async () => {
         const toast = await this.toastController.create({
           message: `Der Gegenstand '${this.item.title}' wurde erstellt!`,
-          duration: 2000
+          duration: 2000,
+          position: 'top'
         });
         toast.present();
 
@@ -200,7 +202,8 @@ export class EditItemPage implements OnInit {
       next: async () => {
         const toast = await this.toastController.create({
           message: `Der Gegenstand' ${this.item.title} ' wurde gelöscht`,
-          duration: 2000
+          duration: 2000,
+          position: 'top'
         });
         toast.present();
 

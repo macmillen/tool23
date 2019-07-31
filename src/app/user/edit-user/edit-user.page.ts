@@ -82,7 +82,8 @@ export class EditUserPage implements OnInit {
       next: async () => {
         const toast = await this.toastController.create({
           message: `Der User '${this.user.username}' wurde aktualisiert!`,
-          duration: 2000
+          duration: 2000,
+          position: 'top'
         });
         toast.present();
       }

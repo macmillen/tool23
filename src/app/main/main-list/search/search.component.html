@@ -1,6 +1,6 @@
 <ion-header>
   <ion-searchbar (ionClear)="clearSearchbar()" [showCancelButton]="true" (ionCancel)="modalController.dismiss()"
-    (ionInput)="setTags($event)" (keyup.enter)="search()">
+    (ionInput)="setTags($event)" (keyup.enter)="search('')">
   </ion-searchbar>
 </ion-header>
 
