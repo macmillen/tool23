@@ -14,6 +14,7 @@ export class SignupPage implements OnInit {
 	password: string;
 	confirmPassword: string;
 	haveAccount = true;
+	showWelcomeSlides = false;
 
 	constructor(
 		private router: Router,
@@ -30,13 +31,24 @@ export class SignupPage implements OnInit {
 	// check if the user is logged in
 	isAuth() {
 		this.userService.isAuthenticated().subscribe({
-			next: isAuth =>
-				isAuth ? this.navController.navigateRoot('/account-view') : null
+			next: isAuth => {
+				if (isAuth) {
+					if (this.showWelcomeSlides) {
+						this.navController.navigateRoot('/slide');
+					} else {
+						this.navController.navigateRoot('/account-view');
+					}
+				} else {
+					null;
+				}
+			}
 		});
 	}
 
 	// create a new user
 	register() {
+		this.showWelcomeSlides = true;
+
 		const {
 			email,
 			username,
@@ -75,6 +87,7 @@ export class SignupPage implements OnInit {
 	}
 
 	signin() {
+		console.log(this.showWelcomeSlides);
 		if (this.user.email === '' || this.password === '') {
 			this.presentToast('Beide Felder müssen ausgefüllt werden!');
 			return;
