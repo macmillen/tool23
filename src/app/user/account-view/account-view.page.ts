@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { PopoverController, NavController, ToastController, IonItemSliding } from '@ionic/angular';
+import { PopoverController, NavController, ToastController, IonItemSliding, ModalController } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
+import { ReviewsComponent } from './reviews/reviews.component';
 import { User } from 'src/app/models/user.model';
 import { Item } from 'src/app/models/item.model';
 import { UserService } from 'src/app/services/user.service';
@@ -14,8 +15,8 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './account-view.page.html',
   styleUrls: ['./account-view.page.scss']
 })
-export class AccountViewPage  {
-  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null};
+export class AccountViewPage {
+  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null };
   items: Item[];
   id: string;
   pending = true;
@@ -31,7 +32,8 @@ export class AccountViewPage  {
     private fireStorage: AngularFireStorage,
     private navController: NavController,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController,
   ) { }
 
 
@@ -122,7 +124,7 @@ export class AccountViewPage  {
     });
   }
 
-  deleteItem( item: Item) {
+  deleteItem(item: Item) {
     this.itemService.deleteItem(item._id).subscribe({
       next: async () => {
         const toast = await this.toastController.create({
@@ -169,5 +171,16 @@ export class AccountViewPage  {
 
   showHistory() {
     console.log('Show History');
+  }
+
+  async showReviews() {
+    const modal: HTMLIonModalElement =
+      await this.modalController.create({
+        component: ReviewsComponent,
+        componentProps: {
+          userID: this.id
+        }
+      });
+    await modal.present();
   }
 }
