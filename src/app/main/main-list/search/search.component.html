@@ -5,6 +5,8 @@
 </ion-header>
 
 <ion-content>
+  <ion-spinner style="margin: 50px auto; display: flex;" *ngIf="loading" name="dots"></ion-spinner>
+
   <ion-list>
     <div *ngFor="let tag of filteredTags;">
       <ion-item button (click)="search(tag)">

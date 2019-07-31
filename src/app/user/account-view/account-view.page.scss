@@ -8,3 +8,7 @@
 		border-radius: 75px;
 	}
 }
+
+:host ::ng-deep rating.ng-untouched.ng-pristine.ng-valid ion-button {
+    margin-left: -11px;
+}

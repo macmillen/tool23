@@ -46,7 +46,7 @@ export const searchItems = async (req: Request, res: Response) => {
             //maxDistance: 2,
             query: {
                 status: "active",
-                userID: { $ne: user.userID },
+                // userID: { $ne: user.userID },
                 $or: [
                     { title: { $regex: `.*${searchString}.*`, $options: 'i' } },
                     { tags: { $regex: `.*${searchString}.*`, $options: 'i' } }

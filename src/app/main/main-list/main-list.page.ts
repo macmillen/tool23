@@ -20,6 +20,7 @@ export class MainListPage implements OnInit {
   tags: string[] = [];
   user: User;
   searchMode = false;
+  searchString = '';
   searching = false;
   itemImageURLs = new Map<string, string>();
 
@@ -88,9 +89,9 @@ export class MainListPage implements OnInit {
       });
 
     modal.onDidDismiss().then(data => {
-      const searchString = data.data.searchString;
-      if (searchString) {
-        this.searchItems(searchString);
+      this.searchString = data.data.searchString;
+      if (this.searchString) {
+        this.searchItems(this.searchString);
       }
     });
 

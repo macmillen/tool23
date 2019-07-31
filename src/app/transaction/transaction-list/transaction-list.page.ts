@@ -40,7 +40,6 @@ export class TransactionListPage implements OnInit {
 
     // get all transactions to display them in a list
     fetchTransactions(event?: any) {
-        this.transactionRequests = [];
         this.noData = { current: true, inbound: true, outbound: true };
         this.transactionService.getTransactions().subscribe({
             next: transactionRequests => {

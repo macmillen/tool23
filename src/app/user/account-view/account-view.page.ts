@@ -139,6 +139,7 @@ export class AccountViewPage  {
   }
 
   getItemImageURL(item: Item) {
+    this.itemImageURLs.set(item._id, 'assets/placeholder_item.png');
     const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
     ref.getDownloadURL().subscribe({
       next: url => this.itemImageURLs.set(item._id, url)

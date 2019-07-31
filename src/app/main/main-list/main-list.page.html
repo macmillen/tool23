@@ -1,25 +1,41 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Tool23</ion-title>
+    <ion-input style="padding-left: 20px !important; font-size: 20px;" placeholder="Search" [value]="searchString" (ionFocus)="searchItem()"></ion-input>
     <ion-buttons slot="end">
-      <ion-button (click)="searchItem()">
-        <ion-icon slot="icon-only" name="search"></ion-icon>
+      <ion-button (click)="searchItems(''); searchString = ''">
+        <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <!-- <ion-searchbar [value]="searchString" (ionClear)="clearSearchbar()" (ionFocus)="searchItem()">
+  </ion-searchbar> -->
 </ion-header>
 
 <ion-content>
   <ion-spinner style="margin: 50px auto; display: flex;" *ngIf="searching" name="dots"></ion-spinner>
 
-  <ion-list>
+  <ion-card *ngIf="!items.length && !searching">
+    <ion-card-header>
+      <ion-card-title style="text-align: center; margin: 10px 0">Keine Einträge vorhanden</ion-card-title>
+      <ion-card-subtitle style="margin: 23px 0 -1px 0 !important;" class="ion-text-center">Willst du Einträge in der
+        Nähe anzeigen?</ion-card-subtitle>
+      <ion-card-content>
+        <ion-button expand="block" (click)="searchItems('')">In der Nähe</ion-button>
+      </ion-card-content>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-list [hidden]="searching">
     <div *ngFor="let item of items;">
       <ion-item button (click)="gotoDetail(item._id)">
         <ion-thumbnail slot="start">
           <ion-img [src]="itemImageURLs.get(item._id)"></ion-img>
         </ion-thumbnail>
-        <ion-label class="ion-padding-start ion-margin-start">{{item.title}}</ion-label>
-        <ion-label class="ion-float-right ion-text-end">{{getRange(item.distance)}}</ion-label>
+        <ion-label class="ion-padding-start ion-margin-start">{{item.title}}
+        </ion-label>
+        <ion-icon slot="end" *ngIf="item.userID === user.userID" name="person"></ion-icon>
+        <ion-label *ngIf="item.userID !== user.userID" class="ion-float-right ion-text-end">{{getRange(item.distance)}}
+        </ion-label>
       </ion-item>
     </div>
   </ion-list>

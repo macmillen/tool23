@@ -5,41 +5,41 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
-  
+
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-list *ngIf="transaction">
     <ion-item>
       <ion-label>{{item.title}}</ion-label>
     </ion-item>
     <ion-item-divider></ion-item-divider>
     <ion-item>
-      <ion-label>Abhol Datum</ion-label>
-      <ion-datetime value="1990-02-19" placeholder="Select Date"></ion-datetime>
+      <ion-label>Abholdatum</ion-label>
+      <ion-datetime [min]="minYear" [max]="maxYear" displayFormat="YYYY-MM-DD" (ionChange)="setDate($event, 'start')"
+        placeholder="Wähle Startdatum"></ion-datetime>
     </ion-item>
     <ion-item>
-      <ion-label>Abholung</ion-label>
-      <ion-datetime display-format="h:mm A" picker-format="h:mm A" value="1990-02-19T07:43Z"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label>Rückgabe Datum</ion-label>
-      <ion-datetime value="1990-02-20" placeholder="Select Date"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label>Rückgabe</ion-label>
-      <ion-datetime display-format="h:mm A" picker-format="h:mm A" value="1990-02-19T07:43Z"></ion-datetime>
+      <ion-label>Rückgabedatum</ion-label>
+      <ion-datetime [min]="minYear" [max]="maxYear" displayFormat="YYYY-MM-DD" (ionChange)="setDate($event, 'end')"
+        placeholder="Wähle Enddatum">
+      </ion-datetime>
     </ion-item>
     <ion-item-divider></ion-item-divider>
     <ion-item>
       <ion-label position="stacked">Nachricht</ion-label>
-      <ion-textarea placeholder="Nachricht schreiben"
-                    required="true"
-                    [(ngModel)]="transaction.message">
+      <ion-textarea placeholder="Nachricht schreiben" required="true" [(ngModel)]="transaction.message">
       </ion-textarea>
     </ion-item>
 
-    <ion-button expand="full" (click)="requestItem()">
+    <ion-item>
+      <ion-text style="margin: 10px 0" *ngIf="errorDate" color="danger">
+        Das Enddatum muss größer sein als das Startdatum
+      </ion-text>
+    </ion-item>
+
+    <ion-button [disabled]="errorDate || !transaction.startDate || !transaction.endDate" expand="block"
+      (click)="requestItem()">
       Item anfragen
     </ion-button>
   </ion-list>
