@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { PopoverController, NavController, ToastController, IonItemSliding } from '@ionic/angular';
+import { PopoverController, NavController, ToastController, IonItemSliding, ModalController } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
+import { ReviewsComponent } from './reviews/reviews.component'
 import { User } from 'src/app/models/user.model';
 import { Item } from 'src/app/models/item.model';
 import { UserService } from 'src/app/services/user.service';
@@ -8,6 +9,9 @@ import { ItemService } from 'src/app/services/item.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { TransactionService } from 'src/app/services/transaction.service';
+import { Review } from 'src/app/models/review.model';
+import { TransactionRequest } from 'server/src/models/transaction_request';
 
 @Component({
   selector: 'app-account-view',
@@ -23,6 +27,8 @@ export class AccountViewPage  {
   userImageURL = 'assets/placeholder.png';
   itemImageURLs = new Map<string, string>();
 
+  
+
   constructor(
     private popoverController: PopoverController,
     private route: ActivatedRoute,
@@ -31,8 +37,11 @@ export class AccountViewPage  {
     private fireStorage: AngularFireStorage,
     private navController: NavController,
     private toastController: ToastController,
-    private alertController: AlertController
-  ) { }
+    private alertController: AlertController,
+    private modalController: ModalController,
+    private transactionService: TransactionService,
+    private navCtrl: NavController
+  ) {}
 
 
   ionViewWillEnter() {
@@ -152,4 +161,16 @@ export class AccountViewPage  {
   showHistory() {
     console.log('Show History');
   }
+
+  async showReviews() {
+    const modal: HTMLIonModalElement =
+      await this.modalController.create({
+        component: ReviewsComponent,
+        componentProps: {
+          id_: this.id
+        }
+      });
+      await modal.present();
+
+    }
 }
