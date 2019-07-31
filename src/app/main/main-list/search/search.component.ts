@@ -5,61 +5,67 @@ import { ItemService } from 'src/app/services/item.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
 })
 
 export class SearchComponent implements OnInit {
 
-  filteredTags: string[] = [];
-  tags: string[];
-  searchString = '';
+    filteredTags: string[] = [];
+    tags: string[];
+    searchString = '';
+    loading = false;
 
-  @ViewChild(IonSearchbar)
-  private searchbar: IonSearchbar;
+    @ViewChild(IonSearchbar)
+    private searchbar: IonSearchbar;
 
-  constructor(
-    public modalController: ModalController,
-    private itemService: ItemService,
-  ) { }
+    constructor(
+        public modalController: ModalController,
+        private itemService: ItemService,
+    ) { }
 
-  ngOnInit() {
-    this.getTags();
-  }
-
-  ionViewDidEnter() {
-    this.searchbar.setFocus();
-  }
-
-  search(tag: string) {
-    if (tag) {
-      this.searchString = tag;
+    ngOnInit() {
+        this.getTags();
     }
-    this.modalController.dismiss({ searchString: this.searchString });
-  }
 
-  getTags() {
-    this.itemService.getTags().subscribe({
-      next: tags => this.tags = tags
-    });
-  }
+    ionViewDidEnter() {
+        this.searchbar.setFocus();
+    }
 
-  filterTags(str: string) {
-    this.searchString = str;
-    return this.tags.filter(
-      (v) => v.toLowerCase().includes(str.toLowerCase())
-    );
-  }
+    search(tag: string) {
+        if (tag) {
+            this.searchString = tag;
+        }
+        this.modalController.dismiss({ searchString: this.searchString });
+    }
 
-  setTags(ev: any) {
-    const searchString = ev.target.value;
-    this.filteredTags = this.filterTags(searchString);
-  }
+    getTags() {
+        this.loading = true;
+        this.itemService.getTags().subscribe({
+            next: tags => {
+                this.loading = false;
+                this.tags = tags;
+                this.filteredTags = tags;
+            }
+        });
+    }
 
-  clearSearchbar() {
-    this.searchbar.value = '';
-    this.filteredTags = [];
-  }
+    filterTags(str: string) {
+        this.searchString = str;
+        return this.tags.filter(
+            (v) => v.toLowerCase().includes(str.toLowerCase())
+        );
+    }
+
+    setTags(ev: any) {
+        const searchString = ev.target.value;
+        this.filteredTags = this.filterTags(searchString);
+    }
+
+    clearSearchbar() {
+        this.searchbar.value = '';
+        this.filteredTags = this.tags;
+    }
 
 }

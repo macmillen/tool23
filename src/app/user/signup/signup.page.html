@@ -34,7 +34,7 @@
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">PLZ:</ion-label>
-			<ion-input [(ngModel)]="user.address.zip" type="number"></ion-input>
+			<ion-input pattern="[0-9]{5}" [(ngModel)]="user.address.zip" type="number"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label position="stacked">Wohnort:</ion-label>

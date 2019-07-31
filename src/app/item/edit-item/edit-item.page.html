@@ -48,7 +48,7 @@
     </ion-item>
     <ion-item>
       <ion-label position="floating">PLZ</ion-label>
-      <ion-input [(ngModel)]="item.address.zip" type="number" clearOnEdit="true"></ion-input>
+      <ion-input pattern="[0-9]{5}" [(ngModel)]="item.address.zip" clearOnEdit="true" type="number"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Wohnort</ion-label>
