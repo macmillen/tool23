@@ -27,8 +27,6 @@ export class AccountViewPage  {
   userImageURL = 'assets/placeholder.png';
   itemImageURLs = new Map<string, string>();
 
-  
-
   constructor(
     private popoverController: PopoverController,
     private route: ActivatedRoute,
