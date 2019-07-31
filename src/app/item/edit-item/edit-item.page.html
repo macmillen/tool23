@@ -40,19 +40,19 @@
     <!-- adress -->
     <ion-item>
       <ion-label position="floating">Straße</ion-label>
-      <ion-input [(ngModel)]="item.address.street"></ion-input>
+      <ion-input [(ngModel)]="item.address.street" clearOnEdit="true"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Hausnummer</ion-label>
-      <ion-input [(ngModel)]="item.address.houseNumber"></ion-input>
+      <ion-input [(ngModel)]="item.address.houseNumber" clearOnEdit="true"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">PLZ</ion-label>
-      <ion-input [(ngModel)]="item.address.zip" type="number"></ion-input>
+      <ion-input [(ngModel)]="item.address.zip" type="number" clearOnEdit="true"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Wohnort</ion-label>
-      <ion-input [(ngModel)]="item.address.city"></ion-input>
+      <ion-input [(ngModel)]="item.address.city" clearOnEdit="true"></ion-input>
     </ion-item>
   
   

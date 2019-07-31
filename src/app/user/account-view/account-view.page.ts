@@ -142,6 +142,15 @@ export class AccountViewPage  {
     this.navController.navigateForward(`/item-detail/${itemID}`);
   }
 
+  goToCreateItem() {
+    this.navController.navigateForward(`/edit-item/`);
+  }
+
+
+  goToEditAccount() {
+    this.navController.navigateForward(`/edit-user/${this.user.userID}`);
+  }
+
   getUserImageURL() {
     const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
@@ -157,9 +166,6 @@ export class AccountViewPage  {
     });
   }
 
-  goToEditAccount() {
-    this.navController.navigateForward(`/edit-user/${this.user.userID}`);
-  }
 
   showHistory() {
     console.log('Show History');

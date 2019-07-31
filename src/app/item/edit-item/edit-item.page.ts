@@ -63,13 +63,12 @@ export class EditItemPage implements OnInit {
     this.itemID = this.route.snapshot.paramMap.get('itemID');
     if (this.itemID) {
       this.isEditMode = true;
+      this.loadItem(this.itemID);
       this.pageTitle = 'Item bearbeiten';
     } else {
       this.isEditMode = false;
       this.pageTitle = 'Item erstellen';
-    }
-    if (this.isEditMode) {
-      this.loadItem(this.itemID);
+      this.loadUser();
     }
   }
 
@@ -124,6 +123,10 @@ export class EditItemPage implements OnInit {
     this.userService.getUser('0').subscribe({
       next: user => {
         this.user = user;
+        console.log(this.user.address);
+        if (!this.isEditMode) {
+          this.item.address = this.user.address;
+        }
       }
     });
   }
