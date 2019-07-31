@@ -167,7 +167,7 @@ export class AccountViewPage  {
       await this.modalController.create({
         component: ReviewsComponent,
         componentProps: {
-          id_: this.id
+          userID: this.id
         }
       });
       await modal.present();

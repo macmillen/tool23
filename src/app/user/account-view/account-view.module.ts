@@ -9,6 +9,7 @@ import { AccountViewPage } from './account-view.page';
 import { FooterComponentModule } from '../../footer/footer.component.module';
 import { MoreComponent } from './more/more.component';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { IonicRatingModule } from 'ionic4-rating';
 
 const routes: Routes = [
   {
@@ -23,7 +24,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    FooterComponentModule
+    FooterComponentModule,
+    IonicRatingModule
   ],
   declarations: [AccountViewPage, MoreComponent, ReviewsComponent],
   entryComponents: [MoreComponent, ReviewsComponent]

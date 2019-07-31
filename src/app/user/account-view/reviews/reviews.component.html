@@ -1,23 +1,38 @@
 <ion-header>
+  <ion-toolbar>
+    <ion-title>Bewertungen</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalController.dismiss()">
+        <ion-icon name="close"> </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <div *ngFor="let transaction of transactions;">
-      <ng-template [ngIf]="transaction.review != null">
-        <ion-item >
-          <ion-label class="ion-padding-start ion-margin-start">
-            <ng-template [ngIf]="transaction.giverID === this.id">
-              <ion-label>transaction.review.takerRating</ion-label>
-              <ion-text>transaction.review.takerComment</ion-text>
-            </ng-template>
-            <ng-template #elseBlock>
-                <ion-label>transaction.review.giverRating</ion-label>
-                <ion-text>transaction.review.giverComment</ion-text>
-            </ng-template>
-          </ion-label>
-      </ion-item>
-    </ng-template>
-    </div>
+  <ion-list *ngIf="user">
+    <ion-card *ngFor="let t of transactions">
+      <ng-container
+        *ngIf="(t.takerID === user.userID && t.review.giverRating) || (t.giverID === user.userID && t.review.takerRating)">
+        <ion-card-title class="ion-text-center">{{t.item.title}}</ion-card-title>
+        <ion-card-content>
+          <div style="margin: auto;display: flex;justify-content: center;">
+
+            <ion-chip slot="end">
+              <ion-avatar>
+                <img [src]="userImageURLs.get(t.user.userID)">
+              </ion-avatar>
+              <ion-label>{{t.user.username}}</ion-label>
+            </ion-chip>
+          </div>
+          <rating *ngIf="t.takerID === user.userID" [(ngModel)]="t.review.giverRating" readonly="true" size="default"
+            style="margin: 0 0;"> </rating>
+          <rating *ngIf="t.giverID === user.userID" [(ngModel)]="t.review.takerRating" readonly="true" size="default"
+            style="margin: 0 0;"> </rating>
+          <ng-container *ngIf="t.giverID === user.userID">{{t.review.takerComment}}</ng-container>
+          <ng-container *ngIf="t.takerID === user.userID">{{t.review.giverComment}}</ng-container>
+        </ion-card-content>
+      </ng-container>
+    </ion-card>
   </ion-list>
 </ion-content>
