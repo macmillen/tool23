@@ -29,6 +29,7 @@
     </ion-item>
 
     <ion-img (click)="openCamera()" [src]="imageBase64" width="50" height="50"></ion-img>
+    <ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
     
     <!-- description -->
     <ion-item>

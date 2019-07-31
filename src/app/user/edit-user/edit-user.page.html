@@ -10,6 +10,7 @@
 <ion-content>
 
 	<ion-img style="border-radius: 50%" (click)="openCamera()" [src]="imageBase64"></ion-img>
+	<ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
 
 	<div class="ion-padding">
 		<ion-item>
