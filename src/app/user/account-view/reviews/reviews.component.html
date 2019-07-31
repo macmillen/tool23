@@ -1,0 +1,23 @@
+<ion-header>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <div *ngFor="let transaction of transactions;">
+      <ng-template [ngIf]="transaction.review != null">
+        <ion-item >
+          <ion-label class="ion-padding-start ion-margin-start">
+            <ng-template [ngIf]="transaction.giverID === this.id">
+              <ion-label>transaction.review.takerRating</ion-label>
+              <ion-text>transaction.review.takerComment</ion-text>
+            </ng-template>
+            <ng-template #elseBlock>
+                <ion-label>transaction.review.giverRating</ion-label>
+                <ion-text>transaction.review.giverComment</ion-text>
+            </ng-template>
+          </ion-label>
+      </ion-item>
+    </ng-template>
+    </div>
+  </ion-list>
+</ion-content>
