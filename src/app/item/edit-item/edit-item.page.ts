@@ -71,14 +71,13 @@ export class EditItemPage implements OnInit {
   async presentAlertConfirm(item: Item) {
     const alert = await this.alertController.create({
       header: 'Bestätigen',
-      message: 'Message <strong>Item wirklich löschen?</strong>',
+      message: '<strong>Item wirklich löschen?</strong>',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'Abbrechen',
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
-            console.log('Confirm Cancel');
           }
         }, {
           text: 'Okay',
