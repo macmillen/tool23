@@ -60,14 +60,13 @@ export class AccountViewPage  {
   async presentAlertConfirm(slidingItem: IonItemSliding, item: Item) {
     const alert = await this.alertController.create({
       header: 'Bestätigen',
-      message: 'Message <strong>Item wirklich löschen?</strong>',
+      message: '<strong>Item wirklich löschen?</strong>',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'Abbrechen',
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
-            console.log('Confirm Cancel: blah');
             slidingItem.close();
           }
         }, {
@@ -101,6 +100,7 @@ export class AccountViewPage  {
       next: async () => {
         const toast = await this.toastController.create({
           message: `Der Gegenstand '${item.title}' wurde aktualisiert!`,
+          position: 'top',
           duration: 2000
         });
         toast.present();
@@ -115,6 +115,7 @@ export class AccountViewPage  {
       next: async () => {
         const toast = await this.toastController.create({
           message: `Der Gegenstand' ${item.title} ' wurde gelöscht`,
+          position: 'top',
           duration: 2000
         });
         toast.present();
