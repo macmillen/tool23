@@ -32,6 +32,9 @@ export class TransactionListPage implements OnInit {
         this.userService.getUser('0').subscribe({
             next: user => this.user = user
         });
+    }
+
+    ionViewDidEnter() {
         this.fetchTransactions();
 
         this.activatedRoute.queryParamMap.subscribe({
