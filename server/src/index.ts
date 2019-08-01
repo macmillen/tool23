@@ -7,9 +7,10 @@ import { checkAuth } from './middlewares/check_auth';
 import * as cors from 'cors';
 import { connectMongoDB } from './config/mongodb';
 
+// create the server
 const app = express();
 
-// Express configuration
+// * EXPRESS CONFIG
 app.set('port', process.env.PORT || 3000);
 app.use(json());
 app.use(urlencoded({ extended: true }));
@@ -48,8 +49,10 @@ app.put('/api/revoke-transaction', checkAuth, transactionController.revokeTransa
 
 app.get('*', () => console.log('OOOOOO'));
 
+// start the server
 app.listen(app.get('port'), () => {
     console.log(`Server listening on port ${app.get('port')}!`);
 });
 
+// connect to the database
 connectMongoDB();

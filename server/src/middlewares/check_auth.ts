@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { fireAuth } from '../config/firebase';
 
+/**
+ * takes the auth cookie from header
+ * sets user ID and email on req object
+ * @param req authorization cookie
+ * @param res 
+ * @param next 
+ */
 export let checkAuth = async (req: Request, res: Response, next: NextFunction) => {
 
     try {

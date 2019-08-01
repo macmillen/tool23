@@ -4,6 +4,12 @@ import { Item } from '../models/item_model';
 import { ObjectId } from 'bson';
 import { getGeoLocation } from '../config/geocoder';
 
+/**
+ * Returns all tags from the database
+ * Is used for searching
+ * @param req 
+ * @param res tags asJSON
+ */
 export const getTags = async (req: Request, res: Response) => {
     const tags = (await itemCollection.aggregate([
         {
@@ -28,6 +34,11 @@ export const getTags = async (req: Request, res: Response) => {
     res.json(tags);
 };
 
+/**
+ * Returns all matching items for a given searchstring
+ * @param req searchstring
+ * @param res items as JSON
+ */
 export const searchItems = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const searchString: string = req.params.searchString || '';
@@ -61,6 +72,11 @@ export const searchItems = async (req: Request, res: Response) => {
 
 }
 
+/**
+ * Takes the submitted form data and creates a new array
+ * @param req item data
+ * @param res 
+ */
 export const createItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const item: Item = req.body.item;
@@ -91,6 +107,12 @@ export const createItem = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes the ID of the current user and returns all items
+ * Created by this user
+ * @param req user ID
+ * @param res Items as JSON
+ */
 export const getItems = async (req: Request, res: Response) => {
     const userID: string = req.params.userID || req.body.global_googleUID;
 
@@ -103,6 +125,12 @@ export const getItems = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes an item ID as input
+ * Returns the item from database
+ * @param req item ID
+ * @param res item as JSON
+ */
 export const getItem = async (req: Request, res: Response) => {
     const itemID: string = req.params.itemID;
 
@@ -115,6 +143,13 @@ export const getItem = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes an item ID
+ * Deletes the item from the database
+ * Returns the deleted item
+ * @param req item ID
+ * @param res item as JSON
+ */
 export const deleteItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const itemID: string = req.params.itemID;
@@ -128,6 +163,12 @@ export const deleteItem = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes form data from an existing item
+ * Updates this item in the database
+ * @param req item
+ * @param res 
+ */
 export const updateItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const item: Item = req.body.item;

@@ -21,6 +21,10 @@ export let userCollection: Collection<User>;
 export let tokenCollection: Collection<Token>;
 export let transactionCollection: Collection<Transaction>;
 
+/**
+ * connect to the database 
+ * get the different collections
+ */
 export const connectMongoDB = async () => {
     try {
         await client.connect();

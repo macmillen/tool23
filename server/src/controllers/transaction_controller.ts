@@ -7,6 +7,12 @@ import { TransactionRequest } from '../models/transaction_request';
 import { User } from '../models/user_model';
 import { Item } from '../models/item_model';
 
+/**
+ * Takes the ID of the current user
+ * Finds all transactions related to this user from the database
+ * @param req user ID
+ * @param res TransactionRequest
+ */
 export const getTransactions = async (req: Request, res: Response) => {
     const userID: string = req.params.userID || req.body.global_googleUID;
 
@@ -53,6 +59,13 @@ export const getTransactions = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Gets the ID of the user who wants to borrow an item and the item ID
+ * Sends a notification to the user who owns the item
+ * Creates a transaction 
+ * @param req user ID, item ID
+ * @param res 
+ */
 export const requestItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID; // takerID
     const itemID: string = req.body.itemID;
@@ -94,6 +107,13 @@ export const requestItem = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Gets current user ID, transaction ID and taker ID
+ * Updates the transaction state to accepted
+ * Sends notification to taker
+ * @param req 
+ * @param res 
+ */
 export const acceptItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -122,6 +142,13 @@ export const acceptItem = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Gets current user ID, transaction ID and taker ID
+ * Updates the transaction state to declined
+ * Sends notification to taker
+ * @param req 
+ * @param res 
+ */
 export const declineItem = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -150,6 +177,12 @@ export const declineItem = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes ID of giver or take and the ID of a transaction
+ * Changes the state of the transaction to transfered
+ * @param userID 
+ * @param transactionID 
+ */
 const makeStateTransitionTransfered = async (userID: string, transactionID: string) => {
     return await transactionCollection.updateOne(
         {
@@ -159,6 +192,12 @@ const makeStateTransitionTransfered = async (userID: string, transactionID: stri
         { $set: { status: 'transfered' } });
 }
 
+/**
+ * Takes ID of giver or take and the ID of a transaction
+ * Changes the state of the transaction to finished
+ * @param userID 
+ * @param transactionID 
+ */
 const makeStateTransitionFinished = async (userID: string, transactionID: string) => {
     return await transactionCollection.updateOne(
         {
@@ -168,6 +207,11 @@ const makeStateTransitionFinished = async (userID: string, transactionID: string
         { $set: { status: 'finished' } });
 }
 
+/**
+ * Takes the ID of a transaction and marks it as given
+ * @param req user ID, transaction ID
+ * @param res 
+ */
 export const markGivenTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -188,6 +232,11 @@ export const markGivenTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes the ID of a transaction and marks it as taken
+ * @param req user ID, transaction ID
+ * @param res 
+ */
 export const markTakenTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -208,6 +257,11 @@ export const markTakenTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes the ID of a transaction and marks it as given back
+ * @param req user ID, transaction ID
+ * @param res 
+ */
 export const markGivenBackTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -228,6 +282,11 @@ export const markGivenBackTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes the ID of a transaction and marks it as taken back
+ * @param req user ID, transaction ID
+ * @param res 
+ */
 export const markTakenBackTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -248,6 +307,12 @@ export const markTakenBackTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes the ID of a transaction
+ * Sets it state to revoked
+ * @param req user ID, transaction ID
+ * @param res 
+ */
 export const revokeTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -270,6 +335,12 @@ export const revokeTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Takes taker data and transaction ID
+ * Updates the transaction with the review for the taker
+ * @param req transaction ID, taker rating, taker comment
+ * @param res 
+ */
 export const rateTakerTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -290,6 +361,11 @@ export const rateTakerTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Updates the transaction with the review for the giver
+ * @param req transaction ID, giver rating, giver comment
+ * @param res 
+ */
 export const rateGiverTransaction = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const transactionID: string = req.body.transactionID;
@@ -312,6 +388,11 @@ export const rateGiverTransaction = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Creates a token for the current user
+ * @param req token, user ID
+ * @param res 
+ */
 export const createToken = async (req: Request, res: Response) => {
     const userID: string = req.body.global_googleUID;
     const token: string = req.body.token;
