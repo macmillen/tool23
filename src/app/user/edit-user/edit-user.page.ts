@@ -4,7 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { LoadingController, ActionSheetController, Platform, NavController, ToastController  } from '@ionic/angular';
+import { LoadingController, ModalController, ActionSheetController, Platform, NavController, ToastController  } from '@ionic/angular';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -12,15 +12,18 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './edit-user.page.html',
   styleUrls: ['./edit-user.page.scss']
 })
+
+/**
+ * Page to edit your own user
+ */
 export class EditUserPage implements OnInit {
 
   validationsForm: FormGroup;
-
-  id: string;
-  imageBase64: any = '../../../assets/placeholder.png';
+  id: string; // ID of current user
+  imageBase64: any = '../../../assets/placeholder.png'; // immage as base64 with placeholder
   imageUploaded = false;
-  percent = -1;
-  user: User = {
+  percent = -1;   // Percentage for loading image
+  user: User = {  // Empty user, ready to set
     email: '',
     username: '',
     address: { city: '', houseNumber: '', street: '', zip: '' }
@@ -75,7 +78,9 @@ export class EditUserPage implements OnInit {
   ) {
   }
 
-
+  /**
+   * Fetch your own user object from the server, with your pic
+   */
   ngOnInit() {
     this.userService.getUser('0').subscribe({
       next: user => {
@@ -100,7 +105,10 @@ export class EditUserPage implements OnInit {
       city: new FormControl('', Validators.required)
     });
   }
-
+  /**
+  * Preinputs values in form to given user values
+  * 
+  */
   setEditUser(user: User) {
     this.validationsForm.get('username').setValue(user.username);
     this.validationsForm.get('email').setValue(user.email);
@@ -109,7 +117,10 @@ export class EditUserPage implements OnInit {
     this.validationsForm.get('city').setValue(user.address.city);
     this.validationsForm.get('zip').setValue(user.address.zip);
   }
-
+  /**
+  * Starts loading controller and displays message
+  * 
+  */	
   async presentLoading() {
     const loading = await this.loadingController.create({
       message: 'Lädt...',
@@ -117,7 +128,9 @@ export class EditUserPage implements OnInit {
     await loading.present();
   }
 
-
+/**
+* Shows actionSheet for camera interaction
+*/
   async presentCameraActionSheet() {
     const actionSheet = await this.actionSheetController.create({
       header: 'Foto',
@@ -147,6 +160,9 @@ export class EditUserPage implements OnInit {
     await actionSheet.present();
   }
 
+/**
+* Takes image with camera und saves it
+*/
   takeImage() {
     this.camera.getPicture(this.options).then((imageData) => {
       // If it's base64 (DATA_URL):
@@ -157,6 +173,10 @@ export class EditUserPage implements OnInit {
     });
   }
 
+  /**
+  * Fetch values from html and pushes the changed user values to the server; presents toast
+  * 
+  */
   updateUser() {
     let uploadedImage = !this.imageUploaded;
     let uploadedUser = false;
@@ -171,6 +191,7 @@ export class EditUserPage implements OnInit {
       });
       uploadTask.snapshotChanges().pipe(
         finalize(() => ref.getDownloadURL().subscribe(itemImage => {
+          this.navController.navigateRoot('/account-view');
           this.loadingController.dismiss();
           uploadedImage = true;
           this.goToAccountView(uploadedImage, uploadedUser);
@@ -191,13 +212,21 @@ export class EditUserPage implements OnInit {
       }
     });
   }
-
+/**
+* If both values are true, navigates to account page
+* @param uploadedImage True, if image is uploaded
+* @param uploadedItem True, if item is uploaded
+*/
   goToAccountView(uploadedImage: boolean, uploadedItem: boolean) {
     if (uploadedImage && uploadedItem) {
       this.navController.navigateRoot('/tabs/account-view');
     }
   }
 
+/**
+  * Fetches and sets user image class variable as base64 iamge
+  * 
+  */
   getUserImageURL() {
     const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
@@ -205,6 +234,11 @@ export class EditUserPage implements OnInit {
     });
   }
 
+  
+  /**
+  * opens camera and saves picture to image variable
+  * 
+  */
   openCamera() {
     this.presentCameraActionSheet();
   }

@@ -1,5 +1,8 @@
 import { Review } from "./review_model";
 
+/**
+ * represents every interaction between two users for ledning an item
+ */
 export interface Transaction {
     _id?: string;
     itemID: string;

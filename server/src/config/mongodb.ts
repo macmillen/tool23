@@ -6,6 +6,9 @@ import { Transaction } from '../models/transaction_model';
 
 const uri = "mongodb+srv://admin:verleihmasters99@cluster0-58wqp.mongodb.net/test?retryWrites=true&w=majority";
 
+/**
+ * create the mongo db client
+ */
 export const client = new MongoClient(uri, {
     useNewUrlParser: true,
 });
@@ -21,6 +24,10 @@ export let userCollection: Collection<User>;
 export let tokenCollection: Collection<Token>;
 export let transactionCollection: Collection<Transaction>;
 
+/**
+ * connect to the database 
+ * get the different collections
+ */
 export const connectMongoDB = async () => {
     try {
         await client.connect();

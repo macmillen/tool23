@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PopoverController, NavController, ToastController, IonItemSliding, ModalController } from '@ionic/angular';
+import { PopoverController, NavController, ModalController, ToastController, IonItemSliding } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { User } from 'src/app/models/user.model';
@@ -15,14 +15,17 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './account-view.page.html',
   styleUrls: ['./account-view.page.scss']
 })
+/**
+ * Page to view an account, either your own or of an other user
+ */
 export class AccountViewPage {
   user: User;
   items: Item[];
   id: string;
   pending = true;
 
-  userImageURL = 'assets/placeholder.png';
-  itemImageURLs = new Map<string, string>();
+  userImageURL = 'assets/placeholder.png';    // user image with placeholder pic
+  itemImageURLs = new Map<string, string>();  //Map for matching images to their corresponding image url
 
   constructor(
     private popoverController: PopoverController,
@@ -53,6 +56,12 @@ export class AccountViewPage {
     });
   }
 
+  /**
+  * activates and presents popover from event
+  * 
+  * @param {any} ev Event to present in popover
+  * @returns void (closes popover)
+  */  
   async presentPopover(ev: any) {
     const popover = await this.popoverController.create({
       component: MoreComponent,
@@ -62,6 +71,13 @@ export class AccountViewPage {
     return await popover.present();
   }
 
+  /**
+  * Alert to confirm deletion of item
+  * 
+  * @param {IonItemSliding} slidingItem Respective html slider to inital position
+  * @param {Item} item Item which should be deleted
+  * @returns void (opens alert)
+  */
   async presentAlertConfirm(slidingItem: IonItemSliding, item: Item) {
     const alert = await this.alertController.create({
       header: 'Bestätigen',
@@ -107,6 +123,13 @@ export class AccountViewPage {
     }
   }
 
+  /**
+  * Updates item status through slider
+  * 
+  * @param {IonItemSliding} slidingItem Respective html slider to inital position
+  * @param {Item} item Item which status should be updated
+  * @returns void (navigates to account-view)
+  */
   updateItem(slidingItem: IonItemSliding, item: Item) {
     item.status = item.status === 'disabled' ? 'active' : 'disabled';
     slidingItem.close();
@@ -124,6 +147,12 @@ export class AccountViewPage {
     });
   }
 
+  /**
+  * Updates item status through slider
+  * 
+  * @param {Item} item Item which status should be deleted
+  * @returns void (navigates to account-view)
+  */
   deleteItem(item: Item) {
     this.itemService.deleteItem(item._id).subscribe({
       next: async () => {
@@ -140,14 +169,25 @@ export class AccountViewPage {
     });
   }
 
+  /**
+  * Navigate to item-detail-page of item
+  * 
+  * @param {string} itemID ID of item to navigate to
+  */
   goToItemDetail(itemID: string) {
     this.navController.navigateForward(`/item-detail/${itemID}`);
   }
 
+  /**
+  * Navigate to item-creation-page of item
+  */
   goToCreateItem() {
     this.navController.navigateForward(`/edit-item/`);
   }
-
+  /**
+  * Navigate to account-page of current user
+  * 
+  */
   goToEditAccount() {
     this.navController.navigateForward(`/edit-user/${this.user.userID}`);
   }
@@ -159,7 +199,11 @@ export class AccountViewPage {
       error: e => { }
     });
   }
-
+  /**
+  * Fetches and sets item image url in class variable map
+  * 
+  * @param {Item} item Item to get Image from
+  */
   getItemImageURL(item: Item) {
     this.itemImageURLs.set(item._id, 'assets/placeholder_item.png');
     const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
@@ -172,7 +216,10 @@ export class AccountViewPage {
   showHistory() {
     console.log('Show History');
   }
-
+/**
+  * Displays modal to show all reviews
+  * 
+  */
   async showReviews() {
     const modal: HTMLIonModalElement =
       await this.modalController.create({

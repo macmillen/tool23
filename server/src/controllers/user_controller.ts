@@ -4,6 +4,11 @@ import { User } from '../models/user_model';
 import { userCollection, transactionCollection } from '../config/mongodb';
 import { getGeoLocation } from '../config/geocoder';
 
+/**
+ * Gets the form data from the register from and creates a new user
+ * @param req user, password
+ * @param res 
+ */
 export const register = async (req: Request, res: Response) => {
     const user: User = req.body.user;
     const password: string = req.body.password;
@@ -36,6 +41,14 @@ export const register = async (req: Request, res: Response) => {
 
 };
 
+/**
+ * Takes user ID 
+ * Gets user from database
+ * Calculates current review score
+ * Return complete user
+ * @param req userID
+ * @param res user as JSON
+ */
 export const getUser = async (req: Request, res: Response) => {
     let userID: string = req.params.userID;
     if (userID === '0') {
@@ -73,6 +86,12 @@ export const getUser = async (req: Request, res: Response) => {
     }
 };
 
+/**
+ * Takes data from user form 
+ * Updates user in database
+ * @param req user, user ID
+ * @param res 
+ */
 export const updateUser = async (req: Request, res: Response) => {
     const user: User = req.body.user;
     const userID = req.body.global_googleUID;

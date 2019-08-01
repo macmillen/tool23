@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from 'src/app/services/user.service';
 import { NavController, ToastController } from '@ionic/angular';
@@ -8,12 +9,16 @@ import { NavController, ToastController } from '@ionic/angular';
     templateUrl: './signup.page.html',
     styleUrls: ['./signup.page.scss']
 })
+
+/**
+ * SignUp Page for users to register
+ */
 export class SignupPage implements OnInit {
-    user: User;
-    password: string;
-    confirmPassword: string;
-    haveAccount = true;
-    loading = false;
+    user: User;     // User to work with
+    password: string;   // password, which is inserted
+    confirmPassword: string;    // password to confirm it is typed correctly
+    haveAccount = true;         
+    loading = false;        // True, as long as something is loading in the background, else false
 
     constructor(
         private userService: UserService,
@@ -21,12 +26,19 @@ export class SignupPage implements OnInit {
         private toastController: ToastController
     ) { }
 
+    /**
+    * Initializes user and checks for authentication
+    * 
+    */
     ngOnInit() {
         this.initUser();
         this.isAuth();
     }
 
-    // check if the user is logged in
+    /**
+    * Check if user is authenticated
+    * 
+    */
     isAuth() {
         const isAuthSub = this.userService.isAuthenticated().subscribe({
             next: isAuth => {
@@ -39,7 +51,10 @@ export class SignupPage implements OnInit {
         });
     }
 
-    // create a new user
+    /**
+    * Registers (creates) User based on values input in the corresponding html form
+    * 
+    */
     register() {
         const {
             email,
@@ -71,7 +86,10 @@ export class SignupPage implements OnInit {
             },
         });
     }
-
+   /**
+    * Sign in of the user, based on class variable User and Password
+    * 
+    */
     signin(welcomeSlides?: boolean) {
         if (this.user.email === '' || this.password === '') {
             this.presentToast('Beide Felder müssen ausgefüllt werden!');
@@ -88,6 +106,12 @@ export class SignupPage implements OnInit {
             });
     }
 
+    
+    /**
+    * Present a toast with given message
+    * @param {string} message Message to display in toast
+    * 
+    */
     async presentToast(message: string) {
         const toast = await this.toastController.create({
             header: 'Hinweis!',
@@ -98,16 +122,30 @@ export class SignupPage implements OnInit {
         toast.present();
     }
 
+    
+    /**
+    * Toogle the boolean "haveAccount"
+    * 
+    */
     toggleHaveAccount() {
         this.haveAccount = !this.haveAccount;
         this.clearInputs();
     }
 
+    /**
+    * Clears typed password and confirmedPassword
+    * 
+    */
     private clearInputs() {
         this.password = '';
         this.confirmPassword = '';
     }
 
+    
+    /**
+    * Initialize empty user to class variable user
+    * 
+    */
     private initUser() {
         this.user = {
             email: '',

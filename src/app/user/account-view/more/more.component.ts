@@ -7,6 +7,10 @@ import { NavController, PopoverController } from '@ionic/angular';
   templateUrl: './more.component.html',
   styleUrls: ['./more.component.scss'],
 })
+
+/**
+ * PopOver Message if you want to sign out
+ */
 export class MoreComponent implements OnInit {
 
   constructor(
@@ -17,6 +21,11 @@ export class MoreComponent implements OnInit {
 
   ngOnInit() { }
 
+  /**
+  * signs current user out via server and closes popUp
+  * 
+  * @returns void (closes popup)
+  */
   signOut() {
     this.userService.signOut().subscribe({
       next: () => {

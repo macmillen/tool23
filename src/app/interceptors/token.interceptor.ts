@@ -5,9 +5,13 @@ import { switchMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
 @Injectable()
+/**
+ * Interceptor sends auth token with every request to uniquly identify
+ */
 export class TokenInterceptor implements HttpInterceptor {
     constructor(public userService: UserService) { }
 
+    
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return this.userService.getIdToken().pipe(switchMap((token: string) => {
             if (token) {
