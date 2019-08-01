@@ -9,99 +9,104 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
-  selector: 'app-main-list',
-  templateUrl: './main-list.page.html',
-  styleUrls: ['./main-list.page.scss'],
+    selector: 'app-main-list',
+    templateUrl: './main-list.page.html',
+    styleUrls: ['./main-list.page.scss'],
 })
 
 export class MainListPage implements OnInit {
 
-  items: Item[] = [];
-  tags: string[] = [];
-  user: User;
-  searchMode = false;
-  searchString = '';
-  searching = false;
-  itemImageURLs = new Map<string, string>();
+    items: Item[] = [];
+    tags: string[] = [];
+    user: User;
+    searchMode = false;
+    searchString = '';
+    searching = false;
+    itemImageURLs = new Map<string, string>();
 
-  constructor(
-    private navController: NavController,
-    private modalController: ModalController,
-    private userService: UserService,
-    private itemService: ItemService,
-    private fireStorage: AngularFireStorage,
-    private toastController: ToastController,
-  ) { }
+    constructor(
+        private navController: NavController,
+        private modalController: ModalController,
+        private userService: UserService,
+        private itemService: ItemService,
+        private fireStorage: AngularFireStorage,
+        private toastController: ToastController,
+    ) { }
 
 
-  ngOnInit() {
-    this.getUser();
-    this.searchItems('');
-  }
+    ngOnInit() {
+        this.getUser();
+    }
 
-  searchItems(searchString: string) {
-    this.searching = true;
-    this.items = [];
-    this.itemService.searchItems(searchString).subscribe({
-      next: items => {
-        this.items = items;
-        items.forEach(i => this.getItemImageURL(i));
-      },
-      error: error => this.presentToast('Upsi, bei der Suche gabs ein Problem'),
-      complete: () => this.searching = false
-    });
-  }
+    ionViewDidEnter() {
+        this.searchString = '';
+        this.searchItems('');
+    }
 
-  getUser() {
-    this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
-      next: user => this.user = user
-    });
-  }
+    searchItems(searchString: string) {
+        this.searching = true;
+        this.items = [];
+        this.itemService.searchItems(searchString).subscribe({
+            next: items => {
+                this.items = items;
+                items.forEach(i => this.getItemImageURL(i));
+            },
+            error: error => this.presentToast('Upsi, bei der Suche gabs ein Problem'),
+            complete: () => this.searching = false
+        });
+    }
 
-  getRange(distance: number): string {
-    const distM = Math.round(distance);
-    return distance < 1000 ? distM + ' m' : (distM / 1000).toFixed(2) + ' km';
-  }
+    getUser() {
+        this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
+            next: user => this.user = user
+        });
+    }
 
-  getItemImageURL(item: Item) {
-    const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
-    this.itemImageURLs.set(item._id, '../../../assets/placeholder_item.png');
-    ref.getDownloadURL().subscribe({
-      next: url => this.itemImageURLs.set(item._id, url)
-    });
-  }
+    getRange(distance: number): string {
+        const distM = Math.round(distance);
+        return distance < 1000 ? distM + ' m' : (distM / 1000).toFixed(2) + ' km';
+    }
 
-  gotoDetail(itemID: string) {
-    this.navController.navigateForward(`/item-detail/${itemID}`);
-  }
+    getItemImageURL(item: Item) {
+        const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
+        this.itemImageURLs.set(item._id, '../../../assets/placeholder_item.png');
+        ref.getDownloadURL().subscribe({
+            next: url => this.itemImageURLs.set(item._id, url)
+        });
+    }
 
-  async searchItem() {
-    const modal: HTMLIonModalElement =
-      await this.modalController.create({
-        component: SearchComponent,
-        componentProps: {
-          items: this.items
-        }
-      });
+    gotoDetail(itemID: string) {
+        this.navController.navigateForward(`/item-detail/${itemID}`);
+    }
 
-    modal.onDidDismiss().then(data => {
-      this.searchString = data.data.searchString;
-      if (this.searchString) {
-        this.searchItems(this.searchString);
-      }
-    });
+    async searchItem() {
+        const modal: HTMLIonModalElement =
+            await this.modalController.create({
+                component: SearchComponent,
+                componentProps: {
+                    items: this.items
+                }
+            });
 
-    await modal.present();
-  }
+        modal.onDidDismiss().then(data => {
+            if (!data || !data.data) { return; }
+            this.searchString = data.data.searchString;
+            if (this.searchString) {
+                this.searchItems(this.searchString);
+            }
+        });
 
-  async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      header: 'Hinweis!',
-      message,
-      position: 'top',
-      duration: 2000
-    });
-    toast.present();
-  }
+        await modal.present();
+    }
+
+    async presentToast(message: string) {
+        const toast = await this.toastController.create({
+            header: 'Hinweis!',
+            message,
+            position: 'top',
+            duration: 2000
+        });
+        toast.present();
+    }
 
 }

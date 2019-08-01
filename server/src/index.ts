@@ -33,7 +33,8 @@ app.put('/api/update-user', checkAuth, userController.updateUser);
 
 // * TRANSACTIONS
 app.post('/api/request-item', checkAuth, transactionController.requestItem);
-app.get('/api/transactions', checkAuth, transactionController.getTransactions);
+app.get('/api/transactions/:userID', checkAuth, transactionController.getTransactions);
+app.get('/api/transactions/', checkAuth, transactionController.getTransactions);
 app.post('/api/create-token', checkAuth, transactionController.createToken);
 app.post('/api/accept-transaction', checkAuth, transactionController.acceptItem);
 app.post('/api/decline-transaction', checkAuth, transactionController.declineItem);

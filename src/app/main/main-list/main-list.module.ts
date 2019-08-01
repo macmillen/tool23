@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MainListPage } from './main-list.page';
-import { FooterComponentModule } from '../../footer/footer.component.module';
 import { SearchComponent } from './search/search.component';
 
 
@@ -23,7 +22,6 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    FooterComponentModule,
   ],
   declarations: [MainListPage, SearchComponent],
   entryComponents: [SearchComponent]

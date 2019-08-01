@@ -18,8 +18,6 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 
-
-
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],

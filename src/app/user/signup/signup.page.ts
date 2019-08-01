@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from 'src/app/services/user.service';
 import { NavController, ToastController } from '@ionic/angular';
@@ -17,7 +16,6 @@ export class SignupPage implements OnInit {
     loading = false;
 
     constructor(
-        private router: Router,
         private userService: UserService,
         private navController: NavController,
         private toastController: ToastController
@@ -31,7 +29,7 @@ export class SignupPage implements OnInit {
     // check if the user is logged in
     isAuth() {
         this.userService.isAuthenticated().subscribe({
-            next: isAuth => { if (isAuth) { this.navController.navigateRoot('/main-list'); } }
+            next: isAuth => { if (isAuth) { this.navController.navigateRoot('/'); } }
         });
     }
 
@@ -76,7 +74,7 @@ export class SignupPage implements OnInit {
         this.loading = true;
         this.userService.signin(this.user.email, this.password).subscribe(
             {
-                next: () => this.router.navigate(['main-list']),
+                next: () => this.navController.navigateRoot('/'),
                 error: e => {
                     this.presentToast('Es gab ein Server Problem. Sorry!');
                     this.loading = false;
