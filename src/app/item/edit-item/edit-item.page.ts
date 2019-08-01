@@ -19,20 +19,24 @@ import { Address } from 'src/app/models/address.model';
   templateUrl: './edit-item.page.html',
   styleUrls: ['./edit-item.page.scss'],
 })
+
+/**
+ * Page for editing specific items
+ */
 export class EditItemPage implements OnInit {
 
   validationsForm: FormGroup;
 
-  user: User;
-  pageTitle: string;
-  item: Item = null;
-  statusBool = true;
-  imageBase64: any = '../../../assets/placeholder_item.png';
-  downloadURL = '';
-  isEditMode = false;
-  imageUploaded = false;
-  itemID: string;
-  percent = -1;
+  user: User;  // User if Item
+  pageTitle: string;  // Title of Page
+  item: Item = null;  // Item to edit
+  statusBool = true;  // Status of item
+  imageBase64: any = '../../../assets/placeholder_item.png';  // Image of item
+  downloadURL = ''; 
+  isEditMode = false; // Switch for edit or create mode
+  imageUploaded = false;  // Check value for finished image upload
+  itemID: string; // ID of item to change
+  percent = -1; // Percentage of upload status
 
   @ViewChild('itemTitle')
   private itemTitleRef: IonInput;
@@ -92,6 +96,10 @@ export class EditItemPage implements OnInit {
     public plt: Platform) {
   }
 
+  /**
+   * Set initial values for page, determines if edit or create item
+   * 
+   */
   ngOnInit() {
     this.itemID = this.route.snapshot.paramMap.get('itemID');
     if (this.itemID) {
@@ -128,12 +136,19 @@ export class EditItemPage implements OnInit {
     });
   }
 
+  /**
+   * If Create-Mode, set focus to Title
+   */
   ionViewDidEnter() {
     if (!this.isEditMode) {
       this.itemTitleRef.setFocus();
     }
   }
 
+  /**
+   * Presents alert to confirm deletion of item
+   * @param item Item Object to delete
+   */
   async presentAlertConfirm(item: Item) {
     const alert = await this.alertController.create({
       header: 'Bestätigen',
@@ -156,6 +171,9 @@ export class EditItemPage implements OnInit {
     await alert.present();
   }
 
+  /**
+   * opens options sheet to select which source to take image from
+   */
   async presentCameraActionSheet() {
     const actionSheet = await this.actionSheetController.create({
       header: 'Foto',
@@ -184,7 +202,9 @@ export class EditItemPage implements OnInit {
     });
     await actionSheet.present();
   }
-
+  /**
+   * Takes image with selected method and saves it
+   */
   takeImage() {
     this.camera.getPicture(this.options).then((imageData) => {
       // If it's base64 (DATA_URL):
@@ -195,7 +215,9 @@ export class EditItemPage implements OnInit {
     });
   }
 
-
+  /**
+   * Presents loading message
+   */
   async presentLoading() {
     const loading = await this.loadingController.create({
       message: 'Lädt...',
@@ -203,7 +225,10 @@ export class EditItemPage implements OnInit {
     await loading.present();
   }
 
-
+  /**
+   * loads item from server by ID
+   * @param itemID ID of item to load
+   */
   loadItem(itemID: string) {
     this.itemService.getItem(itemID).subscribe({
       next: item => {
@@ -215,7 +240,9 @@ export class EditItemPage implements OnInit {
     });
   }
 
-
+  /**
+   * get current user from server
+   */
   loadUser() {
     this.userService.getUser('0').subscribe({
       next: user => {
@@ -230,7 +257,10 @@ export class EditItemPage implements OnInit {
       }
     });
   }
-
+/**
+ * set values to item
+ * @param item 
+ */
   setEditItem(item: Item) {
     console.log(item);
     this.validationsForm.get('title').setValue(item.title);
