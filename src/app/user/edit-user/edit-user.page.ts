@@ -27,14 +27,14 @@ export class EditUserPage implements OnInit {
   };
 
   options: CameraOptions = {
-    quality: 90,
+    quality: 100,
     destinationType: this.camera.DestinationType.DATA_URL,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     sourceType: this.camera.PictureSourceType.CAMERA,
     correctOrientation: true,
-    targetHeight: 100,
-    targetWidth: 100
+    targetHeight: 500,
+    targetWidth: 500
   };
 
 

@@ -38,14 +38,14 @@ export class EditItemPage implements OnInit {
   private itemTitleRef: IonInput;
 
   options: CameraOptions = {
-    quality: 90,
+    quality: 100,
     destinationType: this.camera.DestinationType.DATA_URL,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     sourceType: this.camera.PictureSourceType.CAMERA,
     correctOrientation: true,
-    targetHeight: 100,
-    targetWidth: 100
+    targetHeight: 500,
+    targetWidth: 500
   };
 
   validationsMessages = {
@@ -305,7 +305,7 @@ export class EditItemPage implements OnInit {
           duration: 2000
         });
         toast.present();
-        this.imageUploaded = false;
+        uploadedItem = false;
         this.goToAccountView(uploadedImage, uploadedItem);
       }
     });
