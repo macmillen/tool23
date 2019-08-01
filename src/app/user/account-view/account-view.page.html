@@ -39,7 +39,7 @@
   <div class="items">
 
     <ion-list>
-      <ion-item *ngIf="id === '0'">
+      <ion-item *ngIf="id === '0' && items.length">
         <ion-label>Meine Anzeigen:</ion-label>
         <ion-button (click)="goToCreateItem()" slot="end">
           <ion-icon name="add"></ion-icon>

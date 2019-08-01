@@ -28,7 +28,7 @@
       <ion-label position="floating">Bild auswählen</ion-label>
     </ion-item>
 
-    <ion-img (click)="openCamera()" [src]="imageBase64" width="50" height="50"></ion-img>
+    <ion-img (click)="openCamera()" [src]="imageBase64" [class.smallpic]="imageBase64 === '../../../assets/placeholder_item.png'"></ion-img>
     <ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
     
     <!-- description -->

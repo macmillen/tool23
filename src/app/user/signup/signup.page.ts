@@ -28,8 +28,14 @@ export class SignupPage implements OnInit {
 
     // check if the user is logged in
     isAuth() {
-        this.userService.isAuthenticated().subscribe({
-            next: isAuth => { if (isAuth) { this.navController.navigateRoot('/'); } }
+        const isAuthSub = this.userService.isAuthenticated().subscribe({
+            next: isAuth => {
+                if (isAuth) {
+                    this.navController.navigateRoot('/');
+                } else {
+                    isAuthSub.unsubscribe();
+                }
+            }
         });
     }
 
@@ -58,7 +64,7 @@ export class SignupPage implements OnInit {
 
         this.loading = true;
         this.userService.register(this.user, this.password).subscribe({
-            next: () => this.signin(),
+            next: () => this.signin(true),
             error: e => {
                 this.presentToast('Es gab ein Server Problem. Sorry!');
                 this.loading = false;
@@ -66,7 +72,7 @@ export class SignupPage implements OnInit {
         });
     }
 
-    signin() {
+    signin(welcomeSlides?: boolean) {
         if (this.user.email === '' || this.password === '') {
             this.presentToast('Beide Felder müssen ausgefüllt werden!');
             return;
@@ -74,7 +80,7 @@ export class SignupPage implements OnInit {
         this.loading = true;
         this.userService.signin(this.user.email, this.password).subscribe(
             {
-                next: () => this.navController.navigateRoot('/'),
+                next: () => welcomeSlides ? this.navController.navigateRoot('slide') : this.navController.navigateRoot('/'),
                 error: e => {
                     this.presentToast('Es gab ein Server Problem. Sorry!');
                     this.loading = false;

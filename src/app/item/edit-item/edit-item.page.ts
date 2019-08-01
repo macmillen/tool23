@@ -29,7 +29,7 @@ export class EditItemPage implements OnInit {
     title: '', address: { city: '', houseNumber: '', street: '', zip: '' }
   };
   tagInput = '';
-  statusBool: boolean;
+  statusBool = true;
   imageBase64: any = '../../../assets/placeholder_item.png';
   downloadURL = '';
   isEditMode = false;
@@ -161,7 +161,7 @@ export class EditItemPage implements OnInit {
       });
       uploadTask.snapshotChanges().pipe(
         finalize(() => ref.getDownloadURL().subscribe(itemImage => {
-          this.navController.navigateRoot('/account-view');
+          this.navController.navigateRoot('/tabs/account-view');
           this.loadingController.dismiss();
         }) )
       ).subscribe();
@@ -191,7 +191,7 @@ export class EditItemPage implements OnInit {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
       }
     });
   }
@@ -207,7 +207,7 @@ export class EditItemPage implements OnInit {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
       }
     });
   }

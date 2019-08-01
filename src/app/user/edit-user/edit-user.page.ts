@@ -72,7 +72,7 @@ export class EditUserPage implements OnInit {
       });
       uploadTask.snapshotChanges().pipe(
         finalize(() => ref.getDownloadURL().subscribe(itemImage => {
-          this.navController.navigateRoot('/account-view');
+          this.navController.navigateRoot('/tabs/account-view');
           this.loadingController.dismiss();
         }) )
      ).subscribe();

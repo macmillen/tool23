@@ -44,7 +44,7 @@ export class FcmService {
     this.fcm.onNotification().subscribe(async data => {
       if (data.wasTapped) {
         // Received in background
-        this.navController.navigateRoot('/transaction-list');
+        this.navController.navigateRoot('/tabs/transaction-list');
       } else {
         // Received in foreground
         const toast = await this.toastController.create({

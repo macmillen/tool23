@@ -119,7 +119,7 @@ export class AccountViewPage {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
       }
     });
   }
@@ -134,7 +134,7 @@ export class AccountViewPage {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
         this.getItems();
       }
     });
