@@ -17,11 +17,12 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { FCM } from '@ionic-native/fcm/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
+import { FooterComponent } from './footer/footer.component';
 
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, FooterComponent],
   entryComponents: [],
   imports: [
     BrowserModule,

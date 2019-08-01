@@ -17,11 +17,11 @@
 
   <ion-item lines="full"> 
     <ion-label slot="start" style="overflow:visible;">
-      <h1 class="ion-text-justify">
+      <h2 class="ion-text-justify">
         {{item.title}}
-      </h1>
+      </h2>
     </ion-label>
-    <ion-chip (click)="goToAccountView()" slot="end">
+    <ion-chip (click)="goToAccountView()" slot="end" style="margin: 0">
       <ion-avatar>
         <img [src]="userImageURL">
       </ion-avatar>
@@ -58,4 +58,3 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-<app-footer></app-footer> 
