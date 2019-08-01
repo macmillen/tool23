@@ -1,3 +1,6 @@
+/**
+ * related to a transaction
+ */
 export interface Review {
     giverRating?: number;
     takerRating?: number;
