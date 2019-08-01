@@ -7,6 +7,10 @@ import { NavController, PopoverController } from '@ionic/angular';
   templateUrl: './more.component.html',
   styleUrls: ['./more.component.scss'],
 })
+
+/**
+ * PopOver Message if you want to sign out
+ */
 export class MoreComponent implements OnInit {
 
   constructor(

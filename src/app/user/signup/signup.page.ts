@@ -9,6 +9,10 @@ import { NavController, ToastController } from '@ionic/angular';
     templateUrl: './signup.page.html',
     styleUrls: ['./signup.page.scss']
 })
+
+/**
+ * SignUp Page for users to register
+ */
 export class SignupPage implements OnInit {
     user: User;     // User to work with
     password: string;   // password, which is inserted
@@ -23,6 +27,10 @@ export class SignupPage implements OnInit {
         private toastController: ToastController
     ) { }
 
+    /**
+    * Initializes user and checks for authentication
+    * 
+    */
     ngOnInit() {
         this.initUser();
         this.isAuth();

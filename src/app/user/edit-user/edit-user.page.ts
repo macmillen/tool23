@@ -13,6 +13,10 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './edit-user.page.html',
   styleUrls: ['./edit-user.page.scss']
 })
+
+/**
+ * Page to edit your own user
+ */
 export class EditUserPage implements OnInit {
   id: string; // ID of current user
   imageBase64: any = '../../../assets/placeholder.png'; // immage as base64 with placeholder
@@ -44,7 +48,9 @@ export class EditUserPage implements OnInit {
   ) {
   }
 
-
+  /**
+   * Fetch your own user object from the server, with your pic
+   */
   ngOnInit() {
     this.userService.getUser('0').subscribe({
       next: user => {

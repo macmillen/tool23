@@ -14,6 +14,10 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './account-view.page.html',
   styleUrls: ['./account-view.page.scss']
 })
+
+/**
+ * Page to view an account, either your own or of an other user
+ */
 export class AccountViewPage  {
   user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null};  // User with empty values, ready to be filled
   items: Item[];  // uninitialized array for user-owned items
