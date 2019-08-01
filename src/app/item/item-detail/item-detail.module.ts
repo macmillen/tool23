@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ItemDetailPage } from './item-detail.page';
-import { FooterComponentModule} from '../../footer/footer.component.module';
 
 
 const routes: Routes = [
@@ -22,7 +21,6 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    FooterComponentModule
   ],
   declarations: [ItemDetailPage]
 })
