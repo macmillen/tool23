@@ -3,7 +3,9 @@ import * as admin from 'firebase-admin';
 // import firebase credentials
 const serviceAccount = require('./serviceAccountKey.json');
 
-// initialize the firebase application
+/**
+ * initialize the firebase application
+ */
 const app = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://verleihapp.firebaseio.com"

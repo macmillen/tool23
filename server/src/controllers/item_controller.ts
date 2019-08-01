@@ -6,7 +6,7 @@ import { getGeoLocation } from '../config/geocoder';
 
 /**
  * Returns all tags from the database
- * Is used for searching
+ * Is used for searching items
  * @param req 
  * @param res tags asJSON
  */

@@ -109,7 +109,7 @@ export const requestItem = async (req: Request, res: Response) => {
 
 /**
  * Gets current user ID, transaction ID and taker ID
- * Updates the transaction state to accepted
+ * Updates the transaction state to 'accepted'
  * Sends notification to taker
  * @param req 
  * @param res 
@@ -144,7 +144,7 @@ export const acceptItem = async (req: Request, res: Response) => {
 
 /**
  * Gets current user ID, transaction ID and taker ID
- * Updates the transaction state to declined
+ * Updates the transaction state to 'declined'
  * Sends notification to taker
  * @param req 
  * @param res 
@@ -179,7 +179,7 @@ export const declineItem = async (req: Request, res: Response) => {
 
 /**
  * Takes ID of giver or take and the ID of a transaction
- * Changes the state of the transaction to transfered
+ * Changes the state of the transaction to 'transfered'
  * @param userID 
  * @param transactionID 
  */
@@ -194,7 +194,7 @@ const makeStateTransitionTransfered = async (userID: string, transactionID: stri
 
 /**
  * Takes ID of giver or take and the ID of a transaction
- * Changes the state of the transaction to finished
+ * Changes the state of the transaction to 'finished'
  * @param userID 
  * @param transactionID 
  */
@@ -208,7 +208,7 @@ const makeStateTransitionFinished = async (userID: string, transactionID: string
 }
 
 /**
- * Takes the ID of a transaction and marks it as given
+ * Takes the ID of a transaction and marks it as 'given'
  * @param req user ID, transaction ID
  * @param res 
  */
@@ -233,7 +233,7 @@ export const markGivenTransaction = async (req: Request, res: Response) => {
 }
 
 /**
- * Takes the ID of a transaction and marks it as taken
+ * Takes the ID of a transaction and marks it as 'taken'
  * @param req user ID, transaction ID
  * @param res 
  */
@@ -258,7 +258,7 @@ export const markTakenTransaction = async (req: Request, res: Response) => {
 }
 
 /**
- * Takes the ID of a transaction and marks it as given back
+ * Takes the ID of a transaction and marks it as 'given back'
  * @param req user ID, transaction ID
  * @param res 
  */
@@ -283,7 +283,7 @@ export const markGivenBackTransaction = async (req: Request, res: Response) => {
 }
 
 /**
- * Takes the ID of a transaction and marks it as taken back
+ * Takes the ID of a transaction and marks it as 'taken back'
  * @param req user ID, transaction ID
  * @param res 
  */

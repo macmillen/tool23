@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { fireAuth } from '../config/firebase';
 
 /**
- * takes the auth cookie from header
- * sets user ID and email on req object
+ * Takes the auth cookie from header
+ * Sets user ID and email on req object
  * @param req authorization cookie
  * @param res 
  * @param next 

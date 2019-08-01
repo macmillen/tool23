@@ -6,6 +6,9 @@ import { Transaction } from '../models/transaction_model';
 
 const uri = "mongodb+srv://admin:verleihmasters99@cluster0-58wqp.mongodb.net/test?retryWrites=true&w=majority";
 
+/**
+ * create the mongo db client
+ */
 export const client = new MongoClient(uri, {
     useNewUrlParser: true,
 });

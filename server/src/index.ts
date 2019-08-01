@@ -48,8 +48,9 @@ app.put('/api/rate-giver-transaction', checkAuth, transactionController.rateGive
 app.put('/api/revoke-transaction', checkAuth, transactionController.revokeTransaction);
 
 app.get('*', () => console.log('OOOOOO'));
-
-// start the server
+/**
+ * start the server
+ */
 app.listen(app.get('port'), () => {
     console.log(`Server listening on port ${app.get('port')}!`);
 });
