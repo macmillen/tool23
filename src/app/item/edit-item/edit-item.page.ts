@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController, AlertController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavController, ToastController, AlertController, IonInput } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, Platform, ActionSheetController } from '@ionic/angular';
 import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 import { Item } from 'src/app/models/item.model';
 import { User } from 'src/app/models/user.model';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { Platform } from '@ionic/angular';
+import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { Address } from 'src/app/models/address.model';
 
 
 
@@ -20,30 +21,60 @@ import { finalize } from 'rxjs/operators';
 })
 export class EditItemPage implements OnInit {
 
+  validationsForm: FormGroup;
 
   user: User;
-
   pageTitle: string;
-  item: Item = {
-    userID: '0', description: '', status: 'active', tags: [],
-    title: '', address: { city: '', houseNumber: '', street: '', zip: '' }
-  };
-  tagInput = '';
-  statusBool: boolean;
+  item: Item = null;
+  statusBool = true;
   imageBase64: any = '../../../assets/placeholder_item.png';
   downloadURL = '';
   isEditMode = false;
-  itemID: string;
   imageUploaded = false;
+  itemID: string;
   percent = -1;
 
+  @ViewChild('itemTitle')
+  private itemTitleRef: IonInput;
+
   options: CameraOptions = {
-    quality: 90,
+    quality: 100,
     destinationType: this.camera.DestinationType.DATA_URL,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
-    sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
-    targetHeight: 100
+    sourceType: this.camera.PictureSourceType.CAMERA,
+    correctOrientation: true,
+    targetHeight: 500,
+    targetWidth: 500
+  };
+
+  validationsMessages = {
+    title: [
+      { type: 'required', message: 'Titel ist benötig.' },
+      { type: 'minlength', message: 'Titel muss mindesten 5 Charakter lang sein.' },
+      { type: 'maxlength', message: 'Titel darf nicht länger als 25 Charaktere sein.' }
+    ],
+    description: [
+      { type: 'required', message: 'Beschreibung ist benötigt' }
+    ],
+    street: [
+      { type: 'required', message: 'Straße ist benötigt' }
+    ],
+    houseNumber: [
+      { type: 'required', message: 'Hausnummer ist benötigt' }
+    ],
+    zip: [
+      { type: 'required', message: 'Straße ist benötigt' },
+      { type: 'pattern', message: '5 Zahlen' }
+    ],
+    city: [
+      { type: 'required', message: 'Straße ist benötigt' }
+    ],
+    tags: [
+      { type: 'maxlength', message: 'Tag darf nicht länger als 10 Charaktere sein.'},
+      { type: 'minlength', message: 'Tag muss mindesten 3 Charakter lang sein.' }
+
+    ]
   };
 
   constructor(
@@ -56,6 +87,8 @@ export class EditItemPage implements OnInit {
     private userService: UserService,
     private camera: Camera,
     private alertController: AlertController,
+    public formBuilder: FormBuilder,
+    public actionSheetController: ActionSheetController,
     public plt: Platform) {
   }
 
@@ -64,16 +97,41 @@ export class EditItemPage implements OnInit {
     if (this.itemID) {
       this.isEditMode = true;
       this.loadItem(this.itemID);
+      this.loadUser();
       this.pageTitle = 'Item bearbeiten';
     } else {
       this.isEditMode = false;
       this.pageTitle = 'Item erstellen';
       this.loadUser();
     }
+
+    // Validation
+
+    this.validationsForm = this.formBuilder.group({
+      title: new FormControl('', Validators.compose([
+        Validators.maxLength(25),
+        Validators.minLength(5),
+        Validators.required
+      ])),
+      description: new FormControl('', Validators.required),
+      street: new FormControl('', Validators.required),
+      houseNumber: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('[0-9]{5}')
+      ])),
+      city: new FormControl('', Validators.required),
+      tags: new FormControl('', Validators.compose([
+        Validators.maxLength(10),
+        Validators.minLength(3)
+      ]))
+    });
   }
 
-  viewWillEnter() {
-
+  ionViewDidEnter() {
+    if (!this.isEditMode) {
+      this.itemTitleRef.setFocus();
+    }
   }
 
   async presentAlertConfirm(item: Item) {
@@ -95,9 +153,48 @@ export class EditItemPage implements OnInit {
         }
       ]
     });
-
     await alert.present();
   }
+
+  async presentCameraActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Foto',
+      buttons: [{
+        text: 'Kamera',
+        icon: 'camera',
+        handler: () => {
+          this.options.sourceType = this.camera.PictureSourceType.CAMERA;
+          this.takeImage();
+        }
+      }, {
+        text: 'Bibliothek',
+        icon: 'image',
+        handler: () => {
+          this.options.sourceType = this.camera.PictureSourceType.SAVEDPHOTOALBUM;
+          this.takeImage();
+        }
+      }, {
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  takeImage() {
+    this.camera.getPicture(this.options).then((imageData) => {
+      // If it's base64 (DATA_URL):
+      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
+      this.imageUploaded = true;
+    }, (err) => {
+      // Handle error
+    });
+  }
+
 
   async presentLoading() {
     const loading = await this.loadingController.create({
@@ -111,8 +208,8 @@ export class EditItemPage implements OnInit {
     this.itemService.getItem(itemID).subscribe({
       next: item => {
         this.item = item;
+        this.setEditItem(item);
         this.getItemImageURL();
-        this.loadUser();
         this.statusBool = this.item.status === 'active' ? true : false;
       }
     });
@@ -123,12 +220,32 @@ export class EditItemPage implements OnInit {
     this.userService.getUser('0').subscribe({
       next: user => {
         this.user = user;
-        console.log(this.user.address);
         if (!this.isEditMode) {
-          this.item.address = this.user.address;
+          this.item = {
+            userID: '0', description: '', status: 'active', tags: [],
+            title: '', address: null
+          };
+          this.setAdress(this.user.address);
         }
       }
     });
+  }
+
+  setEditItem(item: Item) {
+    console.log(item);
+    this.validationsForm.get('title').setValue(item.title);
+    this.validationsForm.get('description').setValue(item.description);
+    this.validationsForm.get('street').setValue(item.address.street);
+    this.validationsForm.get('houseNumber').setValue(item.address.houseNumber);
+    this.validationsForm.get('city').setValue(item.address.city);
+    this.validationsForm.get('zip').setValue(item.address.zip);
+  }
+
+  setAdress(userAdress: Address) {
+    this.validationsForm.get('street').setValue(userAdress.street);
+    this.validationsForm.get('houseNumber').setValue(userAdress.houseNumber);
+    this.validationsForm.get('city').setValue(userAdress.city);
+    this.validationsForm.get('zip').setValue(userAdress.zip);
   }
 
   getItemImageURL() {
@@ -139,15 +256,18 @@ export class EditItemPage implements OnInit {
   }
 
   addTag() {
-    if (!this.tagInput) { return; }
+    const value = this.validationsForm.get('tags').value as string;
+    if (value.length < 3) { return; }
     const tags = new Set<string>(this.item.tags);
-    tags.add(this.tagInput);
+    tags.add(this.validationsForm.get('tags').value);
     this.item.tags = Array.from(tags);
-    this.tagInput = '';
+    this.validationsForm.get('tags').setValue('');
   }
 
   updateItem() {
     this.item.status = this.statusBool ? 'active' : 'disabled';
+    let uploadedImage = !this.imageUploaded;
+    let uploadedItem = false;
 
     // Uploading Image
     if (this.imageUploaded) {
@@ -156,14 +276,15 @@ export class EditItemPage implements OnInit {
 
       // Presenting the Loading Screen
       this.presentLoading();
-      uploadTask.percentageChanges().subscribe( percent => {
+      uploadTask.percentageChanges().subscribe(percent => {
         this.percent = percent;
       });
       uploadTask.snapshotChanges().pipe(
         finalize(() => ref.getDownloadURL().subscribe(itemImage => {
-          this.navController.navigateRoot('/account-view');
           this.loadingController.dismiss();
-        }) )
+          uploadedImage = true;
+          this.goToAccountView(uploadedImage, uploadedItem);
+        }))
       ).subscribe();
     }
 
@@ -175,9 +296,25 @@ export class EditItemPage implements OnInit {
           position: 'top'
         });
         toast.present();
-
+        uploadedItem = true;
+        this.goToAccountView(uploadedImage, uploadedItem);
+      },
+      error: async () => {
+        const toast = await this.toastController.create({
+          message: `Der Gegenstand '${this.item.title}' konnte nicht aktualisiert werden!`,
+          duration: 2000
+        });
+        toast.present();
+        uploadedItem = false;
+        this.goToAccountView(uploadedImage, uploadedItem);
       }
     });
+  }
+
+  goToAccountView(uploadedImage: boolean, uploadedItem: boolean) {
+    if (uploadedImage && uploadedItem) {
+      this.navController.navigateRoot('/tabs/account-view');
+    }
   }
 
   createItem() {
@@ -191,7 +328,7 @@ export class EditItemPage implements OnInit {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
       }
     });
   }
@@ -207,20 +344,25 @@ export class EditItemPage implements OnInit {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
       }
     });
   }
 
   openCamera() {
-    this.camera.getPicture(this.options).then((imageData) => {
-      // If it's base64 (DATA_URL):
-      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
-      this.imageUploaded = true;
-    }, (err) => {
-      // Handle error
-    });
+    this.presentCameraActionSheet();
   }
 
+  onSubmit(values) {
+    console.log(values);
+    this.item.title = values.title;
+    this.item.description = values.description;
+    this.item.address = {street: values.street, houseNumber: values.houseNumber, zip: values.zip, city: values.city};
+    if (this.isEditMode) {
+      this.updateItem();
+    } else {
+      this.createItem();
+    }
+  }
 
 }

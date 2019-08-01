@@ -8,8 +8,8 @@ import { TransactionRequest } from '../models/transaction-request.model';
 export class TransactionService {
     constructor(private http: HttpClient) { }
 
-    getTransactions() {
-        return this.http.get<TransactionRequest[]>(environment.SERVER_URL + '/api/transactions');
+    getTransactions(userID: string) {
+        return this.http.get<TransactionRequest[]>(environment.SERVER_URL + '/api/transactions/' + userID);
     }
 
     acceptTransaction(transactionID: string, takerID: string) {

@@ -12,11 +12,11 @@
 <ion-content>
   <ion-spinner style="margin: 50px auto; display: flex;" *ngIf="!user || !transactions" name="dots"></ion-spinner>
 
-  <ion-list *ngIf="user">
+  <ion-list *ngIf="user && transactions">
     <ng-container *ngFor="let t of transactions">
       <ion-card
         *ngIf="(t.takerID === user.userID && t.review.giverRating) || (t.giverID === user.userID && t.review.takerRating)">
-        <ion-card-title style="margin: 12px 0;" class="ion-text-center">{{t.item.title}}</ion-card-title>
+        <ion-card-title style="margin: 12px 0;" class="ion-text-center">{{t.item ? t.item.title : 'Item gelöscht'}}</ion-card-title>
         <ion-card-subtitle class="ion-text-center">{{formatDate(t.startDate)}} - {{formatDate(t.endDate)}}
         </ion-card-subtitle>
         <ion-card-content>

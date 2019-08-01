@@ -1,0 +1,47 @@
+<ion-app>
+  <ion-header translucent>
+  </ion-header>
+
+  <ion-content fullscreen padding scroll-y="false">
+    <ion-slides style="height: 100%" pager="true">
+      <ion-slide>
+        <img height="300px" src="./assets/slideImages/tools.png" />
+        <h2 style="font-size: 44px; margin: 0 0 23px;">Willkommen bei<br><b>Tool23</b></h2>
+        <ion-text style="color: #575757; font-size: 20px;">
+          Hier kannst du Gegenstände von Nachbarn aus deiner Umgebung ausleihen oder selbst an andere verleihen. Bei uns
+          findet jeder was er sucht!
+        </ion-text>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="./assets/slideImages/list.png" />
+        <h2>Alles in deiner Nähe</h2>
+        <ion-text style="color: #575757; font-size: 20px;">
+          Die Hauptseite zeigt dir das ganze coole Zeug, das Leute in deiner
+          Umgebung verleihen möchten. Da ist <b>immer</b> was dabei!
+        </ion-text>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="./assets/slideImages/transaction.png" />
+        <h2>Behalte den <b>Überblick!</b></h2>
+        <ion-text style="color: #575757; font-size: 20px;">
+          In der App ist alles über Transaktionen geregelt. So weißt Du immer
+          was Du gerade verliehen hast oder was Du vielleicht bald mal
+          zurückgeben solltest. Natürlich kannst Du jede abgeschlossene
+          Transaktion bewerten. So hilfst Du den anderen Nutzern.
+        </ion-text>
+      </ion-slide>
+
+      <ion-slide>
+        <img src="./assets/slideImages/rocket.png" />
+        <h1>Bereit zum leihen?</h1>
+        <ion-button fill="clear" (click)="hideView()">
+          <h2>
+            Leih los <ion-icon slot="end" name="arrow-forward"></ion-icon>
+          </h2>
+        </ion-button>
+      </ion-slide>
+    </ion-slides>
+  </ion-content>
+</ion-app>

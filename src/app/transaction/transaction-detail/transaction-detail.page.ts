@@ -85,7 +85,7 @@ export class TransactionDetailPage implements OnInit {
                     position: 'top'
                 });
                 toast.present();
-                this.navController.navigateRoot('/transaction-list?segment=outbound');
+                this.navController.navigateRoot('/tabs/transaction-list?segment=outbound');
             }
         });
     }

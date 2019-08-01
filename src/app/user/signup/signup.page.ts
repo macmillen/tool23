@@ -21,7 +21,6 @@ export class SignupPage implements OnInit {
     loading = false;        // True, as long as something is loading in the background, else false
 
     constructor(
-        private router: Router,
         private userService: UserService,
         private navController: NavController,
         private toastController: ToastController
@@ -41,13 +40,19 @@ export class SignupPage implements OnInit {
     * 
     */
     isAuth() {
-        this.userService.isAuthenticated().subscribe({
-            next: isAuth => { if (isAuth) { this.navController.navigateRoot('/main-list'); } }
+        const isAuthSub = this.userService.isAuthenticated().subscribe({
+            next: isAuth => {
+                if (isAuth) {
+                    this.navController.navigateRoot('/');
+                } else {
+                    isAuthSub.unsubscribe();
+                }
+            }
         });
     }
 
     /**
-    * Registers User based on values input in the corresponding html form
+    * Registers (creates) User based on values input in the corresponding html form
     * 
     */
     register() {
@@ -74,19 +79,18 @@ export class SignupPage implements OnInit {
 
         this.loading = true;
         this.userService.register(this.user, this.password).subscribe({
-            next: () => this.signin(),
+            next: () => this.signin(true),
             error: e => {
                 this.presentToast('Es gab ein Server Problem. Sorry!');
                 this.loading = false;
             },
         });
     }
-
-    /**
+   /**
     * Sign in of the user, based on class variable User and Password
     * 
     */
-    signin() {
+    signin(welcomeSlides?: boolean) {
         if (this.user.email === '' || this.password === '') {
             this.presentToast('Beide Felder müssen ausgefüllt werden!');
             return;
@@ -94,7 +98,7 @@ export class SignupPage implements OnInit {
         this.loading = true;
         this.userService.signin(this.user.email, this.password).subscribe(
             {
-                next: () => this.router.navigate(['main-list']),
+                next: () => welcomeSlides ? this.navController.navigateRoot('slide') : this.navController.navigateRoot('/'),
                 error: e => {
                     this.presentToast('Es gab ein Server Problem. Sorry!');
                     this.loading = false;

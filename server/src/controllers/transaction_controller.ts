@@ -8,7 +8,7 @@ import { User } from '../models/user_model';
 import { Item } from '../models/item_model';
 
 export const getTransactions = async (req: Request, res: Response) => {
-    const userID: string = req.body.global_googleUID;
+    const userID: string = req.params.userID || req.body.global_googleUID;
 
     try {
         const transactions = await transactionCollection.find({
@@ -40,10 +40,9 @@ export const getTransactions = async (req: Request, res: Response) => {
         const transactionRequests: TransactionRequest[] = [];
 
         for (const t of transactions) {
-            const user = users.find(u => u.userID === t.takerID || u.userID === t.giverID);
-            const item = items.find(i => i._id ? i._id.toString() === t.itemID : null);
+            let user = users.find(u => u.userID !== userID && (u.userID === t.takerID || u.userID === t.giverID)) as User;
+            let item = items.find(i => i._id ? i._id.toString() === t.itemID : null) as Item;
 
-            if (!user || !item) { continue; }
             transactionRequests.push({ ...t, user, item });
         }
 
@@ -300,7 +299,7 @@ export const rateGiverTransaction = async (req: Request, res: Response) => {
     try {
         const info = await transactionCollection.updateOne(
             {
-                _id: new ObjectId(transactionID), giverID: userID, $or: [{ status: 'transfered' }, { status: 'finished' }], "review.giverRating": null 
+                _id: new ObjectId(transactionID), giverID: userID, $or: [{ status: 'transfered' }, { status: 'finished' }], "review.giverRating": null
             },
             { $set: { 'review.giverRating': giverRating, 'review.giverComment': giverComment } });
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PopoverController, NavController, ToastController, IonItemSliding } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
+import { ReviewsComponent } from './reviews/reviews.component';
 import { User } from 'src/app/models/user.model';
 import { Item } from 'src/app/models/item.model';
 import { UserService } from 'src/app/services/user.service';
@@ -14,15 +15,14 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './account-view.page.html',
   styleUrls: ['./account-view.page.scss']
 })
-
 /**
  * Page to view an account, either your own or of an other user
  */
-export class AccountViewPage  {
-  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null};  // User with empty values, ready to be filled
-  items: Item[];  // uninitialized array for user-owned items
-  id: string;     // Variable for ID of current user
-  pending = true; // true, as long as not every data is fetched; false if finished
+export class AccountViewPage {
+  user: User;
+  items: Item[];
+  id: string;
+  pending = true;
 
   userImageURL = 'assets/placeholder.png';    // user image with placeholder pic
   itemImageURLs = new Map<string, string>();  //Map for matching images to their corresponding image url
@@ -35,11 +35,12 @@ export class AccountViewPage  {
     private fireStorage: AngularFireStorage,
     private navController: NavController,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController,
   ) { }
 
-  
-  ionViewWillEnter() {
+
+  ionViewDidEnter() {
     this.id = this.route.snapshot.paramMap.get('userID');
     this.id = this.id ? this.id : '0';
 
@@ -101,11 +102,6 @@ export class AccountViewPage  {
     await alert.present();
   }
 
-  /**
-  * Fetches latest item list from server to array
-  * 
-  * @returns void (class variable items is set)
-  */
 
   getItems() {
     if (this.id === '0') {
@@ -146,7 +142,7 @@ export class AccountViewPage  {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
       }
     });
   }
@@ -157,7 +153,7 @@ export class AccountViewPage  {
   * @param {Item} item Item which status should be deleted
   * @returns void (navigates to account-view)
   */
-  deleteItem( item: Item) {
+  deleteItem(item: Item) {
     this.itemService.deleteItem(item._id).subscribe({
       next: async () => {
         const toast = await this.toastController.create({
@@ -167,7 +163,7 @@ export class AccountViewPage  {
         });
         toast.present();
 
-        this.navController.navigateRoot('/account-view');
+        this.navController.navigateRoot('/tabs/account-view');
         this.getItems();
       }
     });
@@ -196,10 +192,6 @@ export class AccountViewPage  {
     this.navController.navigateForward(`/edit-user/${this.user.userID}`);
   }
 
-  /**
-  * Fetches and sets user image url
-  * 
-  */
   getUserImageURL() {
     const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
@@ -220,7 +212,22 @@ export class AccountViewPage  {
     });
   }
 
+
   showHistory() {
     console.log('Show History');
+  }
+/**
+  * Displays modal to show all reviews
+  * 
+  */
+  async showReviews() {
+    const modal: HTMLIonModalElement =
+      await this.modalController.create({
+        component: ReviewsComponent,
+        componentProps: {
+          userID: this.id
+        }
+      });
+    await modal.present();
   }
 }

@@ -39,6 +39,9 @@ export class TransactionListPage implements OnInit {
         this.userService.getUser('0').subscribe({
             next: user => this.user = user
         });
+    }
+
+    ionViewDidEnter() {
         this.fetchTransactions();
 
         this.activatedRoute.queryParamMap.subscribe({
@@ -68,7 +71,7 @@ export class TransactionListPage implements OnInit {
     */
     fetchTransactions(event?: any) {
         this.noData = { current: true, inbound: true, outbound: true };
-        this.transactionService.getTransactions().subscribe({
+        this.transactionService.getTransactions('').subscribe({
             next: transactionRequests => {
                 this.ngZone.run(() => {
                     this.transactionRequests = transactionRequests;

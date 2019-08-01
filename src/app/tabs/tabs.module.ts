@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EditUserPage } from './edit-user.page';
+import { TabsPage } from './tabs.page';
+import { TabsPageRoutingModule } from './tabs-routing.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditUserPage
+    component: TabsPage
   }
 ];
 
@@ -18,10 +19,9 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    TabsPageRoutingModule,
   ],
-  declarations: [EditUserPage]
+  declarations: [TabsPage]
 })
-export class EditUserPageModule {}
+export class TabsPageModule {}
