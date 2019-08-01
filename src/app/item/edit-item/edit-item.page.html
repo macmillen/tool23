@@ -16,7 +16,7 @@
 <ion-content padding class="form-content" *ngIf="user && isEditMode || !isEditMode ">
   <form [formGroup]="validationsForm" (ngSubmit)="onSubmit(validationsForm.value)">
     <ion-list lines="full">
-      <br>
+      
       <!-- title -->
       <ion-item>
         <ion-label position="floating">Title</ion-label>
@@ -33,7 +33,7 @@
 
       <!-- image -->
 
-      <ion-button expand="full" (click)="openCamera()">Bild hinzufügen</ion-button>
+      <ion-button style="margin: 18px 0px" expand="full" (click)="openCamera()">Bild hinzufügen</ion-button>
       <ion-item-divider style="min-height: 0px"></ion-item-divider>
 
       <ion-img [src]="imageBase64" width="50" height="50"></ion-img>
@@ -95,22 +95,24 @@
 
       <ion-item>
         <ion-label position="floating">Wohnort</ion-label>
-        <ion-input [(ngModel)]="item.address.city" clearOnEdit="true"></ion-input>
+        <ion-input formControlName="city" clearOnEdit="true"></ion-input>
       </ion-item>
       <div class="validation-errors">
-        <ng-container *ngFor="let validation of validationsMessages.zip">
+        <ng-container *ngFor="let validation of validationsMessages.city">
           <div class="error-message"
-            *ngIf="validationsForm.get('zip').hasError(validation.type) && (validationsForm.get('zip').dirty || validationsForm.get('zip').touched)">
+            *ngIf="validationsForm.get('city').hasError(validation.type) && (validationsForm.get('city').dirty || validationsForm.get('city').touched)">
             <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
           </div>
         </ng-container>
       </div>
+      
 
 
       <!-- tags -->
+     
       <ion-item>
         <ion-label position="floating">Tags hinzufügen</ion-label>
-        <ion-input type="text" maxlength="10" (keyup.enter)="addTag()" [(ngModel)]="tagInput"></ion-input>
+        <ion-input formControlName="tags" type="text" (keyup.enter)="addTag()"></ion-input>
         <ion-icon (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
       </ion-item>
       <ion-item *ngIf="item.tags.length">
@@ -129,9 +131,9 @@
       </ion-item>
 
     </ion-list>
-    <ion-button *ngIf="!isEditMode" style="margin: 10px 10px" expand="full" [disabled]="!validationsForm.valid" (click)="createItem()">Item Erstellen
+    <ion-button *ngIf="!isEditMode" style="margin: 10px 10px" expand="full" class="submit-btn"  type="submit" [disabled]="!validationsForm.valid">Item Erstellen
     </ion-button>
-    <ion-button *ngIf="isEditMode" style="margin: 10px 10px" expand="full" [disabled]="!validationsForm.valid" (click)="updateItem()">Item Speichern
+    <ion-button *ngIf="isEditMode" style="margin: 10px 10px" expand="full" class="submit-btn"  type="submit" [disabled]="!validationsForm.valid">Item Speichern
     </ion-button>
   </form>
 </ion-content>

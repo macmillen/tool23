@@ -11,6 +11,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Platform } from '@ionic/angular';
 import { finalize } from 'rxjs/operators';
+import { Address } from 'src/app/models/address.model';
 
 
 
@@ -25,9 +26,8 @@ export class EditItemPage implements OnInit {
 
   user: User;
   pageTitle: string;
-  item: Item;
+  item: Item = null;
   // errors: Map<string, string> = new Map<string, string>();
-  tagInput = '';
   statusBool: boolean;
   imageBase64: any = '../../../assets/placeholder_item.png';
   downloadURL = '';
@@ -52,7 +52,7 @@ export class EditItemPage implements OnInit {
     title: [
       { type: 'required', message: 'Titel ist benötig.' },
       { type: 'minlength', message: 'Titel muss mindesten 5 Charakter lang sein.' },
-      { type: 'maxlength', message: 'Titel kann nicht länger als 25 Charaktere sein.' }
+      { type: 'maxlength', message: 'Titel darf nicht länger als 25 Charaktere sein.' }
     ],
     description: [
       { type: 'required', message: 'Beschreibung ist benötigt' }
@@ -61,15 +61,20 @@ export class EditItemPage implements OnInit {
       { type: 'required', message: 'Straße ist benötigt' }
     ],
     houseNumber: [
-      { type: 'required', message: 'Straße ist benötigt' }
+      { type: 'required', message: 'Hausnummer ist benötigt' }
     ],
     zip: [
       { type: 'required', message: 'Straße ist benötigt' },
-      { type: 'pattern', message: '5 Zahlen'}
+      { type: 'pattern', message: '5 Zahlen' }
     ],
     city: [
       { type: 'required', message: 'Straße ist benötigt' }
     ],
+    tags: [
+      { type: 'maxlength', message: 'Tag darf nicht länger als 10 Charaktere sein.'},
+      { type: 'minlength', message: 'Tag muss mindesten 3 Charakter lang sein.' }
+
+    ]
   };
 
   constructor(
@@ -114,7 +119,11 @@ export class EditItemPage implements OnInit {
         Validators.required,
         Validators.pattern('[0-9]{5}')
       ])),
-      city: new FormControl('', Validators.required)
+      city: new FormControl('', Validators.required),
+      tags: new FormControl('', Validators.compose([
+        Validators.maxLength(10),
+        Validators.minLength(3)
+      ]))
     });
   }
 
@@ -158,6 +167,7 @@ export class EditItemPage implements OnInit {
     this.itemService.getItem(itemID).subscribe({
       next: item => {
         this.item = item;
+        this.setEditItem(item);
         this.getItemImageURL();
         this.statusBool = this.item.status === 'active' ? true : false;
       }
@@ -174,10 +184,27 @@ export class EditItemPage implements OnInit {
             userID: '0', description: '', status: 'active', tags: [],
             title: '', address: null
           };
-          this.item.address = this.user.address;
+          this.setAdress(this.user.address);
         }
       }
     });
+  }
+
+  setEditItem(item: Item) {
+    console.log(item);
+    this.validationsForm.get('title').setValue(item.title);
+    this.validationsForm.get('description').setValue(item.description);
+    this.validationsForm.get('street').setValue(item.address.street);
+    this.validationsForm.get('houseNumber').setValue(item.address.houseNumber);
+    this.validationsForm.get('city').setValue(item.address.city);
+    this.validationsForm.get('zip').setValue(item.address.zip);
+  }
+
+  setAdress(userAdress: Address) {
+    this.validationsForm.get('street').setValue(userAdress.street);
+    this.validationsForm.get('houseNumber').setValue(userAdress.houseNumber);
+    this.validationsForm.get('city').setValue(userAdress.city);
+    this.validationsForm.get('zip').setValue(userAdress.zip);
   }
 
   getItemImageURL() {
@@ -188,52 +215,14 @@ export class EditItemPage implements OnInit {
   }
 
   addTag() {
-    if (!this.tagInput) { return; }
+    if (!this.validationsForm.get('tags').value) { return; }
     const tags = new Set<string>(this.item.tags);
-    tags.add(this.tagInput);
+    tags.add(this.validationsForm.get('tags').value);
     this.item.tags = Array.from(tags);
-    this.tagInput = '';
+    this.validationsForm.get('tags').setValue('');
   }
 
   updateItem() {
-    // this.errors.clear();
-
-    // if (!this.item.title) {
-    //   this.errors.set('itemTitle', 'Title darf nicht leer sein!');
-    // }
-
-    // if (!this.item.description) {
-    //   this.errors.set('itemDescription', 'Beschreibung darf nicht leer sein!');
-    // }
-
-    // if (!this.item.address.street) {
-    //   this.errors.set('addressStreet', 'Straße darf nicht leer sein!');
-    // }
-
-    // if (!this.item.address.houseNumber) {
-    //   this.errors.set('addressHouseNumber', 'Hausnummer darf nicht leer sein!');
-    // }
-
-    // if (!this.item.address.zip) {
-    //   this.errors.set('addressZip', 'PLZ darf nicht leer sein!');
-    // }
-
-    // if (!this.item.address.city) {
-    //   this.errors.set('addressCity', 'Stadt darf nicht leer sein!');
-    // }
-
-    // if (this.errors.size === 0) {
-    //   if (this.isEditMode) {
-    //     console.log('Keine Errors');
-    //     this.uploadItem();
-    //   } else {
-    //     // Toast Controller anzeigen
-    //   }
-    // }
-    this.uploadItem();
-  }
-
-  uploadItem() {
     this.item.status = this.statusBool ? 'active' : 'disabled';
     let uploadedImage = !this.imageUploaded;
     let uploadedItem = false;
@@ -245,7 +234,7 @@ export class EditItemPage implements OnInit {
 
       // Presenting the Loading Screen
       this.presentLoading();
-      uploadTask.percentageChanges().subscribe( percent => {
+      uploadTask.percentageChanges().subscribe(percent => {
         this.percent = percent;
       });
       uploadTask.snapshotChanges().pipe(
@@ -253,7 +242,7 @@ export class EditItemPage implements OnInit {
           this.loadingController.dismiss();
           uploadedImage = true;
           this.goToAccountView(uploadedImage, uploadedItem);
-        }) )
+        }))
       ).subscribe();
     }
 
@@ -280,9 +269,8 @@ export class EditItemPage implements OnInit {
     });
   }
 
-
   goToAccountView(uploadedImage: boolean, uploadedItem: boolean) {
-    if ( uploadedImage && uploadedItem ) {
+    if (uploadedImage && uploadedItem) {
       this.navController.navigateRoot('/account-view');
     }
   }
@@ -329,11 +317,16 @@ export class EditItemPage implements OnInit {
     });
   }
 
-  
-
   onSubmit(values) {
     console.log(values);
-    this.navController.navigateRoot('/account-view');
+    this.item.title = values.title;
+    this.item.description = values.description;
+    this.item.address = {street: values.street, houseNumber: values.houseNumber, zip: values.zip, city: values.city};
+    if (this.isEditMode) {
+      this.updateItem();
+    } else {
+      this.createItem();
+    }
   }
 
 }
