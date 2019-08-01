@@ -8,78 +8,131 @@
       </ion-button>
     </ion-buttons>
 
-    
+
   </ion-toolbar>
 </ion-header>
-  
 
-<ion-content *ngIf="user && isEditMode || !isEditMode ">
-  <ion-list lines="full">
+<ion-content padding class="form-content" *ngIf="user && isEditMode || !isEditMode ">
+  <form [formGroup]="validationsForm" (ngSubmit)="onSubmit(validationsForm.value)">
+    <ion-list lines="full">
+      
+      <!-- title -->
+      <ion-item>
+        <ion-label position="floating">Title</ion-label>
+        <ion-input #itemTitle type="text" formControlName="title"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationsMessages.title">
+          <div class="error-message"
+            *ngIf="validationsForm.get('title').hasError(validation.type) && (validationsForm.get('title').dirty || validationsForm.get('title').touched)">
+            <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
 
-    <!-- title -->
-    <ion-item>
-      <ion-label position="floating">Title</ion-label>
-      <ion-input type="text" maxlength="25" required="true" [(ngModel)]="item.title"></ion-input>
-    </ion-item>
+      <!-- image -->
 
-    <!-- image -->
+      <ion-button style="margin: 18px 0px" expand="full" (click)="openCamera()">Bild hinzufügen</ion-button>
+      <ion-item-divider style="min-height: 0px"></ion-item-divider>
 
-    <ion-item>
-      <ion-label position="floating">Bild auswählen</ion-label>
-    </ion-item>
+      <ion-img [src]="imageBase64" [class.smallpic]="imageBase64 === '../../../assets/placeholder_item.png'"></ion-img>
+      <ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
 
-    <ion-img (click)="openCamera()" [src]="imageBase64" [class.smallpic]="imageBase64 === '../../../assets/placeholder_item.png'"></ion-img>
-    <ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
-    
-    <!-- description -->
-    <ion-item>
-      <ion-label position="floating">Beschreibung</ion-label>
-      <ion-textarea type="text" minlength="20" required="true" [(ngModel)]="item.description"></ion-textarea>
-    </ion-item>
+      <!-- description -->
+      <ion-item>
+        <ion-label position="floating">Beschreibung</ion-label>
+        <ion-textarea type="text" formControlName="description"></ion-textarea>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationsMessages.description">
+          <div class="error-message"
+            *ngIf="validationsForm.get('description').hasError(validation.type) && (validationsForm.get('description').dirty || validationsForm.get('description').touched)">
+            <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
 
-    <!-- adress -->
-    <ion-item>
-      <ion-label position="floating">Straße</ion-label>
-      <ion-input [(ngModel)]="item.address.street" clearOnEdit="true"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Hausnummer</ion-label>
-      <ion-input [(ngModel)]="item.address.houseNumber" clearOnEdit="true"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">PLZ</ion-label>
-      <ion-input pattern="[0-9]{5}" [(ngModel)]="item.address.zip" clearOnEdit="true" type="number"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Wohnort</ion-label>
-      <ion-input [(ngModel)]="item.address.city" clearOnEdit="true"></ion-input>
-    </ion-item>
-  
-  
-    <!-- tags -->
-    <ion-item>
-      <ion-label position="floating">Tags hinzufügen</ion-label>
-      <ion-input type="text" maxlength="10" (keyup.enter)="addTag()" [(ngModel)]="tagInput"></ion-input>
-      <ion-icon  (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
-    </ion-item>
-    <ion-item *ngIf="item.tags.length">
-      <label text-wrap>
-        <ion-chip *ngFor="let t of item.tags">
-          <ion-label>{{t}}</ion-label>
-        </ion-chip>
-      </label>
-    </ion-item>
+      <!-- adress -->
+      <ion-item>
+        <ion-label position="floating">Straße</ion-label>
+        <ion-input formControlName="street" clearOnEdit="true"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationsMessages.street">
+          <div class="error-message"
+            *ngIf="validationsForm.get('street').hasError(validation.type) && (validationsForm.get('street').dirty || validationsForm.get('street').touched)">
+            <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
 
-    <!-- status -->
-    <ion-list-header>Status</ion-list-header>
-    <ion-item>
-      <ion-label>Aktiv</ion-label>
-      <ion-toggle [(ngModel)]="statusBool"></ion-toggle>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Hausnummer</ion-label>
+        <ion-input formControlName="houseNumber" clearOnEdit="true"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationsMessages.houseNumber">
+          <div class="error-message"
+            *ngIf="validationsForm.get('houseNumber').hasError(validation.type) && (validationsForm.get('houseNumber').dirty || validationsForm.get('houseNumber').touched)">
+            <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
 
-  </ion-list>
-  <ion-button *ngIf="!isEditMode" style="margin: 10px 10px" expand="full" (click)="createItem()">Item Erstellen</ion-button>
-  <ion-button *ngIf="isEditMode" style="margin: 10px 10px" expand="full" (click)="updateItem()">Item Speichern</ion-button>
-  
+      <ion-item>
+        <ion-label position="floating">PLZ</ion-label>
+        <ion-input formControlName="zip" clearOnEdit="true" type="number"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationsMessages.zip">
+          <div class="error-message"
+            *ngIf="validationsForm.get('zip').hasError(validation.type) && (validationsForm.get('zip').dirty || validationsForm.get('zip').touched)">
+            <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">Wohnort</ion-label>
+        <ion-input formControlName="city" clearOnEdit="true"></ion-input>
+      </ion-item>
+      <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationsMessages.city">
+          <div class="error-message"
+            *ngIf="validationsForm.get('city').hasError(validation.type) && (validationsForm.get('city').dirty || validationsForm.get('city').touched)">
+            <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+          </div>
+        </ng-container>
+      </div>
+      
+
+
+      <!-- tags -->
+     
+      <ion-item>
+        <ion-label position="floating">Tags hinzufügen</ion-label>
+        <ion-input formControlName="tags" type="text" (keyup.enter)="addTag()"></ion-input>
+        <ion-icon (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
+      </ion-item>
+      <ion-item *ngIf="item.tags.length">
+        <label text-wrap>
+          <ion-chip *ngFor="let t of item.tags">
+            <ion-label>{{t}}</ion-label>
+          </ion-chip>
+        </label>
+      </ion-item>
+
+      <!-- status -->
+      <ion-list-header>Status</ion-list-header>
+      <ion-item>
+        <ion-label>Aktiv</ion-label>
+        <ion-toggle [(ngModel)]="statusBool"></ion-toggle>
+      </ion-item>
+
+    </ion-list>
+    <ion-button *ngIf="!isEditMode" style="margin: 10px 10px" expand="full" class="submit-btn"  type="submit" [disabled]="!validationsForm.valid">Item Erstellen
+    </ion-button>
+    <ion-button *ngIf="isEditMode" style="margin: 10px 10px" expand="full" class="submit-btn"  type="submit" [disabled]="!validationsForm.valid">Item Speichern
+    </ion-button>
+  </form>
 </ion-content>
-

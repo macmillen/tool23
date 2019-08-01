@@ -9,38 +9,93 @@
 
 <ion-content>
 
-	<ion-img style="border-radius: 50%" (click)="openCamera()" [src]="imageBase64"></ion-img>
-	<ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
+	<form [formGroup]="validationsForm" (ngSubmit)="onSubmit(validationsForm.value)">
 
-	<div class="ion-padding">
-		<ion-item>
-			<ion-label position="stacked">Email:</ion-label>
-			<ion-input type="email" name="email" [(ngModel)]="user.email"></ion-input>
-		</ion-item>
-		<ion-item>
-			<ion-label position="stacked">Benutzername:</ion-label>
-			<ion-input [(ngModel)]="user.username"></ion-input>
-		</ion-item>
-		<ion-item>
-			<ion-label position="stacked">PLZ:</ion-label>
-			<ion-input pattern="[0-9]{5}" [(ngModel)]="user.address.zip" type="number"></ion-input>
-		</ion-item>
-		<ion-item>
-			<ion-label position="stacked">Wohnort:</ion-label>
-			<ion-input [(ngModel)]="user.address.city"></ion-input>
-		</ion-item>
-		<ion-item>
-			<ion-label position="stacked">Street:</ion-label>
-			<ion-input [(ngModel)]="user.address.street"></ion-input>
-		</ion-item>
-		<ion-item>
-			<ion-label position="stacked">Housenumber:</ion-label>
-			<ion-input
-				[(ngModel)]="user.address.houseNumber"
-				type="number"
-			></ion-input>
-		</ion-item>
-		<br/>
-		<ion-button expand="block" (click)="updateUser()">Speichern</ion-button>
-	</div>
+		<ion-img style="border-radius: 50%" (click)="openCamera()" [src]="imageBase64"></ion-img>
+		<ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
+
+		<div class="ion-padding">
+			<ion-item>
+				<ion-label position="stacked">Email:</ion-label>
+				<ion-input type="email" name="email" formControlName="email"></ion-input>
+			</ion-item>
+			<div class="validation-errors">
+				<ng-container *ngFor="let validation of validationsMessages.email">
+					<div class="error-message"
+						*ngIf="validationsForm.get('email').hasError(validation.type) && (validationsForm.get('email').dirty || validations_form.get('email').touched)">
+						<ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+					</div>
+				</ng-container>
+			</div>
+
+			<ion-item>
+				<ion-label position="stacked">Benutzername:</ion-label>
+				<ion-input type="text" formControlName="username"></ion-input>
+			</ion-item>
+			<div class="validation-errors">
+				<ng-container *ngFor="let validation of validationsMessages.username">
+					<div class="error-message"
+						*ngIf="validationsForm.get('username').hasError(validation.type) && (validationsForm.get('username').dirty || validationsForm.get('username').touched)">
+						<ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+					</div>
+				</ng-container>
+			</div>
+
+			<ion-item>
+				<ion-label position="stacked">PLZ:</ion-label>
+				<ion-input formControlName="zip" clearOnEdit="true" type="number"></ion-input>
+			</ion-item>
+			<div class="validation-errors">
+				<ng-container *ngFor="let validation of validationsMessages.zip">
+					<div class="error-message"
+						*ngIf="validationsForm.get('zip').hasError(validation.type) && (validationsForm.get('zip').dirty || validationsForm.get('zip').touched)">
+						<ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+					</div>
+				</ng-container>
+			</div>
+
+			<ion-item>
+				<ion-label position="stacked">Wohnort:</ion-label>
+				<ion-input formControlName="city" clearOnEdit="true" type="text"></ion-input>
+			</ion-item>
+			<div class="validation-errors">
+				<ng-container *ngFor="let validation of validationsMessages.city">
+					<div class="error-message"
+						*ngIf="validationsForm.get('city').hasError(validation.type) && (validationsForm.get('city').dirty || validationsForm.get('city').touched)">
+						<ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+					</div>
+				</ng-container>
+			</div>
+
+			<ion-item>
+				<ion-label position="stacked">Straße:</ion-label>
+				<ion-input formControlName="street" clearOnEdit="true" type="text"></ion-input>
+			</ion-item>
+			<div class="validation-errors">
+				<ng-container *ngFor="let validation of validationsMessages.street">
+					<div class="error-message"
+						*ngIf="validationsForm.get('street').hasError(validation.type) && (validationsForm.get('street').dirty || validationsForm.get('street').touched)">
+						<ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+					</div>
+				</ng-container>
+			</div>
+
+			<ion-item>
+				<ion-label position="stacked">Hausnummer:</ion-label>
+				<ion-input formControlName="houseNumber" clearOnEdit="true" type="number"></ion-input>
+			</ion-item>
+			<div class="validation-errors">
+				<ng-container *ngFor="let validation of validationsMessages.houseNumber">
+					<div class="error-message"
+						*ngIf="validationsForm.get('houseNumber').hasError(validation.type) && (validationsForm.get('houseNumber').dirty || validationsForm.get('houseNumber').touched)">
+						<ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+					</div>
+				</ng-container>
+			</div>
+
+			<br />
+			<ion-button expand="block" expand="full" class="submit-btn"  type="submit" [disabled]="!validationsForm.valid">Speichern</ion-button>
+
+		</div>
+	</form>
 </ion-content>
