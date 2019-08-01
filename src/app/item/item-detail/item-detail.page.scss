@@ -6,6 +6,13 @@ ion-thumbnail {
     --border-radius: 50%;
 }
 
+
+#item-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
 .smallpic {
     width: 230px;
     margin: auto;

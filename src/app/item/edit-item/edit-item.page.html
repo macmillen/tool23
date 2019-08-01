@@ -31,11 +31,14 @@
       </div>
 
       <!-- image -->
+      
 
       <ion-button style="margin: 18px 0px" expand="full" (click)="openCamera()">Bild hinzufügen</ion-button>
       <ion-item-divider style="min-height: 0px"></ion-item-divider>
+      <img id="item-image" [src]="imageBase64" [class.smallpic]="imageBase64 === '../../../assets/placeholder_item.png'"/>
 
-      <ion-img [src]="imageBase64" [class.smallpic]="imageBase64 === '../../../assets/placeholder_item.png'"></ion-img>
+
+      
       <ion-progress-bar *ngIf="percent >= 0" [value]="percent"></ion-progress-bar>
 
       <!-- description -->

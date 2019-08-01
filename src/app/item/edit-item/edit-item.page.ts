@@ -2,14 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, ToastController, AlertController, IonInput } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, Platform, ActionSheetController } from '@ionic/angular';
 import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 import { Item } from 'src/app/models/item.model';
 import { User } from 'src/app/models/user.model';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Platform } from '@ionic/angular';
 import { finalize } from 'rxjs/operators';
 import { Address } from 'src/app/models/address.model';
 
@@ -89,6 +88,7 @@ export class EditItemPage implements OnInit {
     private camera: Camera,
     private alertController: AlertController,
     public formBuilder: FormBuilder,
+    public actionSheetController: ActionSheetController,
     public plt: Platform) {
   }
 
@@ -155,6 +155,46 @@ export class EditItemPage implements OnInit {
     });
     await alert.present();
   }
+
+  async presentCameraActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Foto',
+      buttons: [{
+        text: 'Kamera',
+        icon: 'camera',
+        handler: () => {
+          this.options.sourceType = this.camera.PictureSourceType.CAMERA;
+          this.takeImage();
+        }
+      }, {
+        text: 'Bibliothek',
+        icon: 'image',
+        handler: () => {
+          this.options.sourceType = this.camera.PictureSourceType.SAVEDPHOTOALBUM;
+          this.takeImage();
+        }
+      }, {
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  takeImage() {
+    this.camera.getPicture(this.options).then((imageData) => {
+      // If it's base64 (DATA_URL):
+      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
+      this.imageUploaded = true;
+    }, (err) => {
+      // Handle error
+    });
+  }
+
 
   async presentLoading() {
     const loading = await this.loadingController.create({
@@ -310,13 +350,7 @@ export class EditItemPage implements OnInit {
   }
 
   openCamera() {
-    this.camera.getPicture(this.options).then((imageData) => {
-      // If it's base64 (DATA_URL):
-      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
-      this.imageUploaded = true;
-    }, (err) => {
-      // Handle error
-    });
+    this.presentCameraActionSheet();
   }
 
   onSubmit(values) {

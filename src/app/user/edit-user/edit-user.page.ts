@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user.model';
 import { UserService } from 'src/app/services/user.service';
-import { NavController, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { Platform } from '@ionic/angular';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ActionSheetController, Platform, NavController, ToastController  } from '@ionic/angular';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -72,7 +70,8 @@ export class EditUserPage implements OnInit {
     private loadingController: LoadingController,
     private camera: Camera,
     public plt: Platform,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    public actionSheetController: ActionSheetController
   ) {
   }
 
@@ -116,6 +115,46 @@ export class EditUserPage implements OnInit {
       message: 'Lädt...',
     });
     await loading.present();
+  }
+
+
+  async presentCameraActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Foto',
+      buttons: [{
+        text: 'Kamera',
+        icon: 'camera',
+        handler: () => {
+          this.options.sourceType = this.camera.PictureSourceType.CAMERA;
+          this.takeImage();
+        }
+      }, {
+        text: 'Bibliothek',
+        icon: 'image',
+        handler: () => {
+          this.options.sourceType = this.camera.PictureSourceType.SAVEDPHOTOALBUM;
+          this.takeImage();
+        }
+      }, {
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  takeImage() {
+    this.camera.getPicture(this.options).then((imageData) => {
+      // If it's base64 (DATA_URL):
+      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
+      this.imageUploaded = true;
+    }, (err) => {
+      // Handle error
+    });
   }
 
   updateUser() {
@@ -167,13 +206,7 @@ export class EditUserPage implements OnInit {
   }
 
   openCamera() {
-    this.camera.getPicture(this.options).then((imageData) => {
-      // If it's base64 (DATA_URL):
-      this.imageBase64 = 'data:image/jpeg;base64,' + imageData;
-      this.imageUploaded = true;
-    }, (err) => {
-      // Handle error
-    });
+    this.presentCameraActionSheet();
   }
 
   onSubmit(values) {

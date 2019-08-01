@@ -30,7 +30,10 @@
     </ion-chip>
   </ion-item>
 
-  <ion-img [src]="itemImageURL" [class.smallpic]="itemImageURL === '../../../assets/placeholder_item.png'"></ion-img>
+  <div id="image-container">
+    <img id="item-image" [src]="itemImageURL" [class.smallpic]="itemImageURL === '../../../assets/placeholder_item.png'"/>
+  </div>
+
 
   <ion-button style="margin: 10px" expand="block" *ngIf="!isAllowedToEdit" (click)="goToTransactionDetail()">
     Anfrage senden
