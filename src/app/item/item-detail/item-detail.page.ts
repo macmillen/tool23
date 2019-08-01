@@ -91,7 +91,7 @@ export class ItemDetailPage implements OnInit {
 
   goToAccountView() {
     if (this.isAllowedToEdit) {
-      this.navController.navigateForward(`/tabs/account-view/`);
+      this.navController.navigateForward(`/account-view/0`);
     } else {
       this.navController.navigateForward(`/account-view/${this.user.userID}`);
     }

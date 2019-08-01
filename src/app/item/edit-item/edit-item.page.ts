@@ -51,8 +51,8 @@ export class EditItemPage implements OnInit {
   validationsMessages = {
     title: [
       { type: 'required', message: 'Titel ist benötig.' },
-      { type: 'minlength', message: 'Titel muss mindesten 5 Charakter lang sein.' },
-      { type: 'maxlength', message: 'Titel darf nicht länger als 25 Charaktere sein.' }
+      { type: 'minlength', message: 'Titel muss mindesten 5 Zeichen lang sein.' },
+      { type: 'maxlength', message: 'Titel darf nicht länger als 25 Zeichen sein.' }
     ],
     description: [
       { type: 'required', message: 'Beschreibung ist benötigt' }
@@ -71,8 +71,8 @@ export class EditItemPage implements OnInit {
       { type: 'required', message: 'Straße ist benötigt' }
     ],
     tags: [
-      { type: 'maxlength', message: 'Tag darf nicht länger als 10 Charaktere sein.'},
-      { type: 'minlength', message: 'Tag muss mindesten 3 Charakter lang sein.' }
+      { type: 'maxlength', message: 'Tag darf nicht länger als 10 Zeichen sein.'},
+      { type: 'minlength', message: 'Tag muss mindesten 3 Zeichen lang sein.' }
 
     ]
   };
@@ -257,7 +257,7 @@ export class EditItemPage implements OnInit {
 
   addTag() {
     const value = this.validationsForm.get('tags').value as string;
-    if (value.length < 3) { return; }
+    if (value.length < 3 || !this.item) { return; }
     const tags = new Set<string>(this.item.tags);
     tags.add(this.validationsForm.get('tags').value);
     this.item.tags = Array.from(tags);

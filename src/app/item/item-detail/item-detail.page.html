@@ -35,7 +35,7 @@
   </div>
 
 
-  <ion-button style="margin: 10px" expand="block" *ngIf="!isAllowedToEdit" (click)="goToTransactionDetail()">
+  <ion-button style="margin: 10px" expand="block" *ngIf="user && !isAllowedToEdit" (click)="goToTransactionDetail()">
     Anfrage senden
   </ion-button>
 

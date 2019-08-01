@@ -117,7 +117,7 @@
         <ion-input formControlName="tags" type="text" (keyup.enter)="addTag()"></ion-input>
         <ion-icon (click)="addTag()" size="large" color="primary" slot="end" name="add-circle"></ion-icon>
       </ion-item>
-      <ion-item *ngIf="item.tags.length">
+      <ion-item *ngIf="item && item.tags.length">
         <label text-wrap>
           <ion-chip *ngFor="let t of item.tags">
             <ion-label>{{t}}</ion-label>
