@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user.model';
 import { UserService } from 'src/app/services/user.service';
-import { NavController, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { Platform } from '@ionic/angular';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { LoadingController, ActionSheetController, Platform, NavController, ToastController  } from '@ionic/angular';
+import { LoadingController, ModalController, ActionSheetController, Platform, NavController, ToastController  } from '@ionic/angular';
 import { finalize } from 'rxjs/operators';
 
 @Component({

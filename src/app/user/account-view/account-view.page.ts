@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PopoverController, NavController, ToastController, IonItemSliding } from '@ionic/angular';
+import { PopoverController, NavController, ModalController, ToastController, IonItemSliding } from '@ionic/angular';
 import { MoreComponent } from './more/more.component';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { User } from 'src/app/models/user.model';
