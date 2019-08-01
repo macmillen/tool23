@@ -40,10 +40,9 @@ export const getTransactions = async (req: Request, res: Response) => {
         const transactionRequests: TransactionRequest[] = [];
 
         for (const t of transactions) {
-            const user = users.find(u => u.userID !== userID && (u.userID === t.takerID || u.userID === t.giverID));
-            const item = items.find(i => i._id ? i._id.toString() === t.itemID : null);
+            let user = users.find(u => u.userID !== userID && (u.userID === t.takerID || u.userID === t.giverID)) as User;
+            let item = items.find(i => i._id ? i._id.toString() === t.itemID : null) as Item;
 
-            if (!user || !item) { continue; }
             transactionRequests.push({ ...t, user, item });
         }
 

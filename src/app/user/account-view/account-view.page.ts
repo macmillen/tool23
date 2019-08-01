@@ -37,7 +37,7 @@ export class AccountViewPage {
   ) { }
 
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.id = this.route.snapshot.paramMap.get('userID');
     this.id = this.id ? this.id : '0';
 
