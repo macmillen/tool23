@@ -34,7 +34,9 @@ export class EditUserPage implements OnInit {
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     sourceType: this.camera.PictureSourceType.CAMERA,
-    targetHeight: 100
+    correctOrientation: true,
+    targetHeight: 100,
+    targetWidth: 100
   };
 
 
