@@ -216,7 +216,8 @@ export class EditItemPage implements OnInit {
   }
 
   addTag() {
-    if (!this.validationsForm.get('tags').value) { return; }
+    const value = this.validationsForm.get('tags').value as string;
+    if (value.length < 3) { return; }
     const tags = new Set<string>(this.item.tags);
     tags.add(this.validationsForm.get('tags').value);
     this.item.tags = Array.from(tags);
