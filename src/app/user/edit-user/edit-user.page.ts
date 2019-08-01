@@ -44,7 +44,7 @@ export class EditUserPage implements OnInit {
       { type: 'pattern', message: 'Bitte gültige Email-Adresse angeben' }
     ],
     username: [
-      { type: 'required', message: 'Beschreibung ist benötigt' }
+      { type: 'required', message: 'Benutzername ist benötigt' }
     ],
     street: [
       { type: 'required', message: 'Straße ist benötigt' }
