@@ -258,8 +258,8 @@ export class EditItemPage implements OnInit {
     });
   }
 /**
- * set values to item
- * @param item 
+ * set values in html form to values from item
+ * @param item Item Object to fetch values from
  */
   setEditItem(item: Item) {
     console.log(item);
@@ -270,7 +270,10 @@ export class EditItemPage implements OnInit {
     this.validationsForm.get('city').setValue(item.address.city);
     this.validationsForm.get('zip').setValue(item.address.zip);
   }
-
+/**
+ * set address values in html form to values from address values
+ * @param userAdress Address Object to fetch values from
+ */
   setAdress(userAdress: Address) {
     this.validationsForm.get('street').setValue(userAdress.street);
     this.validationsForm.get('houseNumber').setValue(userAdress.houseNumber);
@@ -278,6 +281,9 @@ export class EditItemPage implements OnInit {
     this.validationsForm.get('zip').setValue(userAdress.zip);
   }
 
+  /**
+   * Fetch Item-URL from Server 
+   */
   getItemImageURL() {
     const ref = this.fireStorage.ref(`item-images/${this.item._id}.jpg`);
     ref.getDownloadURL().subscribe({
@@ -285,6 +291,9 @@ export class EditItemPage implements OnInit {
     });
   }
 
+  /**
+   * Reads tags from html form field and saves it in class variable for tags
+   */
   addTag() {
     const value = this.validationsForm.get('tags').value as string;
     if (value.length < 3) { return; }
@@ -293,7 +302,9 @@ export class EditItemPage implements OnInit {
     this.item.tags = Array.from(tags);
     this.validationsForm.get('tags').setValue('');
   }
-
+/**
+ * Sends update of item to server, with changed values
+ */
   updateItem() {
     this.item.status = this.statusBool ? 'active' : 'disabled';
     let uploadedImage = !this.imageUploaded;
@@ -340,13 +351,20 @@ export class EditItemPage implements OnInit {
       }
     });
   }
-
+/**
+ * If finisched (all true), navigate back to account view
+ * @param uploadedImage Image to upload
+ * @param uploadedItem Item, which the image is for
+ */
   goToAccountView(uploadedImage: boolean, uploadedItem: boolean) {
     if (uploadedImage && uploadedItem) {
       this.navController.navigateRoot('/tabs/account-view');
     }
   }
 
+  /**
+   * creates Item and pushes it to server
+   */
   createItem() {
     this.item.status = this.statusBool ? 'active' : 'disabled';
     this.itemService.createItem(this.item).subscribe({
@@ -363,7 +381,9 @@ export class EditItemPage implements OnInit {
     });
   }
 
-
+  /**
+   * Deletes current Item and sends delete request to server
+   */
   deleteItem() {
     this.itemService.deleteItem(this.item._id).subscribe({
       next: async () => {
@@ -379,10 +399,17 @@ export class EditItemPage implements OnInit {
     });
   }
 
+  /**
+   * Opens camera action sheet
+   */
   openCamera() {
     this.presentCameraActionSheet();
   }
 
+  /**
+   * Updates its variables from values input and updates or creates item
+   * @param values the fields to input from
+   */
   onSubmit(values) {
     console.log(values);
     this.item.title = values.title;
