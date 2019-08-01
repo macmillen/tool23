@@ -14,12 +14,16 @@ import { AngularFireStorage } from '@angular/fire/storage';
 })
 export class ItemDetailPage implements OnInit {
 
-  item: Item;
-  user: User;
+  item: Item = {
+    userID: '0', description: '', status: 'active', tags: [],
+    title: '', address: { city: '', houseNumber: '', street: '', zip: '' }
+  };
+  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null};
   currentUser: User;
   isAllowedToEdit = false;
   userImageURL = '../../../assets/placeholder.png';
   itemImageURL = '../../../assets/placeholder_item.png';
+  dataItem = false;
 
 
   constructor(private itemService: ItemService,
@@ -44,6 +48,7 @@ export class ItemDetailPage implements OnInit {
         this.item = item;
         this.getItemImageURL();
         this.loadUser(this.item.userID);
+        this.dataItem = true;
       }
     });
   }
