@@ -30,7 +30,7 @@ app.get('/api/tags', checkAuth, itemController.getTags);
 app.post('/api/register', userController.register);
 app.get('/api/user/:userID', checkAuth, userController.getUser);
 app.put('/api/update-user', checkAuth, userController.updateUser);
-
+ 
 // * TRANSACTIONS
 app.post('/api/request-item', checkAuth, transactionController.requestItem);
 app.get('/api/transactions/:userID', checkAuth, transactionController.getTransactions);

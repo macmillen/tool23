@@ -93,7 +93,7 @@ export class ItemDetailPage implements OnInit {
     if (this.isAllowedToEdit) {
       this.navController.navigateForward(`/tabs/account-view/`);
     } else {
-      this.navController.navigateForward(`/tabs/account-view/${this.user.userID}`);
+      this.navController.navigateForward(`/account-view/${this.user.userID}`);
     }
   }
 
