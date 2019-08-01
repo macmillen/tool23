@@ -11,5 +11,5 @@ export interface Item {
     address: Address;
     tags: string[];
     distance?: number;
-    location?: { type: "Point", coordinates: number[] };
+    location?: { type: 'Point', coordinates: number[] };
 }

@@ -12,7 +12,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
   styleUrls: ['./reviews.component.scss'],
 })
 
-export class ReviewsComponent implements OnInit {
+export class ReviewsComponent {
 
   transactions: TransactionRequest[] = [];
   user: User;
@@ -26,16 +26,18 @@ export class ReviewsComponent implements OnInit {
     private fireStorage: AngularFireStorage,
   ) { }
 
-
-  ngOnInit() {
+  ionViewDidEnter() {
     const userID = this.navParams.get('userID');
     this.userService.getUser(userID).subscribe({
-      next: user => this.user = user
+      next: user => {
+        this.user = user;
+        this.getTransactions();
+      }
     });
   }
 
-  ionViewDidEnter() {
-    this.transactionService.getTransactions().subscribe({
+  getTransactions() {
+    this.transactionService.getTransactions(this.user.userID).subscribe({
       next: transactions => {
         this.transactions = transactions;
         for (const t of this.transactions) {
@@ -54,4 +56,8 @@ export class ReviewsComponent implements OnInit {
     });
   }
 
+  formatDate(date: Date) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return (new Date(date)).toLocaleDateString('de-DE', options);
+  }
 }

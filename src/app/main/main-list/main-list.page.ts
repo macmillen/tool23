@@ -85,6 +85,7 @@ export class MainListPage implements OnInit {
       });
 
     modal.onDidDismiss().then(data => {
+      if (!data || !data.data) { return; }
       this.searchString = data.data.searchString;
       if (this.searchString) {
         this.searchItems(this.searchString);

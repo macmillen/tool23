@@ -16,7 +16,7 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./account-view.page.scss']
 })
 export class AccountViewPage {
-  user: User = { userID: '0', reviewScore: 0, email: '', username: '', address: null, location: null };
+  user: User;
   items: Item[];
   id: string;
   pending = true;

@@ -1,9 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-input style="margin: 10px; font-size: 20px; background: #f7f7f7; border-radius: 6px; padding-left: 2px !important" placeholder="Search" (ionFocus)="searchItem()">
+    <ion-input
+      style="margin: 10px; font-size: 20px; background: #f7f7f7; border-radius: 6px; padding-left: 2px !important"
+      placeholder="Search" (ionFocus)="searchItem()">
     </ion-input>
     <ion-buttons slot="end">
-      <ion-button style="margin-left: 10px"(click)="searchItems(''); searchString = ''">
+      <ion-button style="margin-left: 10px" (click)="searchItems(''); searchString = ''">
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -11,10 +13,24 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-card style="min-height: 80px">
     <ion-card-header>
-      <ion-card-subtitle>{{'(' + items.length + (items.length === 1 ? ' Ergebnis' : ' Ergebnisse') + ')'}}</ion-card-subtitle>
-      <ion-card-title>{{searchString ? searchString : 'In deiner Nähe: '}}</ion-card-title>
+      <ion-card-subtitle>
+        <ng-container *ngIf="!searching">
+          {{'(' + items.length + (items.length === 1 ? ' Ergebnis' : ' Ergebnisse') + ')'}}
+        </ng-container>
+        <ng-container *ngIf="searching">
+          <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+        </ng-container>
+      </ion-card-subtitle>
+      <ion-card-title>
+        <ng-container *ngIf="!searching">
+          {{searchString ? searchString : 'In deiner Nähe: '}}
+        </ng-container>
+        <ng-container *ngIf="searching">
+          <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+        </ng-container>
+      </ion-card-title>
     </ion-card-header>
   </ion-card>
 
@@ -26,12 +42,12 @@
       <ion-card-subtitle style="margin: 23px 0 -1px 0 !important;" class="ion-text-center">Willst du Einträge in der
         Nähe anzeigen?</ion-card-subtitle>
       <ion-card-content>
-        <ion-button expand="block" (click)="searchItems('')">In der Nähe</ion-button>
+        <ion-button expand="block" (click)="searchItems(''); searchString = ''">In der Nähe</ion-button>
       </ion-card-content>
     </ion-card-header>
   </ion-card>
 
-  <ion-list [hidden]="searching">
+  <ion-list [hidden]="searching" *ngIf="user">
     <div *ngFor="let item of items;">
       <ion-item button (click)="gotoDetail(item._id)">
         <ion-thumbnail slot="start">
@@ -39,7 +55,7 @@
         </ion-thumbnail>
         <ion-label class="ion-padding-start ion-margin-start">{{item.title}}
         </ion-label>
-        <ion-icon color="primary" slot="end" *ngIf="item.userID === user.userID" name="person"></ion-icon>
+        <ion-icon slot="end" *ngIf="item.userID === user.userID" name="person"></ion-icon>
         <ion-label *ngIf="item.userID !== user.userID" class="ion-float-right ion-text-end">{{getRange(item.distance)}}
         </ion-label>
       </ion-item>
