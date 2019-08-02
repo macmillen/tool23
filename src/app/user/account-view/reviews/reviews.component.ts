@@ -12,6 +12,9 @@ import { AngularFireStorage } from '@angular/fire/storage';
   styleUrls: ['./reviews.component.scss'],
 })
 
+/**
+ * Modal/Component to display all Reviews given to an account
+ */
 export class ReviewsComponent {
 
   transactions: TransactionRequest[] = [];
@@ -26,6 +29,9 @@ export class ReviewsComponent {
     private fireStorage: AngularFireStorage,
   ) { }
 
+  /**
+   * Fetch UserID over navParams and fetch User and all his transactions from server
+   */
   ionViewDidEnter() {
     const userID = this.navParams.get('userID');
     this.userService.getUser(userID).subscribe({
@@ -36,6 +42,9 @@ export class ReviewsComponent {
     });
   }
 
+  /**
+   * Fetch all transactions of a user from the server over the transaction service
+   */
   getTransactions() {
     this.transactionService.getTransactions(this.user.userID).subscribe({
       next: transactions => {
@@ -47,6 +56,10 @@ export class ReviewsComponent {
     });
   }
 
+  /**
+   * Get Image of user from Server and save it in class variable map
+   * @param user The user to fetch the image of
+   */
   getUserImageURL(user: User) {
     this.userImageURLs.set(user.userID, '../../../assets/placeholder.png');
 
@@ -56,6 +69,11 @@ export class ReviewsComponent {
     });
   }
 
+  /**
+   * Formats Date-Object to german localized date string
+   * @param date The date to format
+   * @returns {string}Date as string (localized for germany)
+   */
   formatDate(date: Date) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return (new Date(date)).toLocaleDateString('de-DE', options);

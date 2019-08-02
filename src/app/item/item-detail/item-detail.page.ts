@@ -12,6 +12,9 @@ import { AngularFireStorage } from '@angular/fire/storage';
   templateUrl: './item-detail.page.html',
   styleUrls: ['./item-detail.page.scss']
 })
+/**
+ * Shows Details to specific item
+ */
 export class ItemDetailPage implements OnInit {
 
   item: Item = {
@@ -33,6 +36,9 @@ export class ItemDetailPage implements OnInit {
               private route: ActivatedRoute) {
   }
 
+  /**
+   * Fetch itemID and load corresponding item
+   */
   ngOnInit() {
     let id: string;
     this.route.paramMap.subscribe(params => {
@@ -41,7 +47,10 @@ export class ItemDetailPage implements OnInit {
     this.loadItem(id);
   }
 
-
+  /**
+   * Load item corresponding to itemID
+   * @param itemID ID of item to load
+   */
   loadItem(itemID: string) {
     this.itemService.getItem(itemID).subscribe({
       next: item => {
@@ -53,6 +62,10 @@ export class ItemDetailPage implements OnInit {
     });
   }
 
+  /**
+   * Load user corresponding to userID
+   * @param userID ID of user to load
+   */
   loadUser(userID: string) {
     this.userService.getUser(userID).subscribe({
       next: user => {
@@ -71,24 +84,34 @@ export class ItemDetailPage implements OnInit {
     });
   }
 
+  /**
+   * get Image URL of user from server
+   */
   getUserImageURL() {
     const ref = this.fireStorage.ref(`user-images/${this.user.userID}.jpg`);
     ref.getDownloadURL().subscribe({
       next: url => { this.userImageURL = url; },
     });
   }
-
+  /**
+   * get Image URL of Item from server
+   */
   getItemImageURL() {
     const ref = this.fireStorage.ref(`item-images/${this.item._id}.jpg`);
     ref.getDownloadURL().subscribe({
       next: url => { this.itemImageURL = url; },
     });
   }
-
+  /**
+   * Navigate to details of transaction
+   */
   goToTransactionDetail() {
     this.navController.navigateForward(`/transaction-detail/${this.item._id}`);
   }
 
+  /**
+   * navigate forward to user page, and if allowed, display edit page
+   */
   goToAccountView() {
     if (this.isAllowedToEdit) {
       this.navController.navigateForward(`/account-view/0`);
@@ -97,6 +120,9 @@ export class ItemDetailPage implements OnInit {
     }
   }
 
+  /**
+   * navigate forward to edit page of item
+   */
   goToEditItem() {
     this.navController.navigateForward(`/edit-item/${this.item._id}`);
   }

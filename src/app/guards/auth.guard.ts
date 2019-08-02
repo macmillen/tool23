@@ -9,10 +9,16 @@ import { NavController } from '@ionic/angular';
 @Injectable({
     providedIn: 'root'
 })
+/**
+ * Guard to check if user is authenticated and allowed to use app
+ */
 export class AuthGuard implements CanActivate {
 
     constructor(private navController: NavController, private userService: UserService) { }
 
+    /**
+     * Checks if user is authenticated and allowed to use app, or if he needs to register
+     */
     canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {

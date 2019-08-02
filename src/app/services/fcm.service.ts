@@ -18,6 +18,9 @@ export class FcmService {
     private fcm: FCM
   ) { }
 
+  /**
+   * Creates and refreshes token online on server, if authenticated
+   */
   async getToken() {
     this.userService.isAuthenticated().subscribe({
       next: isAuth => {
@@ -33,13 +36,21 @@ export class FcmService {
     });
   }
 
+  /**
+  * Calls "createToken" over the Api on the server
+  * 
+  */
   private createToken(token: string) {
     this.http.post(`${environment.SERVER_URL}/api/create-token`, { token }).subscribe({
       error: e => console.log(e)
     });
   }
 
-  // Listen to incoming FCM messages
+  /**
+  * Listens to incoming FCM messages. If received in background, it navigates to transaction list,
+  * in foreground, it presents a toast.
+  * 
+  */
   listenToNotifications() {
     this.fcm.onNotification().subscribe(async data => {
       if (data.wasTapped) {

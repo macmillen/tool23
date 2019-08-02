@@ -9,29 +9,30 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
-    selector: 'app-main-list',
-    templateUrl: './main-list.page.html',
-    styleUrls: ['./main-list.page.scss'],
+  selector: 'app-main-list',
+  templateUrl: './main-list.page.html',
+  styleUrls: ['./main-list.page.scss'],
 })
 
 export class MainListPage implements OnInit {
 
-    items: Item[] = [];
-    tags: string[] = [];
-    user: User;
-    searchMode = false;
-    searchString = '';
-    searching = false;
-    itemImageURLs = new Map<string, string>();
+  
+  items: Item[] = [];     // (Empty) array full for items to fetch into
+  tags: string[] = [];    // (Empty) string array for search in tags
+  user: User;             // Variable for the current user
+  searchMode = false;    
+  searchString = '';      
+  searching = false;      // During a search true; else false
+  itemImageURLs = new Map<string, string>();    // Map to match Items with their corresponding image-URL
 
-    constructor(
-        private navController: NavController,
-        private modalController: ModalController,
-        private userService: UserService,
-        private itemService: ItemService,
-        private fireStorage: AngularFireStorage,
-        private toastController: ToastController,
-    ) { }
+  constructor(
+    private navController: NavController,
+    private modalController: ModalController,
+    private userService: UserService,
+    private itemService: ItemService,
+    private fireStorage: AngularFireStorage,
+    private toastController: ToastController,
+  ) { }
 
 
     ngOnInit() {
@@ -43,6 +44,12 @@ export class MainListPage implements OnInit {
         this.searchItems('');
     }
 
+/**
+  * Search Items on remote server, sets the class variable items.
+  * 
+  * @param {string} searchString String to search
+  * @returns void (sets the class variable items)
+  */
     searchItems(searchString: string) {
         this.searching = true;
         this.items = [];
@@ -55,18 +62,32 @@ export class MainListPage implements OnInit {
             complete: () => this.searching = false
         });
     }
-
+/**
+  * Get the current user from the server. Sets the class variable user
+  * 
+  * @returns void (sets the class variable user)
+  */
     getUser() {
         this.userService.getUser('0'  /* userID = '0' --> own userID */).subscribe({
             next: user => this.user = user
         });
     }
-
+/**
+  * returns given distance in m or km as string
+  * 
+  * @param {number} distance Distance in km
+  * @returns Distance as string with ending in km or m
+  */
     getRange(distance: number): string {
         const distM = Math.round(distance);
         return distance < 1000 ? distM + ' m' : (distM / 1000).toFixed(2) + ' km';
     }
-
+/**
+  * Fetches the image URL to given Item and saves it in map of images
+  * 
+  * @param {Item} item Item to get image for
+  * @returns void (sets image in map)
+  */
     getItemImageURL(item: Item) {
         const ref = this.fireStorage.ref(`item-images/${item._id}.jpg`);
         this.itemImageURLs.set(item._id, '../../../assets/placeholder_item.png');
@@ -74,11 +95,20 @@ export class MainListPage implements OnInit {
             next: url => this.itemImageURLs.set(item._id, url)
         });
     }
-
+/**
+  * Navigates to item-detail-page of given item
+  * 
+  * @param {string} itemID ID of item
+  * @returns void (navigates the navController to specific item-detail-page)
+  */
     gotoDetail(itemID: string) {
         this.navController.navigateForward(`/item-detail/${itemID}`);
     }
-
+/**
+  * Opens modal for Item-Search
+  * 
+  * @returns void
+  */
     async searchItem() {
         const modal: HTMLIonModalElement =
             await this.modalController.create({
@@ -98,7 +128,12 @@ export class MainListPage implements OnInit {
 
         await modal.present();
     }
-
+ /**
+  * Display popup message
+  * 
+  * @param {string} message The message to display
+  * @returns void
+  */
     async presentToast(message: string) {
         const toast = await this.toastController.create({
             header: 'Hinweis!',
