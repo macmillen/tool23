@@ -1,2 +1,2 @@
 #WIKI
-https://git.thm.de/ema-ss19/verleih-app/wikis/Introduction
+https://github.com/macmillen/tool23/wiki/Server
