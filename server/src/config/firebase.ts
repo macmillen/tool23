@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 
 // import firebase credentials
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = require('../../serviceAccountKey.json');
 
 /**
  * initialize the firebase application

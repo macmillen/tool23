@@ -1,11 +1,12 @@
 import { Item } from "../models/item_model";
 import { User } from "../models/user_model";
+import { openCageAPIKey } from "../../env";
 
 // export geoCoder config to use it across the application
 export const NodeGeocoder = require('node-geocoder');
 export const geocoder = NodeGeocoder({
     provider: 'opencage',
-    apiKey: 'a48917e616164965be4cb14a9d3bd734'
+    apiKey: openCageAPIKey
 });
 
 /**

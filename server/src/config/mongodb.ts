@@ -3,8 +3,9 @@ import { Item } from '../models/item_model';
 import { User } from '../models/user_model';
 import { Token } from '../models/token_model';
 import { Transaction } from '../models/transaction_model';
+import { mongodbURI } from '../../env';
 
-const uri = "mongodb+srv://admin:verleihmasters99@cluster0-58wqp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = mongodbURI;
 
 /**
  * create the mongo db client
@@ -13,10 +14,6 @@ export const client = new MongoClient(uri, {
     useNewUrlParser: true,
 });
 export let db: Db;
-
-// ATLAS CREDENTIALS
-// USERNAME: admin
-// PW: verleihmasters99
 
 // DECLARE COLLECTIONS HERE
 export let itemCollection: Collection<Item>;
