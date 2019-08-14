@@ -1,2 +1,2 @@
 #WIKI
-https://github.com/macmillen/tool23/wiki/Server
+https://github.com/macmillen/tool23/wiki
